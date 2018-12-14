@@ -1,0 +1,5 @@
+PREFIX=$(HOME)/usr
+PROJNAME=dzco
+VERSION=1.0.0
+
+DEPENDENCY="zeda=1.1.1;zm=1.1.1"

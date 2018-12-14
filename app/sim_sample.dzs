@@ -1,0 +1,36 @@
+[sys]
+name: ref
+type: step
+amp: 1.0
+delay: 0
+
+[sys]
+name: sub
+type: subtr
+in: 2
+
+[sys]
+name: PID
+type: pid
+pgain: 10.0
+igain: 2.0
+dgain: 5.0
+tc: 0
+fgt: 0
+
+[sys]
+name: intg1
+type: i
+gain: 1.0
+
+[sys]
+name: intg2
+type: i
+gain: 1.0
+
+[connect]
+sub 0 PID 0
+PID 0 intg1 0
+intg1 0 intg2 0
+ref 0 sub 0
+intg2 0 sub 1
