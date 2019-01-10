@@ -17,13 +17,11 @@ static void _dzLinDestroyODE(dzLin *c);
 static bool _dzLinCheckSize(dzLin *lin);
 
 static zVec __dz_lin_state_dif(double t, zVec x, void *sys, zVec dx);
-static bool _dzLinCOMatPrep(dzLin *c, zMat m, uint size, zMat *af, zVec *v);
+static bool _dzLinCOMatPrep(dzLin *c, zMat m, uint size, zVec *v);
 
 static bool _dzLinFRead(FILE *fp, void *instance, char *buf, bool *success);
 
-/* dzLinInit
- * - initialize a linear system.
- */
+/* initialize a linear system. */
 dzLin *dzLinInit(dzLin *lin)
 {
   lin->a = NULL;
@@ -33,9 +31,7 @@ dzLin *dzLinInit(dzLin *lin)
   return lin;
 }
 
-/* dzLinAlloc
- * - allocate working space of a linear system.
- */
+/* allocate working space of a linear system. */
 bool dzLinAlloc(dzLin *lin, int dim)
 {
   lin->a = zMatAllocSqr( dim );
@@ -51,10 +47,7 @@ bool dzLinAlloc(dzLin *lin, int dim)
   return true;
 }
 
-/* (static)
- * _dzLinAllocODE
- * - allocate internal working space of a linear system.
- */
+/* allocate internal working space of a linear system. */
 bool _dzLinAllocODE(dzLin *lin)
 {
   int dim;
@@ -72,10 +65,7 @@ bool _dzLinAllocODE(dzLin *lin)
   return true;
 }
 
-/* (static)
- * _dzLinDestroy
- * - destroy working space a linear system.
- */
+/* destroy working space a linear system. */
 void _dzLinDestroy(dzLin *lin)
 {
   zMatFree( lin->a );
@@ -84,10 +74,7 @@ void _dzLinDestroy(dzLin *lin)
   zVecFree( lin->x );
 }
 
-/* (static)
- * _dzLinDestroyODE
- * - destroy internal working space of a linear system.
- */
+/* destroy internal working space of a linear system. */
 void _dzLinDestroyODE(dzLin *lin)
 {
   zVecFree( lin->_ax );
@@ -95,19 +82,14 @@ void _dzLinDestroyODE(dzLin *lin)
   zODEDestroy( &lin->_ode );
 }
 
-/* dzLinDestroy
- * - destroy general linear system.
- */
+/* destroy general linear system. */
 void dzLinDestroy(dzLin *lin)
 {
   _dzLinDestroy( lin );
   _dzLinDestroyODE( lin );
 }
 
-/* (static)
- * _dzLinCheckSize
- * - check size consistency of a linear system.
- */
+/* check size consistency of a linear system. */
 bool _dzLinCheckSize(dzLin *lin)
 {
   return zMatIsSqr( lin->a ) &&
@@ -115,10 +97,7 @@ bool _dzLinCheckSize(dzLin *lin)
          zMatRowVecSizeIsEqual( lin->a, lin->c ) ? true : false;
 }
 
-/* (static)
- * __dz_lin_state_dif
- * - compute state velocity.
- */
+/* compute state velocity. */
 zVec __dz_lin_state_dif(double t, zVec x, void *sys, zVec dx)
 {
   dzLin *lin;
@@ -128,18 +107,14 @@ zVec __dz_lin_state_dif(double t, zVec x, void *sys, zVec dx)
   return zVecAdd( lin->_ax, lin->_bu, dx );
 }
 
-/* dzLinStateUpdate
- * - update the inner state of linear system.
- */
+/* update the inner state of linear system. */
 void dzLinStateUpdate(dzLin *c, double input, double dt)
 {
   zVecMul( c->b, input, c->_bu );
   zODEUpdate( &c->_ode, 0, c->x, dt, c );
 }
 
-/* dzLinObsUpdate
- * - update the inner state of linear observer.
- */
+/* update the inner state of linear observer. */
 void dzLinObsUpdate(dzLin *c, zVec k, double input, double error, double dt)
 {
   zVecMul( c->b, input, c->_bu );
@@ -147,129 +122,121 @@ void dzLinObsUpdate(dzLin *c, zVec k, double input, double error, double dt)
   zODEUpdate( &c->_ode, 0, c->x, dt, c );
 }
 
-/* dzLinOutput
- * - calculation of the output of linear system.
- */
+/* calculation of the output of linear system. */
 double dzLinOutput(dzLin *c, double input)
 {
   return zVecInnerProd( c->c, c->x ) + c->d * input;
 }
 
-/* dzLinStateFeedback
- * - state feedback for linear system.
- */
+/* state feedback for linear system. */
 double dzLinStateFeedback(dzLin *c, zVec ref, zVec f)
 {
   return ( ref ? zVecInnerProd(f,ref) : 0 ) - zVecInnerProd(f,c->x);
 }
 
-/* (static)
- * _dzLinCOMatPrep
- * - preparation for dzLinCtrlMat and dzLinObsMat.
- */
-bool _dzLinCOMatPrep(dzLin *c, zMat m, uint size, zMat *af, zVec *v)
+/* preparation for dzLinCtrlMat and dzLinObsMat. */
+bool _dzLinCOMatPrep(dzLin *c, zMat m, uint size, zVec *v)
 {
   if( zMatRowSize(m) != zMatRowSize(c->a) ||
       zMatColSize(m) != zMatColSize(c->a) ){
     ZRUNERROR( "size mismatch of matrices" );
     return false;
   }
-  *af = zMatAlloc( zMatRowSize(c->a), zMatColSize(c->a) );
-  *v  = zVecAlloc( size );
-  if( !*af || !*v ){
+  if( !( *v  = zVecAlloc( size ) ) ){
     ZRUNERROR( "cannot create controllable matrix" );
-    zMatFree( *af );
-    zVecFree( *v );
     return false;
   }
-  zMatIdent( *af );
   return true;
 }
 
-/* dzLinCtrlMat
- * - create controllable matrix.
- */
+/* create controllable matrix. */
 zMat dzLinCtrlMat(dzLin *c, zMat m)
 {
-  zMat af;
   zVec v;
   register uint i = 0;
 
-  if( !_dzLinCOMatPrep( c, m, zVecSize(c->b), &af, &v ) )
+  if( !_dzLinCOMatPrep( c, m, zVecSize(c->b), &v ) )
     return NULL;
+  zVecCopyNC( c->b, v );
   while( 1 ){
-    zMulMatVec( af, c->b, v );
-    zMatSetCol( m, i, v );
+    zMatPutColNC( m, i, v );
     if( ++i >= zMatColSize(m) ) break;
-    zMulMatMatDRC( c->a, af );
+    zMulMatVecDRC( c->a, v );
   }
-  zMatFree( af );
   zVecFree( v );
   return m;
 }
 
-/* dzLinObsMat
- * - create observable matrix.
- */
+/* create observable matrix. */
 zMat dzLinObsMat(dzLin *c, zMat m)
 {
-  zMat af;
   zVec v;
   register uint i = 0;
 
-  if( !_dzLinCOMatPrep( c, m, zVecSize(c->c), &af, &v ) )
+  if( !_dzLinCOMatPrep( c, m, zVecSize(c->c), &v ) )
     return NULL;
+  zVecCopyNC( c->c, v );
   while( 1 ){
-    zMulVecMat( c->c, af, v );
-    zMatSetRow( m, i, v );
+    zMatPutRowNC( m, i, v );
     if( ++i >= zMatRowSize(m) ) break;
-    zMulMatMatDRC( c->a, af );
+    zMulMatTVecDRC( c->a, v );
   }
-  zMatFree( af );
   zVecFree( v );
   return m;
 }
 
+static double _dzLinCODet(dzLin *c, zMat (*func)(dzLin*,zMat));
 static bool _dzLinIsCO(dzLin *c, zMat (*func)(dzLin*,zMat));
 
-/* (static)
- * _dzLinIsCO
- * - inner operation of dzLinIsCtrl and dzLinIsObs.
- */
-bool _dzLinIsCO(dzLin *c, zMat (*func)(dzLin*,zMat))
+/* internal operation for dzLinIsCtrl and dzLinIsObs. */
+double _dzLinCODet(dzLin *c, zMat (*func)(dzLin*,zMat))
 {
   zMat m;
-  bool result;
+  double amax, val;
 
   if( !( m = zMatAlloc( zMatRowSize(c->a), zMatColSize(c->a) ) ) ){
     ZALLOCERROR();
     return false;
   }
-  result = zMatDet( func(c,m) ) != 0 ? true : false;
+  func( c, m );
+  amax = zDataAbsMax( zMatBuf(m), zMatRowSize(m) * zMatColSize(m), NULL );
+  val = zMatDet(m) / pow( amax, dzLinDim(c)-1 );
   zMatFree( m );
-  return result;
+  return val;
 }
 
-/* dzLinIsCtrl
- * - check if the linear system is controllable.
- */
+/* internal operation for dzLinIsCtrl and dzLinIsObs. */
+bool _dzLinIsCO(dzLin *c, zMat (*func)(dzLin*,zMat))
+{
+  return !zIsTiny( _dzLinCODet( c, func ) ) ? true : false;
+}
+
+/* value to check if the linear system is controllable. */
+double dzLinCtrlDet(dzLin *c)
+{
+  return _dzLinCODet( c, dzLinCtrlMat );
+}
+
+/* check if the linear system is controllable. */
 bool dzLinIsCtrl(dzLin *c)
 {
   return _dzLinIsCO( c, dzLinCtrlMat );
 }
 
-/* dzLinIsObs
- * - check if the linear system is observable.
- */
+/* value to check if the linear system is observable. */
+double dzLinObsDet(dzLin *c)
+{
+  return _dzLinCODet( c, dzLinObsMat );
+}
+
+/* check if the linear system is observable. */
 bool dzLinIsObs(dzLin *c)
 {
   return _dzLinIsCO( c, dzLinObsMat );
 }
 
-/* dzLinCtrlCanon
- * - transformation matrix of a linear system to controllable
- *   canonical form.
- * NOTE: 't' is actually T^-1.
+/* transformation matrix of a linear system to controllable canonical form.
+ * NOTE: t is in fact T^-1.
  */
 zMat dzLinCtrlCanon(dzLin *c, zMat t)
 {
@@ -295,7 +262,7 @@ zMat dzLinCtrlCanon(dzLin *c, zMat t)
   zRawMatGetRow( zMatBuf(uc_inv), zMatRowSizeNC(t), zMatColSizeNC(t),
     zMatRowSizeNC(t)-1, tp );
   for( i=1; i<zMatRowSizeNC(t); i++, tp+=zMatColSizeNC(t) )
-    zRawMulVecMat( tp, ap, zMatRowSizeNC(t), zMatColSizeNC(t), tp+zMatColSizeNC(t) );
+    zRawMulMatTVec( ap, tp, zMatRowSizeNC(t), zMatColSizeNC(t), tp+zMatColSizeNC(t) );
 
  TERMINATE:
   zMatFree( uc );
@@ -303,19 +270,18 @@ zMat dzLinCtrlCanon(dzLin *c, zMat t)
   return t;
 }
 
-/* dzLinPoleAssign
- * - pole assignment for linear system control.
- */
+/* pole assignment for linear system control. */
 zVec dzLinPoleAssign(dzLin *c, zVec pole, zVec f)
 {
-  zMat a, t;
+  zMat a, tmp, t;
   zPex eig = NULL;
   double *ap;
   register int i, dim;
 
   a = zMatAllocSqr( dzLinDim(c) );
+  tmp = zMatAllocSqr( dzLinDim(c) );
   t = zMatAllocSqr( dzLinDim(c) );
-  if( !a || !t ){
+  if( !a || !tmp || !t ){
     f = NULL;
     goto TERMINATE;
   }
@@ -325,8 +291,8 @@ zVec dzLinPoleAssign(dzLin *c, zVec pole, zVec f)
     goto TERMINATE;
   }
 
-  zMulMatInvMat( c->a, t, a );
-  zMulMatMatDRC( t, a );
+  zMulMatInvMat( c->a, t, tmp );
+  zMulMatMat( t, tmp, a );
   if( !( eig = zPexExp( pole ) ) ){
     f = NULL;
     goto TERMINATE;
@@ -338,15 +304,12 @@ zVec dzLinPoleAssign(dzLin *c, zVec pole, zVec f)
   zMulMatTVecDRC( t, f );
 
  TERMINATE:
-  zMatFree( a );
-  zMatFree( t );
+  zMatFreeAO( 3, a, tmp, t );
   zPexFree( eig );
   return f;
 }
 
-/* dzLinCreateObs
- * - creation of observerof linear system.
- */
+/* creation of observerof linear system. */
 zVec dzLinCreateObs(dzLin *c, zVec pole, zVec k)
 {
   dzLin dual_sys;
@@ -359,9 +322,8 @@ zVec dzLinCreateObs(dzLin *c, zVec pole, zVec k)
   return k;
 }
 
-/* dzLinRiccatiErrorDRC
- * - residual matrix of Riccati equation.
- *   (working memories are manually provided.)
+/* residual matrix of Riccati equation.
+ * (working memories are manually provided.)
  */
 double dzLinRiccatiErrorDRC(zMat p, dzLin *c, zMat q, double r, zMat res, zMat tmp, zVec pb)
 {
@@ -374,9 +336,7 @@ double dzLinRiccatiErrorDRC(zMat p, dzLin *c, zMat q, double r, zMat res, zMat t
   return zMatNorm( res );
 }
 
-/* dzLinRiccatiErrorDRC
- * - residual matrix of Riccati equation.
- */
+/* residual matrix of Riccati equation. */
 double dzLinRiccatiError(zMat p, dzLin *c, zMat q, double r, zMat e)
 {
   zMat tmp, res;
@@ -393,9 +353,7 @@ double dzLinRiccatiError(zMat p, dzLin *c, zMat q, double r, zMat e)
   return err;
 }
 
-/* dzLinRiccatiSolveEuler
- * - solve Riccati's equation by numerical Euler integration.
- */
+/* solve Riccati's equation by numerical Euler integration. */
 zMat dzLinRiccatiSolveEuler(zMat p, dzLin *c, zMat q, double r, double tol, int iter)
 {
 #define DZ_RICCATI_DT 0.01
@@ -427,9 +385,7 @@ zMat dzLinRiccatiSolveEuler(zMat p, dzLin *c, zMat q, double r, double tol, int 
   return p;
 }
 
-/* dzLinRiccatiSolveKleinman
- * - solve Riccati's equation by Kleinman's method (1967).
- */
+/* solve Riccati's equation by Kleinman's method (1967). */
 zMat dzLinRiccatiSolveKleinman(zMat p, zVec f, dzLin *c, zMat q, double r, double tol, int iter)
 {
   register int i;
@@ -454,7 +410,7 @@ zMat dzLinRiccatiSolveKleinman(zMat p, zVec f, dzLin *c, zMat q, double r, doubl
     zMatRevNC( q, qe );
     zMatCatDyadNC( qe, -r, _f, _f );
     zLyapnovSolve( ae, qe, p );
-    zMulVecMat( c->b, p, _f );
+    zMulMatTVec( p, c->b, _f );
     zVecDivDRC( _f, r );
     err = dzLinRiccatiErrorDRC( p, c, q, r, ae, qe, pb );
     if( fabs( err - err_old ) < tol ) break;
@@ -472,9 +428,7 @@ zMat dzLinRiccatiSolveKleinman(zMat p, zVec f, dzLin *c, zMat q, double r, doubl
   return p;
 }
 
-/* dzLinLQR
- * - linear quadratic optimal regulator.
- */
+/* linear quadratic optimal regulator. */
 zVec dzLinLQR(dzLin *c, zVec q, double r, zVec f)
 {
   zMat _q, _r, _p;
@@ -493,7 +447,7 @@ zVec dzLinLQR(dzLin *c, zVec q, double r, zVec f)
       f = NULL;
       goto TERMINATE;
     }
-    zMulVecMat( c->b, _p, f );
+    zMulMatTVec( _p, c->b, f );
     zVecDivDRC( f, r );
   }
 
@@ -504,9 +458,8 @@ zVec dzLinLQR(dzLin *c, zVec q, double r, zVec f)
   return f;
 }
 
-/* dzPex2LinCtrlCanon, dzPex2LinObsCanon
- * - conversion from polynomial transfer function to linear system
- *   in controllable/observable canonical form.
+/* conversion from polynomial transfer function to linear system
+ * in controllable / observable canonical form.
  */
 static dzLin *_dzPex2LinCtrlCanon_sp(dzPex *sp, dzLin *lin);
 static dzLin *_dzPex2LinObsCanon_sp(dzPex *sp, dzLin *lin);
@@ -599,10 +552,7 @@ dzLin *dzPex2LinObsCanon(dzPex *sp, dzLin *lin){
   return _dzPex2LinCanon( sp, lin, _dzPex2LinObsCanon_sp );
 }
 
-/* (static)
- * _dzLinFRead
- * - read a linear system from file.
- */
+/* read a linear system from file. */
 bool _dzLinFRead(FILE *fp, void *instance, char *buf, bool *success)
 {
   if( strcmp( buf, "a" ) == 0 ){
@@ -621,9 +571,7 @@ bool _dzLinFRead(FILE *fp, void *instance, char *buf, bool *success)
   return true;
 }
 
-/* dzLinFRead
- * - read a linear system from file.
- */
+/* read a linear system from file. */
 dzLin *dzLinFRead(FILE *fp, dzLin *lin)
 {
   dzLinInit( lin );
@@ -646,9 +594,7 @@ dzLin *dzLinFRead(FILE *fp, dzLin *lin)
   return lin;
 }
 
-/* dzLinFWrite
- * - write a linear system to file.
- */
+/* write a linear system to file. */
 void dzLinFWrite(FILE *fp, dzLin *lin)
 {
   fprintf( fp, "a: " ); zMatFWrite( fp, lin->a );

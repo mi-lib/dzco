@@ -10,6 +10,7 @@ bool assert_pid(void)
   double u, yp, yi, yd, y;
   dzSys psys, isys, dsys, pidsys;
   int i;
+  bool result = true;
 
   zRandInit();
   dzSysCreateP( &psys, 4 );
@@ -26,13 +27,13 @@ bool assert_pid(void)
     yi = zVecElem(dzSysUpdate(&isys,DT),0);
     yd = zVecElem(dzSysUpdate(&dsys,DT),0);
     y  = zVecElem(dzSysUpdate(&pidsys,DT),0);
-    if( !zIsTiny( y - (yp+yi+yd) ) ) return false;
+    if( !zIsTiny( y - (yp+yi+yd) ) ) result = false;
   }
   dzSysDestroy( &psys );
   dzSysDestroy( &isys );
   dzSysDestroy( &dsys );
   dzSysDestroy( &pidsys );
-  return true;
+  return result;
 }
 
 int main(void)

@@ -156,8 +156,8 @@ void dzSysArrayDestroy(dzSysArray *arr)
 {
   register int i;
 
-  for( i=0; i<zArrayNum(arr); i++ )
-    dzSysDestroy( zArrayElem(arr,i) );
+  for( i=0; i<zArraySize(arr); i++ )
+    dzSysDestroy( zArrayElemNC(arr,i) );
   zArrayFree( arr );
 }
 
@@ -200,8 +200,8 @@ void dzSysArrayUpdate(dzSysArray *arr, double dt)
 {
   register int i;
 
-  for( i=0; i<zArrayNum(arr); i++ )
-    dzSysUpdate( zArrayElem(arr,i), dt );
+  for( i=0; i<zArraySize(arr); i++ )
+    dzSysUpdate( zArrayElemNC(arr,i), dt );
 }
 
 /* (static)
@@ -270,8 +270,8 @@ void _dzSysArrayConnectFWrite(FILE *fp, dzSysArray *arr)
   dzSysPort *sp;
 
   fprintf( fp, "[%s]\n", DZ_SYS_CONNECT_TAG );
-  for( i=0; i<zArrayNum(arr); i++ ){
-    sys = zArrayElem(arr,i);
+  for( i=0; i<zArraySize(arr); i++ ){
+    sys = zArrayElemNC(arr,i);
     for( j=0; j<dzSysInputNum(sys); j++ )
       if( ( sp = dzSysInputElem(sys,j) )->sp )
         fprintf( fp, "%s %d %s %d\n", zName(sp->sp), sp->port, zName(sys), j );
@@ -292,7 +292,7 @@ bool _dzSysArrayFRead(FILE *fp, void *instance, char *buf, bool *success)
 
   prm = instance;
   if( strcmp( buf, DZ_SYS_TAG ) == 0 ){
-    if( !dzSysFRead( fp, zArrayElem(prm->arr,prm->count++) ) ){
+    if( !dzSysFRead( fp, zArrayElemNC(prm->arr,prm->count++) ) ){
       *success = false;
       return false;
     }
@@ -324,9 +324,9 @@ void dzSysArrayFWrite(FILE *fp, dzSysArray *arr)
 {
   register int i;
 
-  for( i=0; i<zArrayNum(arr); i++ ){
+  for( i=0; i<zArraySize(arr); i++ ){
     fprintf( fp, "[%s]\n", DZ_SYS_TAG );
-    dzSysFWrite( fp, zArrayElem(arr,i) );
+    dzSysFWrite( fp, zArrayElemNC(arr,i) );
     fprintf( fp, "\n" );
   }
   _dzSysArrayConnectFWrite( fp, arr );

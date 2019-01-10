@@ -16,6 +16,7 @@ int main(void)
   double c[] = { 0, 0, 1 };
   int n = 3;
 #endif
+  zMat u;
 
   dzLinAlloc( &lin, n );
   zMatCopyArray( a, n, n, lin.a );
@@ -28,6 +29,12 @@ int main(void)
   zVecWrite( lin.b );
   printf( ">>c<<\n" );
   zVecWrite( lin.c );
+  u = zMatAllocSqr( n );
+  printf( ">>Uc<<\n" );
+  zMatWrite( dzLinCtrlMat( &lin, u ) );
+  printf( ">>Uo<<\n" );
+  zMatWrite( dzLinObsMat( &lin, u ) );
+  zMatFree( u );
   eprintf( "controllable -> %s\n", zBoolExpr(dzLinIsCtrl(&lin)) );
   eprintf( "observable -> %s\n", zBoolExpr(dzLinIsObs(&lin)) );
   dzLinDestroy( &lin );

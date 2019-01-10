@@ -1,3 +1,8 @@
+2019. 1.10. Added _dzLinCODet, dzLinCtrlDet and dzLinObsDet. [dz_lin]
+2019. 1.10. Modified _dzLinCOMatPrep, dzLinCtrlMat and dzLinObsMat. [dz_lin]
+2019. 1.10. Modified _dzLinIsCO. [dz_lin]
+2019. 1.10. Reflected new specifications of zArray. [dz_sys]
+2019. 1.10. Reflected changes of ZM. [dz_lin]
 2018.12.12. Followed renaming of CURE to ZEDA. [all]
 2018.11.16. Created automatic testing system. [test]
 2015. 5. 4. Reflected modification of zOptionRead. [app]

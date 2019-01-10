@@ -49,8 +49,8 @@ typedef struct _dzSys{
 #define dzSysInput(s)         ( &(s)->input )
 #define dzSysOutput(s)        ( (s)->output )
 
-#define dzSysInputNum(s)      zArrayNum( dzSysInput(s) )
-#define dzSysOutputNum(s)     zVecSize( dzSysOutput(s) )
+#define dzSysInputNum(s)      zArraySize( dzSysInput(s) )
+#define dzSysOutputNum(s)     zVecSizeNC( dzSysOutput(s) )
 
 #define dzSysAllocInput(s,n)  zArrayAlloc( dzSysInput(s), dzSysPort, n )
 #define dzSysAllocOutput(s,n) ( dzSysOutput(s) = zVecAlloc(n) )
@@ -58,7 +58,7 @@ typedef struct _dzSys{
 #define dzSysInputElem(s,i)   zArrayElem( dzSysInput(s), i )
 #define dzSysInputPtr(s,i)    ( dzSysInputElem(s,i)->vp )
 #define dzSysInputVal(s,i)    ( dzSysInputPtr(s,i) ? *dzSysInputPtr(s,i) : 0 )
-#define dzSysOutputVal(s,i)   zVecElem( dzSysOutput(s), i )
+#define dzSysOutputVal(s,i)   zVecElemNC( dzSysOutput(s), i )
 
 #define dzSysInit(s) do{\
   zNameSet( s, NULL );\
