@@ -11,11 +11,9 @@
  * general polynomial transfer function
  * ********************************************************** */
 
-static bool _dzPexFRead(FILE *fp, void *instance, char *buf, bool *success);
+static bool _dzPexFScan(FILE *fp, void *instance, char *buf, bool *success);
 
-/* dzPexAlloc
- * - allocate memory of a polynomial rational transfer function.
- */
+/* allocate memory of a polynomial rational transfer function. */
 bool dzPexAlloc(dzPex *pex, int nsize, int dsize)
 {
   dzPexSetNum( pex, zPexAlloc( nsize ) );
@@ -28,9 +26,7 @@ bool dzPexAlloc(dzPex *pex, int nsize, int dsize)
   return true;
 }
 
-/* dzPexCreateZeroPole
- * - create a polynomial rational transfer function from zeros and poles.
- */
+/* create a polynomial rational transfer function from zeros and poles. */
 bool dzPexCreateZeroPole(dzPex *pex, zVec zero, zVec pole)
 {
   dzPexSetNum( pex, zPexExp( zero ) );
@@ -43,18 +39,14 @@ bool dzPexCreateZeroPole(dzPex *pex, zVec zero, zVec pole)
   return true;
 }
 
-/* dzPexDestroy
- * - destroy a polynomial rational transfer function.
- */
+/* destroy a polynomial rational transfer function. */
 void dzPexDestroy(dzPex *pex)
 {
   zPexFree( dzPexNum( pex ) );
   zPexFree( dzPexDen( pex ) );
 }
 
-/* dzPexSetNumList
- * - set coefficients of numerator.
- */
+/* set coefficients of numerator of a transfer function. */
 void dzPexSetNumList(dzPex *pex, ...)
 {
   va_list args;
@@ -64,9 +56,7 @@ void dzPexSetNumList(dzPex *pex, ...)
   va_end( args );
 }
 
-/* dzPexSetDenList
- * - set coefficients of denominator.
- */
+/* set coefficients of denominator of a transfer function. */
 void dzPexSetDenList(dzPex *pex, ...)
 {
   va_list args;
@@ -76,9 +66,7 @@ void dzPexSetDenList(dzPex *pex, ...)
   va_end( args );
 }
 
-/* dzPexIsStable
- * - check if a polynomial rational transfer function is stable.
- */
+/* check if a polynomial rational transfer function is stable. */
 static int __next(int i);
 int __next(int i){ return i==2 ? 0 : i+1; }
 bool dzPexIsStable(dzPex *pex)
@@ -131,9 +119,7 @@ bool dzPexIsStable(dzPex *pex)
   return result;
 }
 
-/* dzPexFreqRes
- * - frequency response of transfer function.
- */
+/* frequency response of a transfer function. */
 zComplex *dzPexFreqRes(dzPex *pex, double frq, zComplex *res)
 {
   zComplex n, d, f;
@@ -145,29 +131,25 @@ zComplex *dzPexFreqRes(dzPex *pex, double frq, zComplex *res)
 }
 
 /* (static)
- * _dzPexFRead
- * - read a polynomial transfer function from file.
- */
-bool _dzPexFRead(FILE *fp, void *instance, char *buf, bool *success)
+ * scan a polynomial transfer function from a file. */
+bool _dzPexFScan(FILE *fp, void *instance, char *buf, bool *success)
 {
   if( strcmp( buf, "num" ) == 0 ){
-    dzPexNum((dzPex *)instance) = zPexFRead( fp );
+    dzPexNum((dzPex *)instance) = zPexFScan( fp );
   } else
   if( strcmp( buf, "den" ) == 0 ){
-    dzPexDen((dzPex *)instance) = zPexFRead( fp );
+    dzPexDen((dzPex *)instance) = zPexFScan( fp );
   } else
     return false;
   return true;
 }
 
-/* dzPexFRead
- * - read a polynomial transfer function from file.
- */
-dzPex *dzPexFRead(FILE *fp, dzPex *pex)
+/* scan a polynomial transfer function from a file. */
+dzPex *dzPexFScan(FILE *fp, dzPex *pex)
 {
   dzPexSetNum( pex, NULL );
   dzPexSetDen( pex, NULL );
-  zFieldFRead( fp, _dzPexFRead, pex );
+  zFieldFScan( fp, _dzPexFScan, pex );
   if( !dzPexNum(pex) || !dzPexDen(pex) ){
     ZALLOCERROR();
     dzPexDestroy( pex );
@@ -176,20 +158,16 @@ dzPex *dzPexFRead(FILE *fp, dzPex *pex)
   return pex;
 }
 
-/* dzPexFWrite
- * - write a polynomial transfer function to file.
- */
-void dzPexFWrite(FILE *fp, dzPex *pex)
+/* print a polynomial transfer function to a file. */
+void dzPexFPrint(FILE *fp, dzPex *pex)
 {
   fprintf( fp, "num: " );
-  zPexFWrite( fp, dzPexNum(pex) );
+  zPexFPrint( fp, dzPexNum(pex) );
   fprintf( fp, "den: " );
-  zPexFWrite( fp, dzPexDen(pex) );
+  zPexFPrint( fp, dzPexDen(pex) );
 }
 
-/* dzPexFExpr
- * - write a polynomial transfer function in a fancy style to a file.
- */
+/* print a polynomial transfer function in a fancy style to a file. */
 void dzPexFExpr(FILE *fp, dzPex *pex)
 {
   zPexFExpr( fp, dzPexNum(pex), 's' );

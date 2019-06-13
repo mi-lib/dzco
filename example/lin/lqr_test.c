@@ -45,7 +45,7 @@ void reg_create(void)
   opt_gain = zVecAlloc( DIM );
   if( !dzLinLQR( sys._prm, q, r, opt_gain ) ) exit( 1 );
   /* answer: [ 1 1 ] */
-  zVecFWrite( stderr, opt_gain );
+  zVecFPrint( stderr, opt_gain );
   zVecFree( q );
 }
 

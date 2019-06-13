@@ -7,18 +7,18 @@ void check(dzLin *c, zVec f, zVec pole)
   double det;
 
   printf( ">> desired poles\n" );
-  zVecWrite( pole );
+  zVecPrint( pole );
   printf( ">> obtained feedback gains\n" );
-  zVecWrite( f );
+  zVecPrint( f );
 
   tmp1 = zMatAllocSqr( dzLinDim(c) );
   tmp2 = zMatAllocSqr( dzLinDim(c) );
   zVecDyad( c->b, f, tmp1 );
   zMatSubDRC( tmp1, c->a );
-  for( i=0; i<_zVecSize(pole); i++ ){
+  for( i=0; i<zVecSizeNC(pole); i++ ){
     zMatCopy( tmp1, tmp2 );
-    for( j=0; j<_zMatRowSize(tmp2); j++ )
-      zMatElem( tmp2, j, j ) += zVecElem( pole, i );
+    for( j=0; j<zMatRowSizeNC(tmp2); j++ )
+      zMatElemNC( tmp2, j, j ) += zVecElemNC( pole, i );
     det = zMatDet( tmp2 );
     printf( "%g : %g %s one of the eigen values.\n", det, zVecElem(pole,i), zIsTiny(det) ? "is" : "is not" );
   }

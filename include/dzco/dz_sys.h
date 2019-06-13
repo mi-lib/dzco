@@ -34,8 +34,8 @@ typedef struct{
   void (*destroy)(struct _dzSys*);
   void (*refresh)(struct _dzSys*);
   zVec (*update)(struct _dzSys*, double dt);
-  struct _dzSys *(*fread)(FILE *fp, struct _dzSys*);
-  void (*fwrite)(FILE *fp, struct _dzSys*);
+  struct _dzSys *(*fscan)(FILE *fp, struct _dzSys*);
+  void (*fprint)(FILE *fp, struct _dzSys*);
 } dzSysMethod;
 
 typedef struct _dzSys{
@@ -122,8 +122,8 @@ __EXPORT void dzSysRefreshDefault(dzSys *sys);
 
 #define DZ_SYS_TAG "sys"
 #define DZ_SYS_CONNECT_TAG "connect"
-__EXPORT dzSys *dzSysFRead(FILE *fp, dzSys *sys);
-__EXPORT void dzSysFWrite(FILE *fp, dzSys *sys);
+__EXPORT dzSys *dzSysFScan(FILE *fp, dzSys *sys);
+__EXPORT void dzSysFPrint(FILE *fp, dzSys *sys);
 
 /* ********************************************************** */
 /* \class dzSysArray
@@ -137,8 +137,8 @@ __EXPORT dzSys *dzSysArrayNameFind(dzSysArray *arr, const char *name);
 
 __EXPORT void dzSysArrayUpdate(dzSysArray *arr, double dt);
 
-__EXPORT bool dzSysArrayFRead(FILE *fp, dzSysArray *sys);
-__EXPORT void dzSysArrayFWrite(FILE *fp, dzSysArray *sys);
+__EXPORT bool dzSysArrayFScan(FILE *fp, dzSysArray *sys);
+__EXPORT void dzSysArrayFPrint(FILE *fp, dzSysArray *sys);
 
 __END_DECLS
 

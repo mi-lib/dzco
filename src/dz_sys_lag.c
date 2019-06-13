@@ -13,7 +13,7 @@
 #define __dz_sys_fol_tc(s)   ( ((double*)(s)->_prm)[0] )
 #define __dz_sys_fol_gain(s) ( ((double*)(s)->_prm)[1] )
 
-static bool _dzSysFReadFOL(FILE *fp, void *val, char *buf, bool *success);
+static bool _dzSysFScanFOL(FILE *fp, void *val, char *buf, bool *success);
 
 void dzSysRefreshFOL(dzSys *sys)
 {
@@ -30,7 +30,7 @@ zVec dzSysUpdateFOL(dzSys *sys, double dt)
   return dzSysOutput(sys);
 }
 
-bool _dzSysFReadFOL(FILE *fp, void *val, char *buf, bool *success)
+bool _dzSysFScanFOL(FILE *fp, void *val, char *buf, bool *success)
 {
   if( strcmp( buf, "tc" ) == 0 ){
     ((double *)val)[0] = zFDouble( fp );
@@ -42,15 +42,15 @@ bool _dzSysFReadFOL(FILE *fp, void *val, char *buf, bool *success)
   return true;
 }
 
-dzSys *dzSysFReadFOL(FILE *fp, dzSys *sys)
+dzSys *dzSysFScanFOL(FILE *fp, dzSys *sys)
 {
   double val[] = { 1.0, 0.0 };
 
-  zFieldFRead( fp, _dzSysFReadFOL, val );
+  zFieldFScan( fp, _dzSysFScanFOL, val );
   return dzSysCreateFOL( sys, val[0], val[1] ) ? sys : NULL;
 }
 
-void dzSysFWriteFOL(FILE *fp, dzSys *sys)
+void dzSysFPrintFOL(FILE *fp, dzSys *sys)
 {
   fprintf( fp, "tc: %g\n", __dz_sys_fol_tc(sys) );
   fprintf( fp, "gain: %g\n", __dz_sys_fol_gain(sys) );
@@ -61,13 +61,11 @@ dzSysMethod dz_sys_fol_met = {
   destroy: dzSysDestroyDefault,
   refresh: dzSysRefreshFOL,
   update: dzSysUpdateFOL,
-  fread: dzSysFReadFOL,
-  fwrite: dzSysFWriteFOL,
+  fscan: dzSysFScanFOL,
+  fprint: dzSysFPrintFOL,
 };
 
-/* dzSysCreateFOL
- * - create first-order-lag system.
- */
+/* create a first-order-lag system. */
 bool dzSysCreateFOL(dzSys *sys, double tc, double gain)
 {
   dzSysInit( sys );
@@ -106,7 +104,7 @@ void dzSysFOLSetGain(dzSys *sys, double gain)
 #define __dz_sys_sol_previn(s)  ( ((double*)(s)->_prm)[5] )
 #define __dz_sys_sol_tr(s)      ( ((double*)(s)->_prm)[6] )
 
-static bool _dzSysFReadSOL(FILE *fp, void *val, char *buf, bool *success);
+static bool _dzSysFScanSOL(FILE *fp, void *val, char *buf, bool *success);
 
 void dzSysRefreshSOL(dzSys *sys)
 {
@@ -130,7 +128,7 @@ zVec dzSysUpdateSOL(dzSys *sys, double dt)
   return dzSysOutput(sys);
 }
 
-bool _dzSysFReadSOL(FILE *fp, void *val, char *buf, bool *success)
+bool _dzSysFScanSOL(FILE *fp, void *val, char *buf, bool *success)
 {
   if( strcmp( buf, "t1" ) == 0 ){
     ((double *)val)[0] = zFDouble( fp );
@@ -148,15 +146,15 @@ bool _dzSysFReadSOL(FILE *fp, void *val, char *buf, bool *success)
   return true;
 }
 
-dzSys *dzSysFReadSOL(FILE *fp, dzSys *sys)
+dzSys *dzSysFScanSOL(FILE *fp, dzSys *sys)
 {
   double val[] = { 1.0, 0.0, 1.0, 0.0 };
 
-  zFieldFRead( fp, _dzSysFReadSOL, val );
+  zFieldFScan( fp, _dzSysFScanSOL, val );
   return dzSysCreateSOL( sys, val[0], val[1], val[2], val[3] ) ? sys : NULL;
 }
 
-void dzSysFWriteSOL(FILE *fp, dzSys *sys)
+void dzSysFPrintSOL(FILE *fp, dzSys *sys)
 {
   fprintf( fp, "t1: %g\n", __dz_sys_sol_t1(sys) );
   fprintf( fp, "t2: %g\n", __dz_sys_sol_t2(sys) );
@@ -169,13 +167,11 @@ dzSysMethod dz_sys_sol_met = {
   destroy: dzSysDestroyDefault,
   refresh: dzSysRefreshSOL,
   update: dzSysUpdateSOL,
-  fread: dzSysFReadSOL,
-  fwrite: dzSysFWriteSOL,
+  fscan: dzSysFScanSOL,
+  fprint: dzSysFPrintSOL,
 };
 
-/* dzSysCreateSOL
- * - create second-order-lag system in standard form.
- */
+/* create a second-order-lag system in standard form. */
 bool dzSysCreateSOL(dzSys *sys, double t1, double t2, double damp, double gain)
 {
   if( t1 <= zTOL ){
@@ -198,9 +194,7 @@ bool dzSysCreateSOL(dzSys *sys, double t1, double t2, double damp, double gain)
   return true;
 }
 
-/* dzSysCreateSOLGen
- * - create second-order-lag system in general form.
- */
+/* create a second-order-lag system in general form. */
 bool dzSysCreateSOLGen(dzSys *sys, double a, double b, double c, double d, double e)
 {
   return dzSysCreateSOL( sys, sqrt(a/c), d/e, 0.5*b/sqrt(a*c), e/c );
@@ -215,7 +209,7 @@ bool dzSysCreateSOLGen(dzSys *sys, double a, double b, double c, double d, doubl
 #define __dz_sys_pc_t2(s)   ( ((double*)(s)->_prm)[2] )
 #define __dz_sys_pc_gain(s) ( ((double*)(s)->_prm)[3] )
 
-static bool _dzSysFReadPC(FILE *fp, void *val, char *buf, bool *success);
+static bool _dzSysFScanPC(FILE *fp, void *val, char *buf, bool *success);
 
 void dzSysRefreshPC(dzSys *sys)
 {
@@ -231,7 +225,7 @@ zVec dzSysUpdatePC(dzSys *sys, double dt)
   return dzSysOutput(sys);
 }
 
-bool _dzSysFReadPC(FILE *fp, void *val, char *buf, bool *success)
+bool _dzSysFScanPC(FILE *fp, void *val, char *buf, bool *success)
 {
   if( strcmp( buf, "t1" ) == 0 ){
     ((double *)val)[0] = zFDouble( fp );
@@ -246,15 +240,15 @@ bool _dzSysFReadPC(FILE *fp, void *val, char *buf, bool *success)
   return true;
 }
 
-dzSys *dzSysFReadPC(FILE *fp, dzSys *sys)
+dzSys *dzSysFScanPC(FILE *fp, dzSys *sys)
 {
   double val[] = { 1.0, 0.0, 0.0 };
 
-  zFieldFRead( fp, _dzSysFReadPC, val );
+  zFieldFScan( fp, _dzSysFScanPC, val );
   return dzSysCreatePC( sys, val[0], val[1], val[2] ) ? sys : NULL;
 }
 
-void dzSysFWritePC(FILE *fp, dzSys *sys)
+void dzSysFPrintPC(FILE *fp, dzSys *sys)
 {
   fprintf( fp, "t1: %g\n", __dz_sys_pc_t1(sys) );
   fprintf( fp, "t2: %g\n", __dz_sys_pc_t2(sys) );
@@ -266,13 +260,11 @@ dzSysMethod dz_sys_pc_met = {
   destroy: dzSysDestroyDefault,
   refresh: dzSysRefreshPC,
   update: dzSysUpdatePC,
-  fread: dzSysFReadPC,
-  fwrite: dzSysFWritePC,
+  fscan: dzSysFScanPC,
+  fprint: dzSysFPrintPC,
 };
 
-/* dzSysCreatePC
- * - create phase compensator.
- */
+/* create a phase compensator. */
 bool dzSysCreatePC(dzSys *sys, double t1, double t2, double gain)
 {
   dzSysInit( sys );
@@ -298,7 +290,7 @@ bool dzSysCreatePC(dzSys *sys, double t1, double t2, double gain)
 #define __dz_sys_adapt_base(s)   ( ((double*)(s)->_prm)[1] )
 #define __dz_sys_adapt_offset(s) ( ((double*)(s)->_prm)[2] )
 
-static bool _dzSysFReadAdapt(FILE *fp, void *val, char *buf, bool *success);
+static bool _dzSysFScanAdapt(FILE *fp, void *val, char *buf, bool *success);
 
 void dzSysAdaptSetBase(dzSys *sys, double base)
 {
@@ -323,7 +315,7 @@ zVec dzSysUpdateAdapt(dzSys *sys, double dt)
   return dzSysOutput(sys);
 }
 
-bool _dzSysFReadAdapt(FILE *fp, void *val, char *buf, bool *success)
+bool _dzSysFScanAdapt(FILE *fp, void *val, char *buf, bool *success)
 {
   if( strcmp( buf, "tc" ) == 0 ){
     ((double *)val)[0] = zFDouble( fp );
@@ -335,15 +327,15 @@ bool _dzSysFReadAdapt(FILE *fp, void *val, char *buf, bool *success)
   return true;
 }
 
-dzSys *dzSysFReadAdapt(FILE *fp, dzSys *sys)
+dzSys *dzSysFScanAdapt(FILE *fp, dzSys *sys)
 {
   double val[] = { 1.0, 0.0 };
 
-  zFieldFRead( fp, _dzSysFReadAdapt, val );
+  zFieldFScan( fp, _dzSysFScanAdapt, val );
   return dzSysCreateAdapt( sys, val[0], val[1] ) ? sys : NULL;
 }
 
-void dzSysFWriteAdapt(FILE *fp, dzSys *sys)
+void dzSysFPrintAdapt(FILE *fp, dzSys *sys)
 {
   fprintf( fp, "tc: %g\n", __dz_sys_adapt_tc(sys) );
   fprintf( fp, "base: %g\n", __dz_sys_adapt_base(sys) );
@@ -354,13 +346,11 @@ dzSysMethod dz_sys_adapt_met = {
   destroy: dzSysDestroyDefault,
   refresh: dzSysRefreshAdapt,
   update: dzSysUpdateAdapt,
-  fread: dzSysFReadAdapt,
-  fwrite: dzSysFWriteAdapt,
+  fscan: dzSysFScanAdapt,
+  fprint: dzSysFPrintAdapt,
 };
 
-/* dzSysCreateAdapt
- * - create a adaptive system.
- */
+/* create an adaptive system. */
 bool dzSysCreateAdapt(dzSys *sys, double tc, double base)
 {
   if( tc <= zTOL ){

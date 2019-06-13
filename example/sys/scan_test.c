@@ -9,15 +9,15 @@ int main(void)
   int i;
 
   fp = fopen( "read_test.dzs", "r" );
-  dzSysArrayFRead( fp, &arr );
-  for( i=0; i<zArrayNum(&arr); i++ )
+  dzSysArrayFScan( fp, &arr );
+  for( i=0; i<zArraySize(&arr); i++ )
     printf( "sys: %s\n", zName(zArrayElem(&arr,i)) );
   while( 1 ){
     if( !fgets( buf, BUFSIZ, stdin ) );
     zCutNL( buf );
     if( strcmp( buf, "quit" ) == 0 ) break;
     if( ( sys = dzSysArrayNameFind( &arr, buf ) ) )
-      dzSysFWrite( stdout, sys );
+      dzSysFPrint( stdout, sys );
     else
       printf( "%s not found.\n", buf );
   }

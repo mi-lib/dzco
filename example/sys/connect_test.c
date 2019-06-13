@@ -11,8 +11,8 @@ int main(int argc, char *argv[])
   register int i;
 
   fp = fopen( "connect_test.dzs", "r" );
-  dzSysArrayFRead( fp, &arr );
-  dzSysArrayFWrite( stderr, &arr );
+  dzSysArrayFScan( fp, &arr );
+  dzSysArrayFPrint( stderr, &arr );
   sys_out = dzSysArrayNameFind( &arr, "intg2" );
   for( i=0; i<=STEP; i++ ){
     dzSysArrayUpdate( &arr, DT );

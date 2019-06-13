@@ -7,11 +7,11 @@ void test(dzPex *pex, int i)
   printf( "+++ test %d +++\n", i );
   printf( "[controllable canonical form]\n" );
   dzPex2LinCtrlCanon( pex, &lin );
-  dzLinWrite( &lin );
+  dzLinPrint( &lin );
   dzLinDestroy( &lin );
   printf( "[observable canonical form]\n" );
   dzPex2LinObsCanon( pex, &lin );
-  dzLinWrite( &lin );
+  dzLinPrint( &lin );
   dzLinDestroy( &lin );
   printf( "\n" );
 }

@@ -11,7 +11,7 @@
 #define __dz_sys_gen_delay(s)  ((double*)(s)->_prm)[2]
 #define __dz_sys_gen_period(s) ((double*)(s)->_prm)[3]
 
-static bool _dzSysFReadGen(FILE *fp, void *val, char *buf, bool *success);
+static bool _dzSysFScanGen(FILE *fp, void *val, char *buf, bool *success);
 
 void dzSysRefreshGen(dzSys *sys)
 {
@@ -25,7 +25,7 @@ double dzSysUpdateTimeGen(dzSys *sys, double dt)
   return __dz_sys_gen_t(sys);
 }
 
-bool _dzSysFReadGen(FILE *fp, void *val, char *buf, bool *success)
+bool _dzSysFScanGen(FILE *fp, void *val, char *buf, bool *success)
 {
   if( strcmp( buf, "amp" ) == 0 ){
     ((double *)val)[0] = zFDouble( fp );
@@ -40,7 +40,7 @@ bool _dzSysFReadGen(FILE *fp, void *val, char *buf, bool *success)
   return true;
 }
 
-void dzSysFWriteGen(FILE *fp, dzSys *sys)
+void dzSysFPrintGen(FILE *fp, dzSys *sys)
 {
   fprintf( fp, "amp: %g\n", __dz_sys_gen_amp(sys) );
   fprintf( fp, "delay: %g\n", __dz_sys_gen_delay(sys) );

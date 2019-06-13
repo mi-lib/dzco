@@ -101,12 +101,12 @@ __EXPORT bool dzPexIsStable(dzPex *pex);
  */
 __EXPORT zComplex *dzPexFreqRes(dzPex *pex, double frq, zComplex *res);
 
-/*! \brief read a polynomial transfer function from file.
+/*! \brief scan and print a polynomial transfer function from file.
  */
-__EXPORT dzPex *dzPexFRead(FILE *fp, dzPex *pex);
-#define dzPexRead(p)  dzPexFRead( stdin, p )
-__EXPORT void dzPexFWrite(FILE *fp, dzPex *pex);
-#define dzPexWrite(p) dzPexFWrite( stdout, p )
+__EXPORT dzPex *dzPexFScan(FILE *fp, dzPex *pex);
+#define dzPexScan(p)  dzPexFScan( stdin, p )
+__EXPORT void dzPexFPrint(FILE *fp, dzPex *pex);
+#define dzPexPrint(p) dzPexFPrint( stdout, p )
 __EXPORT void dzPexFExpr(FILE *fp, dzPex *pex);
 #define dzPexExpr(p) dzPexFExpr( stdout, p )
 

@@ -6,9 +6,9 @@
 
 #include <dzco/dz_sys.h>
 
-static bool _dzSysFReadMI(FILE *fp, void *val, char *buf, bool *success);
+static bool _dzSysFScanMI(FILE *fp, void *val, char *buf, bool *success);
 
-bool _dzSysFReadMI(FILE *fp, void *val, char *buf, bool *success)
+bool _dzSysFScanMI(FILE *fp, void *val, char *buf, bool *success)
 {
   if( strcmp( buf, "in" ) == 0 ){
     *(int *)val = zFInt( fp );
@@ -31,15 +31,15 @@ zVec dzSysUpdateAdder(dzSys *sys, double dt)
   return dzSysOutput(sys);
 }
 
-dzSys *dzSysFReadAdder(FILE *fp, dzSys *sys)
+dzSys *dzSysFScanAdder(FILE *fp, dzSys *sys)
 {
   int n = 2;
 
-  zFieldFRead( fp, _dzSysFReadMI, &n );
+  zFieldFScan( fp, _dzSysFScanMI, &n );
   return dzSysCreateAdder( sys, n ) ? sys : NULL;
 }
 
-void dzSysFWriteAdder(FILE *fp, dzSys *sys)
+void dzSysFPrintAdder(FILE *fp, dzSys *sys)
 {
   fprintf( fp, "in: %d\n", dzSysInputNum(sys) );
 }
@@ -49,13 +49,11 @@ dzSysMethod dz_sys_adder_met = {
   destroy: dzSysDestroyDefault,
   refresh: dzSysRefreshDefault,
   update: dzSysUpdateAdder,
-  fread: dzSysFReadAdder,
-  fwrite: dzSysFWriteAdder,
+  fscan: dzSysFScanAdder,
+  fprint: dzSysFPrintAdder,
 };
 
-/* dzSysCreateAdder
- * - create adder.
- */
+/* create an adder. */
 bool dzSysCreateAdder(dzSys *sys, int n)
 {
   dzSysInit( sys );
@@ -82,15 +80,15 @@ zVec dzSysUpdateSubtr(dzSys *sys, double dt)
   return dzSysOutput(sys);
 }
 
-dzSys *dzSysFReadSubtr(FILE *fp, dzSys *sys)
+dzSys *dzSysFScanSubtr(FILE *fp, dzSys *sys)
 {
   int n = 2;
 
-  zFieldFRead( fp, _dzSysFReadMI, &n );
+  zFieldFScan( fp, _dzSysFScanMI, &n );
   return dzSysCreateSubtr( sys, n ) ? sys : NULL;
 }
 
-void dzSysFWriteSubtr(FILE *fp, dzSys *sys)
+void dzSysFPrintSubtr(FILE *fp, dzSys *sys)
 {
   fprintf( fp, "in: %d\n", dzSysInputNum(sys) );
 }
@@ -100,13 +98,11 @@ dzSysMethod dz_sys_subtr_met = {
   destroy: dzSysDestroyDefault,
   refresh: dzSysRefreshDefault,
   update: dzSysUpdateSubtr,
-  fread: dzSysFReadSubtr,
-  fwrite: dzSysFWriteSubtr,
+  fscan: dzSysFScanSubtr,
+  fprint: dzSysFPrintSubtr,
 };
 
-/* dzSysCreateSubtr
- * - create subtractor.
- */
+/* create a subtractor. */
 bool dzSysCreateSubtr(dzSys *sys, int n)
 {
   dzSysInit( sys );
@@ -123,7 +119,7 @@ bool dzSysCreateSubtr(dzSys *sys, int n)
 /* saturater
  * ********************************************************** */
 
-static bool _dzSysFReadLimit(FILE *fp, void *val, char *buf, bool *success);
+static bool _dzSysFScanLimit(FILE *fp, void *val, char *buf, bool *success);
 
 zVec dzSysUpdateLimit(dzSys *sys, double dt)
 {
@@ -132,7 +128,7 @@ zVec dzSysUpdateLimit(dzSys *sys, double dt)
   return dzSysOutput(sys);
 }
 
-bool _dzSysFReadLimit(FILE *fp, void *val, char *buf, bool *success)
+bool _dzSysFScanLimit(FILE *fp, void *val, char *buf, bool *success)
 {
   if( strcmp( buf, "min" ) == 0 ){
     ((double *)val)[0] = zFDouble( fp );
@@ -144,15 +140,15 @@ bool _dzSysFReadLimit(FILE *fp, void *val, char *buf, bool *success)
   return true;
 }
 
-dzSys *dzSysFReadLimit(FILE *fp, dzSys *sys)
+dzSys *dzSysFScanLimit(FILE *fp, dzSys *sys)
 {
   double val[] = { -HUGE_VAL, HUGE_VAL };
 
-  zFieldFRead( fp, _dzSysFReadLimit, val );
+  zFieldFScan( fp, _dzSysFScanLimit, val );
   return dzSysCreateLimit( sys, val[0], val[1] ) ? sys : NULL;
 }
 
-void dzSysFWriteLimit(FILE *fp, dzSys *sys)
+void dzSysFPrintLimit(FILE *fp, dzSys *sys)
 {
   double max, min;
 
@@ -168,13 +164,11 @@ dzSysMethod dz_sys_limit_met = {
   destroy: dzSysDestroyDefault,
   refresh: dzSysRefreshDefault,
   update: dzSysUpdateLimit,
-  fread: dzSysFReadLimit,
-  fwrite: dzSysFWriteLimit,
+  fscan: dzSysFScanLimit,
+  fprint: dzSysFPrintLimit,
 };
 
-/* dzSysCreateLimit
- * - create saturater.
- */
+/* create a saturater. */
 bool dzSysCreateLimit(dzSys *sys, double max, double min)
 {
   dzSysInit( sys );

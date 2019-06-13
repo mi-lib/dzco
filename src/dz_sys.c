@@ -21,9 +21,7 @@ void dzSysDestroyDefault(dzSys *sys)
 /* default refreshing method */
 void dzSysRefreshDefault(dzSys *sys){}
 
-/* dzSysConnect
- * - connect two systems.
- */
+/* connect two systems. */
 bool dzSysConnect(dzSys *s1, int p1, dzSys *s2, int p2)
 {
   if( p1 >= dzSysOutputNum(s1) ){
@@ -40,9 +38,7 @@ bool dzSysConnect(dzSys *s1, int p1, dzSys *s2, int p2)
   return true;
 }
 
-/* dzSysChain
- * - connect systems.
- */
+/* connect multiple systems. */
 void dzSysChain(int n, ...)
 {
   va_list arg;
@@ -87,10 +83,8 @@ typedef struct{
   char name[BUFSIZ];
 } _dzSysParam;
 
-/* dzSysFRead
- * - read a system from file.
- */
-bool _dzSysFRead(FILE *fp, void *instance, char *buf, bool *success)
+/* scan a system from a file. */
+bool _dzSysFScan(FILE *fp, void *instance, char *buf, bool *success)
 {
   if( strcmp( buf, "type" ) == 0 ){
     if( !( ((_dzSysParam *)instance)->met = _dzSysMethodByStr( zFToken(fp,buf,BUFSIZ) ) ) )
@@ -104,7 +98,7 @@ bool _dzSysFRead(FILE *fp, void *instance, char *buf, bool *success)
   return true;
 }
 
-dzSys *dzSysFRead(FILE *fp, dzSys *sys)
+dzSys *dzSysFScan(FILE *fp, dzSys *sys)
 {
   _dzSysParam prm;
   int cur;
@@ -112,13 +106,13 @@ dzSys *dzSysFRead(FILE *fp, dzSys *sys)
   prm.met = NULL;
   prm.name[0] = '\0';
   cur = ftell( fp );
-  zFieldFRead( fp, _dzSysFRead, &prm );
+  zFieldFScan( fp, _dzSysFScan, &prm );
   if( !prm.met ){
     ZRUNERROR( "type not specified" );
     return NULL;
   }
   fseek( fp, cur, SEEK_SET );
-  if( prm.met->fread( fp, sys ) ){
+  if( prm.met->fscan( fp, sys ) ){
     if( !zNameSet( sys, prm.name ) ){
       ZALLOCERROR();
       return NULL;
@@ -128,14 +122,12 @@ dzSys *dzSysFRead(FILE *fp, dzSys *sys)
   return NULL;
 }
 
-/* dzSysFWrite
- * - write a system to file.
- */
-void dzSysFWrite(FILE *fp, dzSys *sys)
+/* print a system to a file. */
+void dzSysFPrint(FILE *fp, dzSys *sys)
 {
   fprintf( fp, "name: %s\n", zName( sys ) );
   fprintf( fp, "type: %s\n", sys->_met->type );
-  sys->_met->fwrite( fp, sys );
+  sys->_met->fprint( fp, sys );
 }
 
 /* ********************************************************** */
@@ -144,14 +136,12 @@ void dzSysFWrite(FILE *fp, dzSys *sys)
 
 static bool _dzSysFAlloc(FILE *fp, dzSysArray *arr);
 
-static bool __dzSysArrayConnectFRead(FILE *fp, void *instance, char *buf, bool *success);
+static bool __dzSysArrayConnectFScan(FILE *fp, void *instance, char *buf, bool *success);
 
-static bool _dzSysArrayConnectFRead(FILE *fp, dzSysArray *arr);
-static void _dzSysArrayConnectFWrite(FILE *fp, dzSysArray *arr);
+static bool _dzSysArrayConnectFScan(FILE *fp, dzSysArray *arr);
+static void _dzSysArrayConnectFPrint(FILE *fp, dzSysArray *arr);
 
-/* dzSysArrayDestroy
- * - destroy an array of systems.
- */
+/* destroy an array of systems. */
 void dzSysArrayDestroy(dzSysArray *arr)
 {
   register int i;
@@ -162,9 +152,7 @@ void dzSysArrayDestroy(dzSysArray *arr)
 }
 
 /* (static)
- * _dzSysFAlloc
- * - count subsystems to be allocated in a system chain.
- */
+ * count subsystems to be allocated in a system chain. */
 bool _dzSysFAlloc(FILE *fp, dzSysArray *arr)
 {
   int n;
@@ -178,9 +166,7 @@ bool _dzSysFAlloc(FILE *fp, dzSysArray *arr)
   return true;
 }
 
-/* dzSysArrayNameFind
- * - find a system from array by name.
- */
+/* find a system from array by name. */
 dzSys *dzSysArrayNameFind(dzSysArray *arr, const char *name)
 {
   dzSys *sys;
@@ -193,9 +179,7 @@ dzSys *dzSysArrayNameFind(dzSysArray *arr, const char *name)
   return sys;
 }
 
-/* dzSysArrayUpdate
- * - update all systems of an array.
- */
+/* update all systems of an array. */
 void dzSysArrayUpdate(dzSysArray *arr, double dt)
 {
   register int i;
@@ -205,9 +189,7 @@ void dzSysArrayUpdate(dzSysArray *arr, double dt)
 }
 
 /* (static)
- * _dzSysArrayConnectFRead
- * - read connectivity information of systems from file.
- */
+ * scan connectivity information of systems from a file. */
 typedef enum{ DZ_SYS_CONNECT_OUT, DZ_SYS_CONNECT_IN } _dzSysConnectState;
 
 typedef struct{
@@ -217,7 +199,7 @@ typedef struct{
   int port_out, port_in;
 } _dzSysConnectParam;
 
-bool __dzSysArrayConnectFRead(FILE *fp, void *instance, char *buf, bool *success)
+bool __dzSysArrayConnectFScan(FILE *fp, void *instance, char *buf, bool *success)
 {
   _dzSysConnectParam *prm;
 
@@ -250,20 +232,18 @@ bool __dzSysArrayConnectFRead(FILE *fp, void *instance, char *buf, bool *success
   return true;
 }
 
-bool _dzSysArrayConnectFRead(FILE *fp, dzSysArray *arr)
+bool _dzSysArrayConnectFScan(FILE *fp, dzSysArray *arr)
 {
   _dzSysConnectParam prm;
 
   prm.arr = arr;
   prm.state = DZ_SYS_CONNECT_OUT;
-  return zFieldFRead( fp, __dzSysArrayConnectFRead, &prm );
+  return zFieldFScan( fp, __dzSysArrayConnectFScan, &prm );
 }
 
 /* (static)
- * _dzSysArrayConnectFWrite
- * - write connectivity information of systems to file.
- */
-void _dzSysArrayConnectFWrite(FILE *fp, dzSysArray *arr)
+ * print connectivity information of systems to a file. */
+void _dzSysArrayConnectFPrint(FILE *fp, dzSysArray *arr)
 {
   register int i, j;
   dzSys *sys;
@@ -278,34 +258,32 @@ void _dzSysArrayConnectFWrite(FILE *fp, dzSysArray *arr)
   }
 }
 
-/* dzSysArrayFRead
- * - read an array of systems from file.
- */
+/* scan an array of systems from a file. */
 typedef struct{
   dzSysArray *arr;
   int count;
 } _dzSysArrayParam;
 
-bool _dzSysArrayFRead(FILE *fp, void *instance, char *buf, bool *success)
+bool _dzSysArrayFScan(FILE *fp, void *instance, char *buf, bool *success)
 {
   _dzSysArrayParam *prm;
 
   prm = instance;
   if( strcmp( buf, DZ_SYS_TAG ) == 0 ){
-    if( !dzSysFRead( fp, zArrayElemNC(prm->arr,prm->count++) ) ){
+    if( !dzSysFScan( fp, zArrayElemNC(prm->arr,prm->count++) ) ){
       *success = false;
       return false;
     }
   } else
   if( strcmp( buf, DZ_SYS_CONNECT_TAG ) == 0 ){
-    if( !_dzSysArrayConnectFRead( fp, prm->arr ) )
+    if( !_dzSysArrayConnectFScan( fp, prm->arr ) )
       *success = false;
   } else
     return false;
   return true;
 }
 
-bool dzSysArrayFRead(FILE *fp, dzSysArray *arr)
+bool dzSysArrayFScan(FILE *fp, dzSysArray *arr)
 {
   _dzSysArrayParam prm;
 
@@ -314,20 +292,18 @@ bool dzSysArrayFRead(FILE *fp, dzSysArray *arr)
   rewind( fp );
   prm.count = 0;
   prm.arr = arr;
-  return zTagFRead( fp, _dzSysArrayFRead, &prm );
+  return zTagFScan( fp, _dzSysArrayFScan, &prm );
 }
 
-/* dzSysArrayFWrite
- * - write an array of systems to file.
- */
-void dzSysArrayFWrite(FILE *fp, dzSysArray *arr)
+/* print an array of systems to a file. */
+void dzSysArrayFPrint(FILE *fp, dzSysArray *arr)
 {
   register int i;
 
   for( i=0; i<zArraySize(arr); i++ ){
     fprintf( fp, "[%s]\n", DZ_SYS_TAG );
-    dzSysFWrite( fp, zArrayElemNC(arr,i) );
+    dzSysFPrint( fp, zArrayElemNC(arr,i) );
     fprintf( fp, "\n" );
   }
-  _dzSysArrayConnectFWrite( fp, arr );
+  _dzSysArrayConnectFPrint( fp, arr );
 }

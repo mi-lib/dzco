@@ -6,8 +6,8 @@ int main(void)
   FILE *fp;
 
   fp = fopen( "lin_test.dzl", "r" );
-  dzLinFRead( fp, &lin );
-  dzLinWrite( &lin );
+  dzLinFScan( fp, &lin );
+  dzLinPrint( &lin );
   fclose( fp );
   return 0;
 }

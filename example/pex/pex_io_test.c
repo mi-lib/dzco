@@ -6,8 +6,8 @@ int main(int argc, char *argv[])
   FILE *fp;
 
   fp = fopen( "pex_test.dzp", "r" );
-  dzPexFRead( fp, &pex );
-  dzPexWrite( &pex );
+  dzPexFScan( fp, &pex );
+  dzPexPrint( &pex );
   dzPexExpr( &pex );
   dzPexDestroy( &pex );
   fclose( fp );

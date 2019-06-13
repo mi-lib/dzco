@@ -24,16 +24,16 @@ int main(void)
   zVecCopyArray( c, n, lin.c );
 
   printf( ">>A<<\n" );
-  zMatWrite( lin.a );
+  zMatPrint( lin.a );
   printf( ">>b<<\n" );
-  zVecWrite( lin.b );
+  zVecPrint( lin.b );
   printf( ">>c<<\n" );
-  zVecWrite( lin.c );
+  zVecPrint( lin.c );
   u = zMatAllocSqr( n );
   printf( ">>Uc<<\n" );
-  zMatWrite( dzLinCtrlMat( &lin, u ) );
+  zMatPrint( dzLinCtrlMat( &lin, u ) );
   printf( ">>Uo<<\n" );
-  zMatWrite( dzLinObsMat( &lin, u ) );
+  zMatPrint( dzLinObsMat( &lin, u ) );
   zMatFree( u );
   eprintf( "controllable -> %s\n", zBoolExpr(dzLinIsCtrl(&lin)) );
   eprintf( "observable -> %s\n", zBoolExpr(dzLinIsObs(&lin)) );

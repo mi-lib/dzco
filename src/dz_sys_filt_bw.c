@@ -166,9 +166,9 @@ typedef struct{
   int dim;
 } _dzBWParam;
 
-static bool _dzSysFReadBW(FILE *fp, void *prm, char *buf, bool *success);
+static bool _dzSysFScanBW(FILE *fp, void *prm, char *buf, bool *success);
 
-bool _dzSysFReadBW(FILE *fp, void *prm, char *buf, bool *success)
+bool _dzSysFScanBW(FILE *fp, void *prm, char *buf, bool *success)
 {
   if( strcmp( buf, "cf" ) == 0 ){
     ((_dzBWParam *)prm)->cf = zFDouble( fp );
@@ -180,15 +180,15 @@ bool _dzSysFReadBW(FILE *fp, void *prm, char *buf, bool *success)
   return true;
 }
 
-dzSys *dzSysFReadBW(FILE *fp, dzSys *sys)
+dzSys *dzSysFScanBW(FILE *fp, dzSys *sys)
 {
   _dzBWParam prm = { 1.0, 1 };
 
-  zFieldFRead( fp, _dzSysFReadBW, &prm );
+  zFieldFScan( fp, _dzSysFScanBW, &prm );
   return dzSysCreateBW( sys, prm.cf, prm.dim ) ? sys : NULL;
 }
 
-void dzSysFWriteBW(FILE *fp, dzSys *sys)
+void dzSysFPrintBW(FILE *fp, dzSys *sys)
 {
   fprintf( fp, "cf: %g\n", ((_dzBW*)sys->_prm)->cf );
   fprintf( fp, "dim: %d\n", ((_dzBW*)sys->_prm)->dim );
@@ -199,8 +199,8 @@ dzSysMethod dz_sys_bw_met = {
   destroy: dzSysDestroyBW,
   refresh: dzSysRefreshBW,
   update: dzSysUpdateBW,
-  fread: dzSysFReadBW,
-  fwrite: dzSysFWriteBW,
+  fscan: dzSysFScanBW,
+  fprint: dzSysFPrintBW,
 };
 
 /* dzSysCreateBW

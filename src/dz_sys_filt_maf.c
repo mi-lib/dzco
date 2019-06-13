@@ -12,7 +12,7 @@
 static double _dzSysMAFCF2FF(double cf, double dt);
 static double _dzSysMAFFF2CF(double ff, double dt);
 
-static bool _dzSysFReadMAF(FILE *fp, void *val, char *buf, bool *success);
+static bool _dzSysFScanMAF(FILE *fp, void *val, char *buf, bool *success);
 
 /* cut-off frequency to forgetting-factor */
 double _dzSysMAFCF2FF(double cf, double dt){
@@ -38,7 +38,7 @@ zVec dzSysUpdateMAF(dzSys *sys, double dt)
   return dzSysOutput(sys);
 }
 
-bool _dzSysFReadMAF(FILE *fp, void *val, char *buf, bool *success)
+bool _dzSysFScanMAF(FILE *fp, void *val, char *buf, bool *success)
 {
   if( strcmp( buf, "ff" ) == 0 ){
     *(double *)val = zFDouble( fp );
@@ -47,15 +47,15 @@ bool _dzSysFReadMAF(FILE *fp, void *val, char *buf, bool *success)
   return true;
 }
 
-dzSys *dzSysFReadMAF(FILE *fp, dzSys *sys)
+dzSys *dzSysFScanMAF(FILE *fp, dzSys *sys)
 {
   double ff = 0;
 
-  zFieldFRead( fp, _dzSysFReadMAF, &ff );
+  zFieldFScan( fp, _dzSysFScanMAF, &ff );
   return dzSysCreateMAF( sys, ff ) ? sys : NULL;
 }
 
-void dzSysFWriteMAF(FILE *fp, dzSys *sys)
+void dzSysFPrintMAF(FILE *fp, dzSys *sys)
 {
   fprintf( fp, "ff: %g\n", __dz_sys_maf_ff(sys) );
 }
@@ -65,8 +65,8 @@ dzSysMethod dz_sys_maf_met = {
   destroy: dzSysDestroyDefault,
   refresh: dzSysRefreshMAF,
   update: dzSysUpdateMAF,
-  fread: dzSysFReadMAF,
-  fwrite: dzSysFWriteMAF,
+  fscan: dzSysFScanMAF,
+  fprint: dzSysFPrintMAF,
 };
 
 void dzSysMAFSetCF(dzSys *sys, double cf, double dt)

@@ -19,7 +19,7 @@ static bool _dzLinCheckSize(dzLin *lin);
 static zVec __dz_lin_state_dif(double t, zVec x, void *sys, zVec dx);
 static bool _dzLinCOMatPrep(dzLin *c, zMat m, uint size, zVec *v);
 
-static bool _dzLinFRead(FILE *fp, void *instance, char *buf, bool *success);
+static bool _dzLinFScan(FILE *fp, void *instance, char *buf, bool *success);
 
 /* initialize a linear system. */
 dzLin *dzLinInit(dzLin *lin)
@@ -519,7 +519,7 @@ dzLin *_dzPex2LinCanon_non_sp(dzPex *sp, dzLin *lin, dzLin *(*pex2lin_sp)(dzPex*
   }
   if( zPexDim(q) != 0 ){
     ZRUNERROR( "fatal error - wrong denominator" );
-    zPexFWrite( stderr, dzPexDen(sp) );
+    zPexFPrint( stderr, dzPexDen(sp) );
     goto TERMINATE;
   }
   org_num = dzPexNum(sp);
@@ -552,17 +552,17 @@ dzLin *dzPex2LinObsCanon(dzPex *sp, dzLin *lin){
   return _dzPex2LinCanon( sp, lin, _dzPex2LinObsCanon_sp );
 }
 
-/* read a linear system from file. */
-bool _dzLinFRead(FILE *fp, void *instance, char *buf, bool *success)
+/* scan a linear system from a file. */
+bool _dzLinFScan(FILE *fp, void *instance, char *buf, bool *success)
 {
   if( strcmp( buf, "a" ) == 0 ){
-    ((dzLin *)instance)->a = zMatFRead( fp );
+    ((dzLin *)instance)->a = zMatFScan( fp );
   } else
   if( strcmp( buf, "b" ) == 0 ){
-    ((dzLin *)instance)->b = zVecFRead( fp );
+    ((dzLin *)instance)->b = zVecFScan( fp );
   } else
   if( strcmp( buf, "c" ) == 0 ){
-    ((dzLin *)instance)->c = zVecFRead( fp );
+    ((dzLin *)instance)->c = zVecFScan( fp );
   } else
   if( strcmp( buf, "d" ) == 0 ){
     ((dzLin *)instance)->d = zFDouble( fp );
@@ -571,11 +571,11 @@ bool _dzLinFRead(FILE *fp, void *instance, char *buf, bool *success)
   return true;
 }
 
-/* read a linear system from file. */
-dzLin *dzLinFRead(FILE *fp, dzLin *lin)
+/* scan a linear system from a file. */
+dzLin *dzLinFScan(FILE *fp, dzLin *lin)
 {
   dzLinInit( lin );
-  zFieldFRead( fp, _dzLinFRead, lin );
+  zFieldFScan( fp, _dzLinFScan, lin );
   if( !lin->a || !lin->b || !lin->c ){
     ZALLOCERROR();
     _dzLinDestroy( lin );
@@ -594,11 +594,11 @@ dzLin *dzLinFRead(FILE *fp, dzLin *lin)
   return lin;
 }
 
-/* write a linear system to file. */
-void dzLinFWrite(FILE *fp, dzLin *lin)
+/* print a linear system to a file. */
+void dzLinFPrint(FILE *fp, dzLin *lin)
 {
-  fprintf( fp, "a: " ); zMatFWrite( fp, lin->a );
-  fprintf( fp, "b: " ); zVecFWrite( fp, lin->b );
-  fprintf( fp, "c: " ); zVecFWrite( fp, lin->c );
+  fprintf( fp, "a: " ); zMatFPrint( fp, lin->a );
+  fprintf( fp, "b: " ); zVecFPrint( fp, lin->b );
+  fprintf( fp, "c: " ); zVecFPrint( fp, lin->c );
   fprintf( fp, "d: %g\n", lin->d );
 }

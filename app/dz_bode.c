@@ -101,7 +101,7 @@ int main(int argc, char *argv[])
     ZOPENERROR( opt[OPT_PEXFILE].arg );
     return 1;
   }
-  if( !dzPexFRead( fp, &pex ) ) return 1;
+  if( !dzPexFScan( fp, &pex ) ) return 1;
   fclose( fp );
   dz_bode_parse_range( opt[OPT_RANGE].arg, &from, &to, &d );
 

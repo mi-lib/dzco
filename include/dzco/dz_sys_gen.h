@@ -18,10 +18,10 @@ extern dzSysMethod dz_sys_##mtype##_met
 
 /*! \brief definition auto-generator */
 #define dzSysDefineGen(Type,mtype) \
-dzSys *dzSysFRead##Type(FILE *fp, dzSys *sys)\
+dzSys *dzSysFScan##Type(FILE *fp, dzSys *sys)\
 {\
   double val[] = { 0.0, 0.0, 0.0 };\
-  zFieldFRead( fp, _dzSysFReadGen, val );\
+  zFieldFScan( fp, _dzSysFScanGen, val );\
   if( !dzSysCreate##Type( sys, val[0], val[1], val[2] ) ) sys = NULL;\
   return sys;\
 }\
@@ -30,8 +30,8 @@ dzSysMethod dz_sys_##mtype##_met = {\
   destroy: dzSysDestroyDefault,\
   refresh: dzSysRefreshGen,\
   update: dzSysUpdate##Type,\
-  fread: dzSysFRead##Type,\
-  fwrite: dzSysFWriteGen,\
+  fscan: dzSysFScan##Type,\
+  fprint: dzSysFPrintGen,\
 };\
 bool dzSysCreate##Type(dzSys *sys, double amp, double delay, double period)\
 {\

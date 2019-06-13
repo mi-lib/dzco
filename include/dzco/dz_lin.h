@@ -247,12 +247,12 @@ __EXPORT zVec dzLinLQR(dzLin *c, zVec q, double r, zVec f);
 __EXPORT dzLin *dzPex2LinCtrlCanon(dzPex *sp, dzLin *sl);
 __EXPORT dzLin *dzPex2LinObsCanon(dzPex *sp, dzLin *sl);
 
-/*! \brief read and write a linear system.
+/*! \brief scan and print a linear system.
  */
-__EXPORT dzLin *dzLinFRead(FILE *fp, dzLin *lin);
-#define dzLinRead(l)   dzLinFRead( stdin, (l) )
-__EXPORT void dzLinFWrite(FILE *fp, dzLin *lin);
-#define dzLinWrite(l)  dzLinFWrite( stdout, (l) )
+__EXPORT dzLin *dzLinFScan(FILE *fp, dzLin *lin);
+#define dzLinScan(l)   dzLinFScan( stdin, (l) )
+__EXPORT void dzLinFPrint(FILE *fp, dzLin *lin);
+#define dzLinPrint(l)  dzLinFPrint( stdout, (l) )
 
 __END_DECLS
 

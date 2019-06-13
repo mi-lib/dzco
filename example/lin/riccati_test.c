@@ -75,12 +75,12 @@ int main(void)
   q = zMatCloneArray( qarray, n, n );
 
   dzLinRiccatiSolveEuler( p, &lin, q, r, zTOL, 0 );
-  zMatWrite( p );
+  zMatPrint( p );
 
   printf( "(error matrix)\n" );
   res = zMatAllocSqr( n );
   dzLinRiccatiError( p, &lin, q, r, res );
-  zMatWrite( res );
+  zMatPrint( res );
   zMatFree( res );
 
   dzLinDestroy( &lin );

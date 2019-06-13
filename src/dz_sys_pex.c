@@ -82,7 +82,7 @@ zVec dzSysUpdatePex(dzSys *sys, double dt)
   return dzSysOutput(sys);
 }
 
-dzSys *dzSysFReadPex(FILE *fp, dzSys *sys)
+dzSys *dzSysFScanPex(FILE *fp, dzSys *sys)
 {
   dzPex *pex;
 
@@ -90,14 +90,14 @@ dzSys *dzSysFReadPex(FILE *fp, dzSys *sys)
     ZALLOCERROR();
     return NULL;
   }
-  if( !dzPexFRead( fp, pex ) ) return NULL;
+  if( !dzPexFScan( fp, pex ) ) return NULL;
   if( !dzSysCreatePex( sys, pex ) ) sys = NULL;
   return sys;
 }
 
-void dzSysFWritePex(FILE *fp, dzSys *sys)
+void dzSysFPrintPex(FILE *fp, dzSys *sys)
 {
-  dzPexFWrite( fp, ((dzSysPexPrm*)sys->_prm)->pex );
+  dzPexFPrint( fp, ((dzSysPexPrm*)sys->_prm)->pex );
 }
 
 dzSysMethod dz_sys_pex_met = {
@@ -105,14 +105,12 @@ dzSysMethod dz_sys_pex_met = {
   destroy: dzSysDestroyPex,
   refresh: dzSysRefreshPex,
   update: dzSysUpdatePex,
-  fread: dzSysFReadPex,
-  fwrite: dzSysFWritePex,
+  fscan: dzSysFScanPex,
+  fprint: dzSysFPrintPex,
 };
 
-/* dzSysCreatePex
- * - create a transfer function from a polynomial rational expression
- *   as an infinite impulse response system.
- */
+/* create a transfer function from a polynomial rational expression
+ * as an infinite impulse response system. */
 bool dzSysCreatePex(dzSys *sys, dzPex *pex)
 {
   dzLin lin;

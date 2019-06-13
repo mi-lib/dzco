@@ -1,3 +1,4 @@
+2019. 6.13. Renamed *Read and *Write to *Scan and *Print, respectively. [dz_sys, dz_sys_gen, dz_sys_misc, dz_sys_lag, dz_sys_pid, dz_sys_filt_bw, dz_sys_filt_maf, dz_sys_pex, dz_sys_lin, dz_pex, dz_lin]
 2019. 1.10. Added _dzLinCODet, dzLinCtrlDet and dzLinObsDet. [dz_lin]
 2019. 1.10. Modified _dzLinCOMatPrep, dzLinCtrlMat and dzLinObsMat. [dz_lin]
 2019. 1.10. Modified _dzLinIsCO. [dz_lin]

@@ -10,7 +10,7 @@
 /* proportional amplifier
  * ********************************************************** */
 
-static bool _dzSysFReadP(FILE *fp, void *gain, char *buf, bool *success);
+static bool _dzSysFScanP(FILE *fp, void *gain, char *buf, bool *success);
 
 #define __dz_sys_p_gain(s) ( *(double *)(s)->_prm )
 
@@ -20,7 +20,7 @@ zVec dzSysUpdateP(dzSys *sys, double dt)
   return dzSysOutput(sys);
 }
 
-bool _dzSysFReadP(FILE *fp, void *gain, char *buf, bool *success)
+bool _dzSysFScanP(FILE *fp, void *gain, char *buf, bool *success)
 {
   if( strcmp( buf, "gain" ) == 0 ){
     *(double *)gain = zFDouble( fp );
@@ -29,15 +29,15 @@ bool _dzSysFReadP(FILE *fp, void *gain, char *buf, bool *success)
   return false;
 }
 
-dzSys *dzSysFReadP(FILE *fp, dzSys *sys)
+dzSys *dzSysFScanP(FILE *fp, dzSys *sys)
 {
   double gain = 0;
 
-  zFieldFRead( fp, _dzSysFReadP, &gain );
+  zFieldFScan( fp, _dzSysFScanP, &gain );
   return dzSysCreateP( sys, gain ) ? sys : NULL;
 }
 
-void dzSysFWriteP(FILE *fp, dzSys *sys)
+void dzSysFPrintP(FILE *fp, dzSys *sys)
 {
   fprintf( fp, "gain: %g\n", *((double*)sys->_prm) );
 }
@@ -47,13 +47,11 @@ dzSysMethod dz_sys_p_met = {
   destroy: dzSysDestroyDefault,
   refresh: dzSysRefreshDefault,
   update: dzSysUpdateP,
-  fread: dzSysFReadP,
-  fwrite: dzSysFWriteP,
+  fscan: dzSysFScanP,
+  fprint: dzSysFPrintP,
 };
 
-/* dzSysCreateP
- * - create proportional amplifier.
- */
+/* create a proportional amplifier. */
 bool dzSysCreateP(dzSys *sys, double gain)
 {
   dzSysInit( sys );
@@ -81,7 +79,7 @@ void dzSysPSetGain(dzSys *sys, double gain)
 #define __dz_sys_i_gain(s) ( ((double *)(s)->_prm)[1] )
 #define __dz_sys_i_fgt(s)  ( ((double *)(s)->_prm)[2] )
 
-static bool _dzSysFReadI(FILE *fp, void *val, char *buf, bool *success);
+static bool _dzSysFScanI(FILE *fp, void *val, char *buf, bool *success);
 
 void dzSysRefreshI(dzSys *sys)
 {
@@ -96,7 +94,7 @@ zVec dzSysUpdateI(dzSys *sys, double dt)
   return dzSysOutput(sys);
 }
 
-bool _dzSysFReadI(FILE *fp, void *val, char *buf, bool *success)
+bool _dzSysFScanI(FILE *fp, void *val, char *buf, bool *success)
 {
   if( strcmp( buf, "gain" ) == 0 ){
     ((double *)val)[0] = zFDouble( fp );
@@ -108,15 +106,15 @@ bool _dzSysFReadI(FILE *fp, void *val, char *buf, bool *success)
   return true;
 }
 
-dzSys *dzSysFReadI(FILE *fp, dzSys *sys)
+dzSys *dzSysFScanI(FILE *fp, dzSys *sys)
 {
   double val[] = { 0.0, 0.0 };
 
-  zFieldFRead( fp, _dzSysFReadI, val );
+  zFieldFScan( fp, _dzSysFScanI, val );
   return dzSysCreateI( sys, val[0], val[1] ) ? sys : NULL;
 }
 
-void dzSysFWriteI(FILE *fp, dzSys *sys)
+void dzSysFPrintI(FILE *fp, dzSys *sys)
 {
   fprintf( fp, "gain: %g\n", __dz_sys_i_gain(sys) );
   fprintf( fp, "fgt: %g\n", __dz_sys_i_fgt(sys) );
@@ -127,13 +125,11 @@ dzSysMethod dz_sys_i_met = {
   destroy: dzSysDestroyDefault,
   refresh: dzSysRefreshI,
   update: dzSysUpdateI,
-  fread: dzSysFReadI,
-  fwrite: dzSysFWriteI,
+  fscan: dzSysFScanI,
+  fprint: dzSysFPrintI,
 };
 
-/* dzSysCreateI
- * - create integrator.
- */
+/* create an integrator. */
 bool dzSysCreateI(dzSys *sys, double gain, double fgt)
 {
   dzSysInit( sys );
@@ -174,7 +170,7 @@ void dzSysISetFgt(dzSys *sys, double fgt)
 #define __dz_sys_d_gain(s) ( ((double*)s->_prm)[1] )
 #define __dz_sys_d_tc(s)   ( ((double*)s->_prm)[2] )
 
-static bool _dzSysFReadD(FILE *fp, void *val, char *buf, bool *success);
+static bool _dzSysFScanD(FILE *fp, void *val, char *buf, bool *success);
 
 void dzSysRefreshD(dzSys *sys)
 {
@@ -193,7 +189,7 @@ zVec dzSysUpdateD(dzSys *sys, double dt)
   return dzSysOutput(sys);
 }
 
-bool _dzSysFReadD(FILE *fp, void *val, char *buf, bool *success)
+bool _dzSysFScanD(FILE *fp, void *val, char *buf, bool *success)
 {
   if( strcmp( buf, "gain" ) == 0 ){
     ((double *)val)[0] = zFDouble( fp );
@@ -205,15 +201,15 @@ bool _dzSysFReadD(FILE *fp, void *val, char *buf, bool *success)
   return true;
 }
 
-dzSys *dzSysFReadD(FILE *fp, dzSys *sys)
+dzSys *dzSysFScanD(FILE *fp, dzSys *sys)
 {
   double val[] = { 0.0, 0.0 };
 
-  zFieldFRead( fp, _dzSysFReadD, val );
+  zFieldFScan( fp, _dzSysFScanD, val );
   return dzSysCreateD( sys, val[0], val[1] ) ? sys : NULL;
 }
 
-void dzSysFWriteD(FILE *fp, dzSys *sys)
+void dzSysFPrintD(FILE *fp, dzSys *sys)
 {
   fprintf( fp, "gain: %g\n", __dz_sys_d_gain(sys) );
   fprintf( fp, "tc: %g\n", __dz_sys_d_tc(sys) );
@@ -224,13 +220,11 @@ dzSysMethod dz_sys_d_met = {
   destroy: dzSysDestroyDefault,
   refresh: dzSysRefreshD,
   update: dzSysUpdateD,
-  fread: dzSysFReadD,
-  fwrite: dzSysFWriteD,
+  fscan: dzSysFScanD,
+  fprint: dzSysFPrintD,
 };
 
-/* dzSysCreateD
- * - create differentiator.
- */
+/* create a differentiator. */
 bool dzSysCreateD(dzSys *sys, double gain, double tc)
 {
   dzSysInit( sys );
@@ -269,7 +263,7 @@ void dzSysDSetTC(dzSys *sys, double t)
 #define __dz_sys_pid_dgain(s)   ( ((double*)(s)->_prm)[5] )
 #define __dz_sys_pid_tc(s)      ( ((double*)(s)->_prm)[6] )
 
-static bool _dzSysFReadPID(FILE *fp, void *val, char *buf, bool *success);
+static bool _dzSysFScanPID(FILE *fp, void *val, char *buf, bool *success);
 
 void dzSysRefreshPID(dzSys *sys)
 {
@@ -290,7 +284,7 @@ zVec dzSysUpdatePID(dzSys *sys, double dt)
   return dzSysOutput(sys);
 }
 
-bool _dzSysFReadPID(FILE *fp, void *val, char *buf, bool *success)
+bool _dzSysFScanPID(FILE *fp, void *val, char *buf, bool *success)
 {
   if( strcmp( buf, "pgain" ) == 0 ){
     ((double *)val)[0] = zFDouble( fp );
@@ -311,15 +305,15 @@ bool _dzSysFReadPID(FILE *fp, void *val, char *buf, bool *success)
   return true;
 }
 
-dzSys *dzSysFReadPID(FILE *fp, dzSys *sys)
+dzSys *dzSysFScanPID(FILE *fp, dzSys *sys)
 {
   double val[] = { 0.0, 0.0, 0.0, 0.0, 0.0 };
 
-  zFieldFRead( fp, _dzSysFReadPID, val );
+  zFieldFScan( fp, _dzSysFScanPID, val );
   return dzSysCreatePID( sys, val[0], val[1], val[2], val[3], val[4] ) ? sys : NULL;
 }
 
-void dzSysFWritePID(FILE *fp, dzSys *sys)
+void dzSysFPrintPID(FILE *fp, dzSys *sys)
 {
   fprintf( fp, "pgain: %g\n", __dz_sys_pid_pgain(sys) );
   fprintf( fp, "igain: %g\n", __dz_sys_pid_igain(sys) );
@@ -333,13 +327,11 @@ dzSysMethod dz_sys_pid_met = {
   destroy: dzSysDestroyDefault,
   refresh: dzSysRefreshPID,
   update: dzSysUpdatePID,
-  fread: dzSysFReadPID,
-  fwrite: dzSysFWritePID,
+  fscan: dzSysFScanPID,
+  fprint: dzSysFPrintPID,
 };
 
-/* dzSysCreatePID
- * - create PID controller.
- */
+/* create a PID controller. */
 bool dzSysCreatePID(dzSys *sys, double kp, double ki, double kd, double tc, double fgt)
 {
   dzSysInit( sys );
@@ -401,7 +393,7 @@ void dzSysPIDSetFgt(dzSys *sys, double fgt)
 #define __dz_sys_qpd_eps(s)    ((double *)(s)->_prm)[6]
 #define __dz_sys_qpd_prev(s)   ((double *)(s)->_prm)[7]
 
-static bool _dzSysFReadQPD(FILE *fp, void *val, char *buf, bool *success);
+static bool _dzSysFScanQPD(FILE *fp, void *val, char *buf, bool *success);
 
 void dzSysQPDSetGoal(dzSys *sys, double goal)
 {
@@ -430,7 +422,7 @@ zVec dzSysUpdateQPD(dzSys *sys, double dt)
   return dzSysOutput(sys);
 }
 
-bool _dzSysFReadQPD(FILE *fp, void *val, char *buf, bool *success)
+bool _dzSysFScanQPD(FILE *fp, void *val, char *buf, bool *success)
 {
   if( strcmp( buf, "pgain" ) == 0 ){
     ((double *)val)[0] = zFDouble( fp );
@@ -445,15 +437,15 @@ bool _dzSysFReadQPD(FILE *fp, void *val, char *buf, bool *success)
   return true;
 }
 
-dzSys *dzSysFReadQPD(FILE *fp, dzSys *sys)
+dzSys *dzSysFScanQPD(FILE *fp, dzSys *sys)
 {
   double val[] = { 0.0, 0.0, 1.0e-3 };
 
-  zFieldFRead( fp, _dzSysFReadQPD, val );
+  zFieldFScan( fp, _dzSysFScanQPD, val );
   return dzSysCreateQPD( sys, val[0], val[1], val[2] ) ? sys : NULL;
 }
 
-void dzSysFWriteQPD(FILE *fp, dzSys *sys)
+void dzSysFPrintQPD(FILE *fp, dzSys *sys)
 {
   fprintf( fp, "pgain: %g\n", __dz_sys_qpd_pgain(sys) );
   fprintf( fp, "dgain: %g\n", __dz_sys_qpd_dgain(sys) );
@@ -465,13 +457,11 @@ dzSysMethod dz_sys_qpd_met = {
   destroy: dzSysDestroyDefault,
   refresh: dzSysRefreshQPD,
   update: dzSysUpdateQPD,
-  fread: dzSysFReadQPD,
-  fwrite: dzSysFWriteQPD,
+  fscan: dzSysFScanQPD,
+  fprint: dzSysFPrintQPD,
 };
 
-/* dzSysCreateQPD
- * - create QPD controller.
- */
+/* create a QPD controller. */
 bool dzSysCreateQPD(dzSys *sys, double kp, double kd, double eps)
 {
   dzSysInit( sys );

@@ -88,7 +88,7 @@ int main(int argc, char *argv[])
     ZOPENERROR( opt[OPT_SYSFILE].arg );
     return 1;
   }
-  if( !dzSysArrayFRead( fp, &arr ) ) return 1;
+  if( !dzSysArrayFScan( fp, &arr ) ) return 1;
   fclose( fp );
 
   fp = fopen( opt[OPT_OUTPUTFILE].arg, "w" );

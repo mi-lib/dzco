@@ -28,7 +28,7 @@ zVec dzSysUpdateLin(dzSys *sys, double dt)
   return dzSysOutput(sys);
 }
 
-dzSys *dzSysFReadLin(FILE *fp, dzSys *sys)
+dzSys *dzSysFScanLin(FILE *fp, dzSys *sys)
 {
   dzLin *lin;
 
@@ -36,14 +36,14 @@ dzSys *dzSysFReadLin(FILE *fp, dzSys *sys)
     ZALLOCERROR();
     return NULL;
   }
-  dzLinFRead( fp, lin );
+  dzLinFScan( fp, lin );
   if( !dzSysCreateLin( sys, lin ) ) sys = NULL;
   return sys;
 }
 
-void dzSysFWriteLin(FILE *fp, dzSys *sys)
+void dzSysFPrintLin(FILE *fp, dzSys *sys)
 {
-  dzLinFWrite( fp, sys->_prm );
+  dzLinFPrint( fp, sys->_prm );
 }
 
 dzSysMethod dz_sys_lin_met = {
@@ -51,13 +51,11 @@ dzSysMethod dz_sys_lin_met = {
   destroy: dzSysDestroyLin,
   refresh: dzSysRefreshLin,
   update: dzSysUpdateLin,
-  fread: dzSysFReadLin,
-  fwrite: dzSysFWriteLin,
+  fscan: dzSysFScanLin,
+  fprint: dzSysFPrintLin,
 };
 
-/* dzSysCreateLin
- * - create linear system.
- */
+/* create a linear system. */
 bool dzSysCreateLin(dzSys *sys, dzLin *lin)
 {
   dzSysInit( sys );
