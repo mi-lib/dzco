@@ -127,8 +127,8 @@ bool dzSysCreatePex(dzSys *sys, dzPex *pex)
     ZRUNERROR( "cannot create a system" );
     goto TERMINATE;
   }
-  zRawVecCopy( zMatRowBuf(lin.a,prm->n-1), prm->a, prm->n );
-  zRawVecCopy( zVecBuf(lin.c), prm->c, prm->n );
+  zRawVecCopy( zMatRowBufNC(lin.a,prm->n-1), prm->a, prm->n );
+  zRawVecCopy( zVecBufNC(lin.c), prm->c, prm->n );
   prm->d = lin.d;
   prm->pex = pex;
 

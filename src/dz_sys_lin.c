@@ -18,7 +18,7 @@ void dzSysDestroyLin(dzSys *sys)
 
 void dzSysRefreshLin(dzSys *sys)
 {
-  zVecClear( ((dzLin *)sys->_prm)->x );
+  zVecZero( ((dzLin *)sys->_prm)->x );
 }
 
 zVec dzSysUpdateLin(dzSys *sys, double dt)

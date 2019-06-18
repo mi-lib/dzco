@@ -80,7 +80,7 @@ bool dzPexIsStable(dzPex *pex)
      not thoroughly positive, the system is unstable. */
   if( dzPexDenDim(pex) <= dzPexNumDim(pex) ) return false;
   for( i=0; i<zVecSizeNC(dzPexDen(pex)); i++ )
-    if( zVecElem( dzPexDen(pex), i ) <= 0 ) return false;
+    if( zVecElemNC( dzPexDen(pex), i ) <= 0 ) return false;
 
   /* preparation of the initial tableau */
   i = dzPexDenDim( pex );
@@ -93,22 +93,20 @@ bool dzPexIsStable(dzPex *pex)
     goto TERMINATE;
   }
   for( j=i, k=0; j>=0; j-=2, k++ ){
-    zVecSetElem( v[0], k,
-      zPexCoeff( dzPexDen(pex), j ) );
-    zVecSetElem( v[1], k,
-      j==0 ? 0 : zPexCoeff( dzPexDen(pex), j-1 ) );
+    zVecSetElemNC( v[0], k, zPexCoeff( dzPexDen(pex), j ) );
+    zVecSetElemNC( v[1], k, j==0 ? 0 : zPexCoeff( dzPexDen(pex), j-1 ) );
   }
   /* Routh=Hurwitz's method */
   for( i=0, j=1, k=2, n--; n>0; i=j, j=k, k=__next(k) ){
-    zVecClear( v[k] );
+    zVecZero( v[k] );
     for( m=0; m<n; m++ ){
-      zVecSetElem( v[k], m,
-        ( zVecElem(v[i],m+1)*zVecElem(v[j],0)
-          - zVecElem(v[i],0)*zVecElem(v[j],m+1) )
-          / zVecElem(v[j],0) );
-      if( zVecElem( v[k], m ) <= 0 ) goto TERMINATE;
+      zVecSetElemNC( v[k], m,
+        ( zVecElemNC(v[i],m+1)*zVecElemNC(v[j],0)
+          - zVecElemNC(v[i],0)*zVecElemNC(v[j],m+1) )
+          / zVecElemNC(v[j],0) );
+      if( zVecElemNC( v[k], m ) <= 0 ) goto TERMINATE;
     }
-    if( zVecElem( v[j], n ) == 0 ) n--;
+    if( zVecElemNC( v[j], n ) == 0 ) n--;
   }
   result = true;
 
