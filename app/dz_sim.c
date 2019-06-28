@@ -29,7 +29,7 @@ void dz_sim_usage(char *arg)
 
 bool dz_sim_commandarg(int argc, char *argv[])
 {
-  zStrList arglist;
+  zStrAddrList arglist;
 
   if( !zOptionRead( opt, argv, &arglist ) ) return false;
   if( opt[OPT_HELP].flag ) dz_sim_usage( "dz_sim" );
@@ -41,7 +41,7 @@ bool dz_sim_commandarg(int argc, char *argv[])
     ZRUNERROR( "system not specified" );
     return false;
   }
-  zStrListDestroy( &arglist, false );
+  zStrAddrListDestroy( &arglist );
   return true;
 }
 

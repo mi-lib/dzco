@@ -1,4 +1,5 @@
-2019. 6.18  Reflected new specification of zVecElem. [dz_pex]
+2019. 6.28. Reflected new specifications of zStrList and zStrAddrList. [app]
+2019. 6.18. Reflected new specification of zVecElem. [dz_pex]
 2019. 6.18. Reflected new specification of zVecBuf and zMatBuf. [dz_sys_pex]
 2019. 6.18. Reflected renaming from zVecClear to zVecZero. [dz_sys_lin, dz_pex]
 2019. 6.13. Renamed *Read and *Write to *Scan and *Print, respectively. [dz_sys, dz_sys_gen, dz_sys_misc, dz_sys_lag, dz_sys_pid, dz_sys_filt_bw, dz_sys_filt_maf, dz_sys_pex, dz_sys_lin, dz_pex, dz_lin]

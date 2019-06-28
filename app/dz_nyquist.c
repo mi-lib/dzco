@@ -75,7 +75,7 @@ void dz_nyq_usage(char *arg)
 
 bool dz_nyq_commandarg(int argc, char *argv[])
 {
-  zStrList arglist;
+  zStrAddrList arglist;
 
   if( !zOptionRead( opt, argv, &arglist ) ) return false;
   if( opt[OPT_HELP].flag ) dz_nyq_usage( "dz_nyquist" );
@@ -87,7 +87,7 @@ bool dz_nyq_commandarg(int argc, char *argv[])
     ZRUNERROR( "transfer function not specified" );
     return false;
   }
-  zStrListDestroy( &arglist, false );
+  zStrAddrListDestroy( &arglist );
   return true;
 }
 

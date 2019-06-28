@@ -73,7 +73,7 @@ void dz_bode_usage(char *arg)
 
 bool dz_bode_commandarg(int argc, char *argv[])
 {
-  zStrList arglist;
+  zStrAddrList arglist;
 
   if( !zOptionRead( opt, argv, &arglist ) ) return false;
   if( opt[OPT_HELP].flag ) dz_bode_usage( "dz_bode" );
@@ -85,7 +85,7 @@ bool dz_bode_commandarg(int argc, char *argv[])
     ZRUNERROR( "transfer function not specified" );
     return false;
   }
-  zStrListDestroy( &arglist, false );
+  zStrAddrListDestroy( &arglist );
   return true;
 }
 
