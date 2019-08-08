@@ -11,7 +11,7 @@
 /* default destroying method */
 void dzSysDestroyDefault(dzSys *sys)
 {
-  zNameDestroy( sys );
+  zNameFree( sys );
   zArrayFree( dzSysInput(sys) );
   zVecFree( dzSysOutput(sys) );
   zFree( sys->_prm );

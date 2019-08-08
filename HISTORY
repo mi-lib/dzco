@@ -1,3 +1,4 @@
+2019. 8. 8. Reflected renaming of zNameDestroy to zNameFree. [dz_sys, dz_sys_pex, dz_sys_filt_bw]
 2019. 6.28. Reflected new specifications of zStrList and zStrAddrList. [app]
 2019. 6.18. Reflected new specification of zVecElem. [dz_pex]
 2019. 6.18. Reflected new specification of zVecBuf and zMatBuf. [dz_sys_pex]

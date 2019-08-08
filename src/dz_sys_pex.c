@@ -57,7 +57,7 @@ void dzSysDestroyPex(dzSys *sys)
   zArrayFree( dzSysInput(sys) );
   zVecFree( dzSysOutput(sys) );
   _dzSysPexPrmFree( sys->_prm );
-  zNameDestroy( sys );
+  zNameFree( sys );
   dzSysInit( sys );
 }
 

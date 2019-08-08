@@ -133,7 +133,7 @@ void dzSysDestroyBW(dzSys *sys)
     _dzBWDestroy( sys->_prm );
     zFree( sys->_prm );
   }
-  zNameDestroy( sys );
+  zNameFree( sys );
   dzSysInit( sys );
 }
 
