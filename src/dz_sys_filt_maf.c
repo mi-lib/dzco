@@ -6,8 +6,8 @@
 
 #include <dzco/dz_sys.h>
 
-#define __dz_sys_maf_ff(s)  ( ((double*)(s)->_prm)[0] )
-#define __dz_sys_maf_iov(s) ( ((double*)(s)->_prm)[1] )
+#define __dz_sys_maf_ff(s)  ( ((double*)(s)->prp)[0] )
+#define __dz_sys_maf_iov(s) ( ((double*)(s)->prp)[1] )
 
 static double _dzSysMAFCF2FF(double cf, double dt);
 static double _dzSysMAFFF2CF(double ff, double dt);
@@ -60,8 +60,8 @@ void dzSysFPrintMAF(FILE *fp, dzSys *sys)
   fprintf( fp, "ff: %g\n", __dz_sys_maf_ff(sys) );
 }
 
-dzSysMethod dz_sys_maf_met = {
-  type: "maf",
+dzSysCom dz_sys_maf_com = {
+  typestr: "maf",
   destroy: dzSysDestroyDefault,
   refresh: dzSysRefreshMAF,
   update: dzSysUpdateMAF,
@@ -79,19 +79,17 @@ double dzSysMAFCF(dzSys *sys, double dt)
   return _dzSysMAFFF2CF( __dz_sys_maf_ff(sys), dt );
 }
 
-/* dzSysCreateMAF
- * - create a moving-average filter.
- */
+/* create a moving-average filter. */
 bool dzSysCreateMAF(dzSys *sys, double ff)
 {
   dzSysInit( sys );
   dzSysAllocInput( sys, 1 );
   if( dzSysInputNum(sys) == 0 || !dzSysAllocOutput( sys, 1 ) ||
-      !( sys->_prm = zAlloc( double, 2 ) ) ){
+      !( sys->prp = zAlloc( double, 2 ) ) ){
     ZALLOCERROR();
     return false;
   }
-  sys->_met = &dz_sys_maf_met;
+  sys->com = &dz_sys_maf_com;
   __dz_sys_maf_ff(sys) = ff;
   dzSysRefresh( sys );
   return true;

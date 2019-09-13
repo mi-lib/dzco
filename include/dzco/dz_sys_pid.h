@@ -29,7 +29,7 @@ __EXPORT bool dzSysCreateP(dzSys *sys, double gain);
 
 __EXPORT void dzSysPSetGain(dzSys *sys, double gain);
 
-extern dzSysMethod dz_sys_p_met;
+extern dzSysCom dz_sys_p_com;
 
 /* ********************************************************** */
 /* integrator
@@ -53,7 +53,7 @@ __EXPORT bool dzSysCreateI(dzSys *sys, double gain, double fgt);
 __EXPORT void dzSysISetGain(dzSys *sys, double gain);
 __EXPORT void dzSysISetFgt(dzSys *sys, double fgt);
 
-extern dzSysMethod dz_sys_i_met;
+extern dzSysCom dz_sys_i_com;
 
 /* ********************************************************** */
 /* differentiator
@@ -82,7 +82,7 @@ __EXPORT bool dzSysCreateD(dzSys *sys, double gain, double tc);
 __EXPORT void dzSysDSetGain(dzSys *sys, double gain);
 __EXPORT void dzSysDSetTC(dzSys *sys, double t);
 
-extern dzSysMethod dz_sys_d_met;
+extern dzSysCom dz_sys_d_com;
 
 /* ********************************************************** */
 /* PID(Proportional, Integral and Differential) controller
@@ -110,7 +110,7 @@ __EXPORT void dzSysPIDSetDGain(dzSys *sys, double kd);
 __EXPORT void dzSysPIDSetTC(dzSys *sys, double tc);
 __EXPORT void dzSysPIDSetFgt(dzSys *sys, double fgt);
 
-extern dzSysMethod dz_sys_pid_met;
+extern dzSysCom dz_sys_pid_com;
 
 /* ********************************************************** */
 /* QPD(Quadratic Proportional and Differential) controller
@@ -133,7 +133,7 @@ __EXPORT bool dzSysCreateQPD(dzSys *sys, double kp, double kd, double eps);
 
 __EXPORT void dzSysQPDSetGoal(dzSys *sys, double goal);
 
-extern dzSysMethod dz_sys_qpd_met;
+extern dzSysCom dz_sys_qpd_com;
 
 __END_DECLS
 

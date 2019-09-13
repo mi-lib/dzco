@@ -10,7 +10,7 @@ int main(int argc, char *argv[])
   FILE *fp;
   register int i;
 
-  fp = fopen( "connect_test.dzs", "r" );
+  fp = fopen( "connect_test.ztk", "r" );
   dzSysArrayFScan( fp, &arr );
   dzSysArrayFPrint( stderr, &arr );
   sys_out = dzSysArrayNameFind( &arr, "intg2" );

@@ -19,22 +19,21 @@ __BEGIN_DECLS
 
 /*! \brief create linear system.
  *
- * 'dzSysCreateLin()' creates a linear system 'c'.
- * 'lin' is the linear system parameters assigned to 'c',
+ * dzSysCreateLin() creates a linear system \a c.
+ * \a lin is the linear system parameters assigned to \a c,
  * which should be created by any means in advance.
- * 'dt' is a sampling time.
- * #
- * 'dzSysCreateLin()' just assigns 'lin' to 'c', not
- * newly allocating particular work space for it.
- * Memory for 'lin' has to be independently managed.
- * [RETURN VALUE]
- * 'dzSysCreateLin()' returns the false value if 'dt'
- * is too short or negative. Otherwise, the true value
- * is returned.
+ * \a dt is a sampling time.
+ *
+ * dzSysCreateLin() assigns \a lin to \a c, and not newly
+ * allocate particular work space for it.
+ * Memory for \a lin has to be independently managed.
+ * \return
+ * dzSysCreateLin() returns the false value if \a dt is too
+ * short or negative. Otherwise, the true value is returned.
  */
 __EXPORT bool dzSysCreateLin(dzSys *sys, dzLin *lin);
 
-extern dzSysMethod dz_sys_lin_met;
+extern dzSysCom dz_sys_lin_com;
 
 __END_DECLS
 

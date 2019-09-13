@@ -56,14 +56,14 @@ void dzSysDestroyPex(dzSys *sys)
 {
   zArrayFree( dzSysInput(sys) );
   zVecFree( dzSysOutput(sys) );
-  _dzSysPexPrmFree( sys->_prm );
+  _dzSysPexPrmFree( sys->prp );
   zNameFree( sys );
   dzSysInit( sys );
 }
 
 void dzSysRefreshPex(dzSys *sys)
 {
-  memset( ((dzSysPexPrm*)sys->_prm)->z, 0, sizeof(double)*((dzSysPexPrm*)sys->_prm)->n );
+  memset( ((dzSysPexPrm*)sys->prp)->z, 0, sizeof(double)*((dzSysPexPrm*)sys->prp)->n );
 }
 
 zVec dzSysUpdatePex(dzSys *sys, double dt)
@@ -72,7 +72,7 @@ zVec dzSysUpdatePex(dzSys *sys, double dt)
   dzSysPexPrm *prm;
   double v;
 
-  prm = sys->_prm;
+  prm = sys->prp;
   dzSysOutputVal(sys,0) =
     zRawVecInnerProd( prm->c, prm->z, prm->n ) + prm->d*dzSysInputVal(sys,0);
   v = zRawVecInnerProd( prm->a, prm->z, prm->n ) + dzSysInputVal(sys,0);
@@ -97,11 +97,11 @@ dzSys *dzSysFScanPex(FILE *fp, dzSys *sys)
 
 void dzSysFPrintPex(FILE *fp, dzSys *sys)
 {
-  dzPexFPrint( fp, ((dzSysPexPrm*)sys->_prm)->pex );
+  dzPexFPrint( fp, ((dzSysPexPrm*)sys->prp)->pex );
 }
 
-dzSysMethod dz_sys_pex_met = {
-  type: "pex",
+dzSysCom dz_sys_pex_com = {
+  typestr: "pex",
   destroy: dzSysDestroyPex,
   refresh: dzSysRefreshPex,
   update: dzSysUpdatePex,
@@ -132,8 +132,8 @@ bool dzSysCreatePex(dzSys *sys, dzPex *pex)
   prm->d = lin.d;
   prm->pex = pex;
 
-  sys->_prm = prm;
-  sys->_met = &dz_sys_pex_met;
+  sys->prp = prm;
+  sys->com = &dz_sys_pex_com;
   dzSysRefresh( sys );
  TERMINATE:
   dzLinDestroy( &lin );

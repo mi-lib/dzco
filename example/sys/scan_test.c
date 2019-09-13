@@ -8,7 +8,7 @@ int main(void)
   FILE *fp;
   int i;
 
-  fp = fopen( "read_test.dzs", "r" );
+  fp = fopen( "scan_test.ztk", "r" );
   dzSysArrayFScan( fp, &arr );
   for( i=0; i<zArraySize(&arr); i++ )
     printf( "sys: %s\n", zName(zArrayElem(&arr,i)) );

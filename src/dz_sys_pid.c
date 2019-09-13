@@ -12,7 +12,7 @@
 
 static bool _dzSysFScanP(FILE *fp, void *gain, char *buf, bool *success);
 
-#define __dz_sys_p_gain(s) ( *(double *)(s)->_prm )
+#define __dz_sys_p_gain(s) ( *(double *)(s)->prp )
 
 zVec dzSysUpdateP(dzSys *sys, double dt)
 {
@@ -39,11 +39,11 @@ dzSys *dzSysFScanP(FILE *fp, dzSys *sys)
 
 void dzSysFPrintP(FILE *fp, dzSys *sys)
 {
-  fprintf( fp, "gain: %g\n", *((double*)sys->_prm) );
+  fprintf( fp, "gain: %g\n", *((double*)sys->prp) );
 }
 
-dzSysMethod dz_sys_p_met = {
-  type: "p",
+dzSysCom dz_sys_p_com = {
+  typestr: "p",
   destroy: dzSysDestroyDefault,
   refresh: dzSysRefreshDefault,
   update: dzSysUpdateP,
@@ -57,11 +57,11 @@ bool dzSysCreateP(dzSys *sys, double gain)
   dzSysInit( sys );
   dzSysAllocInput( sys, 1 );
   if( dzSysInputNum(sys) == 0 || !dzSysAllocOutput( sys, 1 ) ||
-      !( sys->_prm = zAlloc( double, 1 ) ) ){
+      !( sys->prp = zAlloc( double, 1 ) ) ){
     ZALLOCERROR();
     return false;
   }
-  sys->_met = &dz_sys_p_met;
+  sys->com = &dz_sys_p_com;
   dzSysPSetGain( sys, gain );
   return true;
 }
@@ -75,9 +75,9 @@ void dzSysPSetGain(dzSys *sys, double gain)
 /* integrator
  * ********************************************************** */
 
-#define __dz_sys_i_prev(s) ( ((double *)(s)->_prm)[0] )
-#define __dz_sys_i_gain(s) ( ((double *)(s)->_prm)[1] )
-#define __dz_sys_i_fgt(s)  ( ((double *)(s)->_prm)[2] )
+#define __dz_sys_i_prev(s) ( ((double *)(s)->prp)[0] )
+#define __dz_sys_i_gain(s) ( ((double *)(s)->prp)[1] )
+#define __dz_sys_i_fgt(s)  ( ((double *)(s)->prp)[2] )
 
 static bool _dzSysFScanI(FILE *fp, void *val, char *buf, bool *success);
 
@@ -120,8 +120,8 @@ void dzSysFPrintI(FILE *fp, dzSys *sys)
   fprintf( fp, "fgt: %g\n", __dz_sys_i_fgt(sys) );
 }
 
-dzSysMethod dz_sys_i_met = {
-  type: "i",
+dzSysCom dz_sys_i_com = {
+  typestr: "i",
   destroy: dzSysDestroyDefault,
   refresh: dzSysRefreshI,
   update: dzSysUpdateI,
@@ -135,11 +135,11 @@ bool dzSysCreateI(dzSys *sys, double gain, double fgt)
   dzSysInit( sys );
   dzSysAllocInput( sys, 1 );
   if( dzSysInputNum(sys) == 0 || !dzSysAllocOutput( sys, 1 ) ||
-      !( sys->_prm = zAlloc( double, 3 ) ) ){
+      !( sys->prp = zAlloc( double, 3 ) ) ){
     ZALLOCERROR();
     return false;
   }
-  sys->_met = &dz_sys_i_met;
+  sys->com = &dz_sys_i_com;
   __dz_sys_i_gain(sys) = gain;
   __dz_sys_i_fgt(sys) = fgt;
   dzSysRefresh( sys );
@@ -166,9 +166,9 @@ void dzSysISetFgt(dzSys *sys, double fgt)
 
 /* x[k] = T/(dt+T) x[k-1] + K/(dt+T) (u[k]-u[k-1]) */
 
-#define __dz_sys_d_prev(s) ( ((double*)s->_prm)[0] )
-#define __dz_sys_d_gain(s) ( ((double*)s->_prm)[1] )
-#define __dz_sys_d_tc(s)   ( ((double*)s->_prm)[2] )
+#define __dz_sys_d_prev(s) ( ((double*)s->prp)[0] )
+#define __dz_sys_d_gain(s) ( ((double*)s->prp)[1] )
+#define __dz_sys_d_tc(s)   ( ((double*)s->prp)[2] )
 
 static bool _dzSysFScanD(FILE *fp, void *val, char *buf, bool *success);
 
@@ -215,8 +215,8 @@ void dzSysFPrintD(FILE *fp, dzSys *sys)
   fprintf( fp, "tc: %g\n", __dz_sys_d_tc(sys) );
 }
 
-dzSysMethod dz_sys_d_met = {
-  type: "d",
+dzSysCom dz_sys_d_com = {
+  typestr: "d",
   destroy: dzSysDestroyDefault,
   refresh: dzSysRefreshD,
   update: dzSysUpdateD,
@@ -230,11 +230,11 @@ bool dzSysCreateD(dzSys *sys, double gain, double tc)
   dzSysInit( sys );
   dzSysAllocInput( sys, 1 );
   if( dzSysInputNum(sys) == 0 || !dzSysAllocOutput( sys, 1 ) ||
-      !( sys->_prm = zAlloc( double, 3 ) ) ){
+      !( sys->prp = zAlloc( double, 3 ) ) ){
     ZALLOCERROR();
     return false;
   }
-  sys->_met = &dz_sys_d_met;
+  sys->com = &dz_sys_d_com;
   dzSysDSetGain( sys, gain );
   dzSysDSetTC( sys, tc );
   dzSysRefresh( sys );
@@ -255,13 +255,13 @@ void dzSysDSetTC(dzSys *sys, double t)
 /* PID(Proportional, Integral and Differential) controller
  * ********************************************************** */
 
-#define __dz_sys_pid_pgain(s)   ( ((double*)(s)->_prm)[0] )
-#define __dz_sys_pid_intg(s)    ( ((double*)(s)->_prm)[1] )
-#define __dz_sys_pid_prev(s)    ( ((double*)(s)->_prm)[2] )
-#define __dz_sys_pid_fgt(s)     ( ((double*)(s)->_prm)[3] )
-#define __dz_sys_pid_igain(s)   ( ((double*)(s)->_prm)[4] )
-#define __dz_sys_pid_dgain(s)   ( ((double*)(s)->_prm)[5] )
-#define __dz_sys_pid_tc(s)      ( ((double*)(s)->_prm)[6] )
+#define __dz_sys_pid_pgain(s)   ( ((double*)(s)->prp)[0] )
+#define __dz_sys_pid_intg(s)    ( ((double*)(s)->prp)[1] )
+#define __dz_sys_pid_prev(s)    ( ((double*)(s)->prp)[2] )
+#define __dz_sys_pid_fgt(s)     ( ((double*)(s)->prp)[3] )
+#define __dz_sys_pid_igain(s)   ( ((double*)(s)->prp)[4] )
+#define __dz_sys_pid_dgain(s)   ( ((double*)(s)->prp)[5] )
+#define __dz_sys_pid_tc(s)      ( ((double*)(s)->prp)[6] )
 
 static bool _dzSysFScanPID(FILE *fp, void *val, char *buf, bool *success);
 
@@ -322,8 +322,8 @@ void dzSysFPrintPID(FILE *fp, dzSys *sys)
   fprintf( fp, "fgt: %g\n", __dz_sys_pid_fgt(sys) );
 }
 
-dzSysMethod dz_sys_pid_met = {
-  type: "pid",
+dzSysCom dz_sys_pid_com = {
+  typestr: "pid",
   destroy: dzSysDestroyDefault,
   refresh: dzSysRefreshPID,
   update: dzSysUpdatePID,
@@ -337,11 +337,11 @@ bool dzSysCreatePID(dzSys *sys, double kp, double ki, double kd, double tc, doub
   dzSysInit( sys );
   dzSysAllocInput( sys, 1 );
   if( dzSysInputNum(sys) == 0 || !dzSysAllocOutput( sys, 1 ) ||
-      !( sys->_prm = zAlloc( double, 7 ) ) ){
+      !( sys->prp = zAlloc( double, 7 ) ) ){
     ZALLOCERROR();
     return false;
   }
-  sys->_met = &dz_sys_pid_met;
+  sys->com = &dz_sys_pid_com;
   __dz_sys_pid_pgain(sys) = kp;
   __dz_sys_pid_igain(sys) = ki;
   __dz_sys_pid_dgain(sys) = kd;
@@ -384,14 +384,14 @@ void dzSysPIDSetFgt(dzSys *sys, double fgt)
 /* QPD(Quadratic Proportional and Differential) controller
  * ********************************************************** */
 
-#define __dz_sys_qpd_kq1(s)    ((double *)(s)->_prm)[0]
-#define __dz_sys_qpd_kq2(s)    ((double *)(s)->_prm)[1]
-#define __dz_sys_qpd_goal(s)   ((double *)(s)->_prm)[2]
-#define __dz_sys_qpd_init(s)   ((double *)(s)->_prm)[3]
-#define __dz_sys_qpd_pgain(s)  ((double *)(s)->_prm)[4]
-#define __dz_sys_qpd_dgain(s)  ((double *)(s)->_prm)[5]
-#define __dz_sys_qpd_eps(s)    ((double *)(s)->_prm)[6]
-#define __dz_sys_qpd_prev(s)   ((double *)(s)->_prm)[7]
+#define __dz_sys_qpd_kq1(s)    ((double *)(s)->prp)[0]
+#define __dz_sys_qpd_kq2(s)    ((double *)(s)->prp)[1]
+#define __dz_sys_qpd_goal(s)   ((double *)(s)->prp)[2]
+#define __dz_sys_qpd_init(s)   ((double *)(s)->prp)[3]
+#define __dz_sys_qpd_pgain(s)  ((double *)(s)->prp)[4]
+#define __dz_sys_qpd_dgain(s)  ((double *)(s)->prp)[5]
+#define __dz_sys_qpd_eps(s)    ((double *)(s)->prp)[6]
+#define __dz_sys_qpd_prev(s)   ((double *)(s)->prp)[7]
 
 static bool _dzSysFScanQPD(FILE *fp, void *val, char *buf, bool *success);
 
@@ -452,8 +452,8 @@ void dzSysFPrintQPD(FILE *fp, dzSys *sys)
   fprintf( fp, "eps: %g\n", __dz_sys_qpd_eps(sys) );
 }
 
-dzSysMethod dz_sys_qpd_met = {
-  type: "qpd",
+dzSysCom dz_sys_qpd_com = {
+  typestr: "qpd",
   destroy: dzSysDestroyDefault,
   refresh: dzSysRefreshQPD,
   update: dzSysUpdateQPD,
@@ -467,11 +467,11 @@ bool dzSysCreateQPD(dzSys *sys, double kp, double kd, double eps)
   dzSysInit( sys );
   dzSysAllocInput( sys, 1 );
   if( dzSysInputNum(sys) == 0 || !dzSysAllocOutput( sys, 1 ) ||
-      !( sys->_prm = zAlloc( double, 8 ) ) ){
+      !( sys->prp = zAlloc( double, 8 ) ) ){
     ZALLOCERROR();
     return false;
   }
-  sys->_met = &dz_sys_qpd_met;
+  sys->com = &dz_sys_qpd_com;
   __dz_sys_qpd_kq1(sys) = 2 * ( 1 - eps ) * kp;
   __dz_sys_qpd_kq2(sys) = 0.5 * ( 3 - 2 * eps ) / ( 1 - eps );
   __dz_sys_qpd_goal(sys) = 0.0;

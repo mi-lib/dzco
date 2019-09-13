@@ -30,20 +30,20 @@ zArrayClass( dzSysPortArray, dzSysPort );
  * ********************************************************** */
 
 typedef struct{
-  const char *type;
+  const char *typestr;
   void (*destroy)(struct _dzSys*);
   void (*refresh)(struct _dzSys*);
   zVec (*update)(struct _dzSys*, double dt);
   struct _dzSys *(*fscan)(FILE *fp, struct _dzSys*);
   void (*fprint)(FILE *fp, struct _dzSys*);
-} dzSysMethod;
+} dzSysCom;
 
 typedef struct _dzSys{
   Z_NAMED_CLASS;
   dzSysPortArray input;
   zVec output;
-  void *_prm; /* utility for inheritance class of dzSys */
-  dzSysMethod *_met; /* method */
+  void *prp; /* utility for inheritance class of dzSys */
+  dzSysCom *com; /* methods */
 } dzSys;
 
 #define dzSysInput(s)         ( &(s)->input )
@@ -64,8 +64,8 @@ typedef struct _dzSys{
   zNameSet( s, NULL );\
   zArrayInit( dzSysInput(s) );\
   dzSysOutput(s) = NULL;\
-  (s)->_prm = NULL;\
-  (s)->_met = NULL;\
+  (s)->prp = NULL;\
+  (s)->com = NULL;\
 } while(0)
 
 /*! \brief destroy, refresh and update dynamical systems.
@@ -89,9 +89,9 @@ typedef struct _dzSys{
  *
  * dzSysDestroy() and dzSysRefresh() return no value.
  */
-#define dzSysDestroy(s)  (s)->_met->destroy( s )
-#define dzSysRefresh(s)  (s)->_met->refresh( s )
-#define dzSysUpdate(s,h) (s)->_met->update( s, h )
+#define dzSysDestroy(s)  (s)->com->destroy( s )
+#define dzSysRefresh(s)  (s)->com->refresh( s )
+#define dzSysUpdate(s,h) (s)->com->update( s, h )
 
 /*! \brief connect dynamical systems.
  *
@@ -120,8 +120,9 @@ __EXPORT void dzSysDestroyDefault(dzSys *sys);
 /* default refreshing method */
 __EXPORT void dzSysRefreshDefault(dzSys *sys);
 
-#define DZ_SYS_TAG "sys"
-#define DZ_SYS_CONNECT_TAG "connect"
+#define ZTK_TAG_DZSYS "sys"
+#define ZTK_TAG_DZSYS_CONNECT "connect"
+
 __EXPORT dzSys *dzSysFScan(FILE *fp, dzSys *sys);
 __EXPORT void dzSysFPrint(FILE *fp, dzSys *sys);
 

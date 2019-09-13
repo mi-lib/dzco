@@ -122,42 +122,36 @@ double _dzBWUpdate(_dzBW *bw, double input, double dt)
   return output;
 }
 
-/* dzSysDestroyBW
- * - destroy a Butterworth filter.
- */
+/* destroy a Butterworth filter. */
 void dzSysDestroyBW(dzSys *sys)
 {
   zArrayFree( dzSysInput(sys) );
   zVecFree( dzSysOutput(sys) );
-  if( sys->_prm ){
-    _dzBWDestroy( sys->_prm );
-    zFree( sys->_prm );
+  if( sys->prp ){
+    _dzBWDestroy( sys->prp );
+    zFree( sys->prp );
   }
   zNameFree( sys );
   dzSysInit( sys );
 }
 
-/* dzSysRefreshBW
- * - refresh the internal state of a Butterworth filter.
- */
+/* refresh the internal state of a Butterworth filter. */
 void dzSysRefreshBW(dzSys *sys)
 {
   _dzBW *bw;
   register int i;
 
-  bw = sys->_prm;
+  bw = sys->prp;
   if( bw->f1 )
     _dzBW1Refresh( bw->f1 );
   for( i=0; i<bw->n2; i++ )
     _dzBW2Refresh( &bw->f2[i] );
 }
 
-/* dzSysUpdateBW
- * - update a Butterworth filter.
- */
+/* update a Butterworth filter. */
 zVec dzSysUpdateBW(dzSys *sys, double dt)
 {
-  dzSysOutputVal(sys,0) = _dzBWUpdate( sys->_prm, dzSysInputVal(sys,0), dt );
+  dzSysOutputVal(sys,0) = _dzBWUpdate( sys->prp, dzSysInputVal(sys,0), dt );
   return dzSysOutput(sys);
 }
 
@@ -190,12 +184,12 @@ dzSys *dzSysFScanBW(FILE *fp, dzSys *sys)
 
 void dzSysFPrintBW(FILE *fp, dzSys *sys)
 {
-  fprintf( fp, "cf: %g\n", ((_dzBW*)sys->_prm)->cf );
-  fprintf( fp, "dim: %d\n", ((_dzBW*)sys->_prm)->dim );
+  fprintf( fp, "cf: %g\n", ((_dzBW*)sys->prp)->cf );
+  fprintf( fp, "dim: %d\n", ((_dzBW*)sys->prp)->dim );
 }
 
-dzSysMethod dz_sys_bw_met = {
-  type: "butterworth",
+dzSysCom dz_sys_bw_com = {
+  typestr: "butterworth",
   destroy: dzSysDestroyBW,
   refresh: dzSysRefreshBW,
   update: dzSysUpdateBW,
@@ -203,9 +197,7 @@ dzSysMethod dz_sys_bw_met = {
   fprint: dzSysFPrintBW,
 };
 
-/* dzSysCreateBW
- * - create a Butterworth filter.
- */
+/* create a Butterworth filter. */
 bool dzSysCreateBW(dzSys *sys, double cf, uint dim)
 {
   _dzBW *bw;
@@ -228,7 +220,7 @@ bool dzSysCreateBW(dzSys *sys, double cf, uint dim)
     ZALLOCERROR();
     return false;
   }
-  sys->_prm = bw;
-  sys->_met = &dz_sys_bw_met;
+  sys->prp = bw;
+  sys->com = &dz_sys_bw_com;
   return true;
 }

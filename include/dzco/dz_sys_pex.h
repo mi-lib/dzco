@@ -22,15 +22,14 @@ __BEGIN_DECLS
  *
  * It is mathematically equivalent to dzPex2LinCtrlCanon()
  * but is memory-saving.
- * [RETURN VALUE]
+ * \return
  * dzSysCreatePex() returns the false value if it fails
- * to allocate internal working memory, or 'dt' is too
- * short or negative. Otherwise, the true value is
- * returned.
+ * to allocate internal working memory, or \a dt is too
+ * short or negative. Otherwise, the true value is returned.
  */
 __EXPORT bool dzSysCreatePex(dzSys *sys, dzPex *pex);
 
-extern dzSysMethod dz_sys_pex_met;
+extern dzSysCom dz_sys_pex_com;
 
 __END_DECLS
 

@@ -28,7 +28,7 @@ __BEGIN_DECLS
  */
 __EXPORT bool dzSysCreateBW(dzSys *sys, double cf, uint dim);
 
-extern dzSysMethod dz_sys_bw_met;
+extern dzSysCom dz_sys_bw_com;
 
 __END_DECLS
 

@@ -12,19 +12,19 @@
 
 void dzSysDestroyLin(dzSys *sys)
 {
-  dzLinDestroy( sys->_prm );
-  zFree( sys->_prm );
+  dzLinDestroy( sys->prp );
+  zFree( sys->prp );
 }
 
 void dzSysRefreshLin(dzSys *sys)
 {
-  zVecZero( ((dzLin *)sys->_prm)->x );
+  zVecZero( ((dzLin *)sys->prp)->x );
 }
 
 zVec dzSysUpdateLin(dzSys *sys, double dt)
 {
-  dzLinStateUpdate( sys->_prm, dzSysInputVal(sys,0), dt );
-  dzSysOutputVal(sys,0) = dzLinOutput( sys->_prm, dzSysInputVal(sys,0) );
+  dzLinStateUpdate( sys->prp, dzSysInputVal(sys,0), dt );
+  dzSysOutputVal(sys,0) = dzLinOutput( sys->prp, dzSysInputVal(sys,0) );
   return dzSysOutput(sys);
 }
 
@@ -43,11 +43,11 @@ dzSys *dzSysFScanLin(FILE *fp, dzSys *sys)
 
 void dzSysFPrintLin(FILE *fp, dzSys *sys)
 {
-  dzLinFPrint( fp, sys->_prm );
+  dzLinFPrint( fp, sys->prp );
 }
 
-dzSysMethod dz_sys_lin_met = {
-  type: "lin",
+dzSysCom dz_sys_lin_com = {
+  typestr: "lin",
   destroy: dzSysDestroyLin,
   refresh: dzSysRefreshLin,
   update: dzSysUpdateLin,
@@ -64,8 +64,8 @@ bool dzSysCreateLin(dzSys *sys, dzLin *lin)
     ZALLOCERROR();
     return false;
   }
-  sys->_prm = lin;
-  sys->_met = &dz_sys_lin_met;
+  sys->prp = lin;
+  sys->com = &dz_sys_lin_com;
   dzSysRefresh( sys );
   return true;
 }

@@ -14,7 +14,7 @@ __BEGIN_DECLS
 /*! \brief prototype auto-generator */
 #define dzSysPrototypeGen(Type,mtype) \
 __EXPORT bool dzSysCreate##Type(dzSys *sys, double amp, double delay, double period);\
-extern dzSysMethod dz_sys_##mtype##_met
+extern dzSysCom dz_sys_##mtype##_com
 
 /*! \brief definition auto-generator */
 #define dzSysDefineGen(Type,mtype) \
@@ -25,8 +25,8 @@ dzSys *dzSysFScan##Type(FILE *fp, dzSys *sys)\
   if( !dzSysCreate##Type( sys, val[0], val[1], val[2] ) ) sys = NULL;\
   return sys;\
 }\
-dzSysMethod dz_sys_##mtype##_met = {\
-  type: #mtype,\
+dzSysCom dz_sys_##mtype##_com = {\
+  typestr: #mtype,\
   destroy: dzSysDestroyDefault,\
   refresh: dzSysRefreshGen,\
   update: dzSysUpdate##Type,\
@@ -38,11 +38,11 @@ bool dzSysCreate##Type(dzSys *sys, double amp, double delay, double period)\
   dzSysInit( sys );\
   dzSysAllocInput( sys, 1 );\
   if( dzSysInputNum(sys) == 0 || !dzSysAllocOutput( sys, 1 ) ||\
-      !( sys->_prm = zAlloc( double, 4 ) ) ){\
+      !( sys->prp = zAlloc( double, 4 ) ) ){\
     ZALLOCERROR();\
     return false;\
   }\
-  sys->_met = &dz_sys_##mtype##_met;\
+  sys->com = &dz_sys_##mtype##_com;\
   __dz_sys_gen_amp(sys) = amp;\
   __dz_sys_gen_delay(sys) = delay;\
   __dz_sys_gen_period(sys) = period;\

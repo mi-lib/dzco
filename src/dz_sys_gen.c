@@ -6,10 +6,10 @@
 
 #include <dzco/dz_sys.h>
 
-#define __dz_sys_gen_t(s)      ((double*)(s)->_prm)[0]
-#define __dz_sys_gen_amp(s)    ((double*)(s)->_prm)[1]
-#define __dz_sys_gen_delay(s)  ((double*)(s)->_prm)[2]
-#define __dz_sys_gen_period(s) ((double*)(s)->_prm)[3]
+#define __dz_sys_gen_t(s)      ((double*)(s)->prp)[0]
+#define __dz_sys_gen_amp(s)    ((double*)(s)->prp)[1]
+#define __dz_sys_gen_delay(s)  ((double*)(s)->prp)[2]
+#define __dz_sys_gen_period(s) ((double*)(s)->prp)[3]
 
 static bool _dzSysFScanGen(FILE *fp, void *val, char *buf, bool *success);
 

@@ -14,7 +14,7 @@ void dzSysDestroyDefault(dzSys *sys)
   zNameFree( sys );
   zArrayFree( dzSysInput(sys) );
   zVecFree( dzSysOutput(sys) );
-  zFree( sys->_prm );
+  zFree( sys->prp );
   dzSysInit( sys );
 }
 
@@ -55,31 +55,31 @@ void dzSysChain(int n, ...)
   va_end( arg );
 }
 
-static dzSysMethod *_dzSysMethodByStr(char str[]);
+static dzSysCom *_dzSysComByStr(char str[]);
 
-dzSysMethod *_dzSysMethodByStr(char str[])
+dzSysCom *_dzSysComByStr(char str[])
 {
-  static dzSysMethod *met_array[] = {
-    &dz_sys_adder_met, &dz_sys_subtr_met, &dz_sys_limit_met,
-    &dz_sys_p_met, &dz_sys_i_met, &dz_sys_d_met, &dz_sys_pid_met, &dz_sys_qpd_met,
-    &dz_sys_fol_met, &dz_sys_sol_met, &dz_sys_pc_met, &dz_sys_adapt_met,
-    &dz_sys_lin_met,
-    &dz_sys_pex_met,
-    &dz_sys_maf_met, &dz_sys_bw_met,
-    &dz_sys_step_met, &dz_sys_ramp_met, &dz_sys_sine_met, &dz_sys_whitenoise_met,
+  static dzSysCom *com_array[] = {
+    &dz_sys_adder_com, &dz_sys_subtr_com, &dz_sys_limit_com,
+    &dz_sys_p_com, &dz_sys_i_com, &dz_sys_d_com, &dz_sys_pid_com, &dz_sys_qpd_com,
+    &dz_sys_fol_com, &dz_sys_sol_com, &dz_sys_pc_com, &dz_sys_adapt_com,
+    &dz_sys_lin_com,
+    &dz_sys_pex_com,
+    &dz_sys_maf_com, &dz_sys_bw_com,
+    &dz_sys_step_com, &dz_sys_ramp_com, &dz_sys_sine_com, &dz_sys_whitenoise_com,
     NULL,
   };
   register int i;
 
-  for( i=0; met_array[i]; i++ ){
-    if( strcmp( met_array[i]->type, str ) == 0 ) return met_array[i];
+  for( i=0; com_array[i]; i++ ){
+    if( strcmp( com_array[i]->typestr, str ) == 0 ) return com_array[i];
   }
   ZRUNERROR( "cannot find a system type %s", str );
   return NULL;
 }
 
 typedef struct{
-  dzSysMethod *met;
+  dzSysCom *com;
   char name[BUFSIZ];
 } _dzSysParam;
 
@@ -87,7 +87,7 @@ typedef struct{
 bool _dzSysFScan(FILE *fp, void *instance, char *buf, bool *success)
 {
   if( strcmp( buf, "type" ) == 0 ){
-    if( !( ((_dzSysParam *)instance)->met = _dzSysMethodByStr( zFToken(fp,buf,BUFSIZ) ) ) )
+    if( !( ((_dzSysParam *)instance)->com = _dzSysComByStr( zFToken(fp,buf,BUFSIZ) ) ) )
       *success = false;
   } else
   if( strcmp( buf, "name" ) == 0 ){
@@ -103,16 +103,16 @@ dzSys *dzSysFScan(FILE *fp, dzSys *sys)
   _dzSysParam prm;
   int cur;
 
-  prm.met = NULL;
+  prm.com = NULL;
   prm.name[0] = '\0';
   cur = ftell( fp );
   zFieldFScan( fp, _dzSysFScan, &prm );
-  if( !prm.met ){
+  if( !prm.com ){
     ZRUNERROR( "type not specified" );
     return NULL;
   }
   fseek( fp, cur, SEEK_SET );
-  if( prm.met->fscan( fp, sys ) ){
+  if( prm.com->fscan( fp, sys ) ){
     if( !zNameSet( sys, prm.name ) ){
       ZALLOCERROR();
       return NULL;
@@ -126,8 +126,8 @@ dzSys *dzSysFScan(FILE *fp, dzSys *sys)
 void dzSysFPrint(FILE *fp, dzSys *sys)
 {
   fprintf( fp, "name: %s\n", zName( sys ) );
-  fprintf( fp, "type: %s\n", sys->_met->type );
-  sys->_met->fprint( fp, sys );
+  fprintf( fp, "type: %s\n", sys->com->typestr );
+  sys->com->fprint( fp, sys );
 }
 
 /* ********************************************************** */
@@ -157,7 +157,7 @@ bool _dzSysFAlloc(FILE *fp, dzSysArray *arr)
 {
   int n;
 
-  n = zFCountTag( fp, DZ_SYS_TAG );
+  n = zFCountTag( fp, ZTK_TAG_DZSYS );
   zArrayAlloc( arr, dzSys, n );
   if( !zArrayBuf(arr) ){
     ZALLOCERROR();
@@ -249,7 +249,7 @@ void _dzSysArrayConnectFPrint(FILE *fp, dzSysArray *arr)
   dzSys *sys;
   dzSysPort *sp;
 
-  fprintf( fp, "[%s]\n", DZ_SYS_CONNECT_TAG );
+  fprintf( fp, "[%s]\n", ZTK_TAG_DZSYS_CONNECT );
   for( i=0; i<zArraySize(arr); i++ ){
     sys = zArrayElemNC(arr,i);
     for( j=0; j<dzSysInputNum(sys); j++ )
@@ -269,13 +269,13 @@ bool _dzSysArrayFScan(FILE *fp, void *instance, char *buf, bool *success)
   _dzSysArrayParam *prm;
 
   prm = instance;
-  if( strcmp( buf, DZ_SYS_TAG ) == 0 ){
+  if( strcmp( buf, ZTK_TAG_DZSYS ) == 0 ){
     if( !dzSysFScan( fp, zArrayElemNC(prm->arr,prm->count++) ) ){
       *success = false;
       return false;
     }
   } else
-  if( strcmp( buf, DZ_SYS_CONNECT_TAG ) == 0 ){
+  if( strcmp( buf, ZTK_TAG_DZSYS_CONNECT ) == 0 ){
     if( !_dzSysArrayConnectFScan( fp, prm->arr ) )
       *success = false;
   } else
@@ -301,7 +301,7 @@ void dzSysArrayFPrint(FILE *fp, dzSysArray *arr)
   register int i;
 
   for( i=0; i<zArraySize(arr); i++ ){
-    fprintf( fp, "[%s]\n", DZ_SYS_TAG );
+    fprintf( fp, "[%s]\n", ZTK_TAG_DZSYS );
     dzSysFPrint( fp, zArrayElemNC(arr,i) );
     fprintf( fp, "\n" );
   }

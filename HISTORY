@@ -1,3 +1,6 @@
+2019. 8.18. Renamed type and _met members in dzSys class to typestr and com, respectively. [dz_sys, dz_sys_gen, dz_sys_misc, dz_sys_lag, dz_sys_pid, dz_sys_filt_bw, dz_sys_filt_maf, dz_sys_pex, dz_sys_lin]
+2019. 8.18. Renamed dzSysMethod to dzSysCom. [dz_sys, dz_sys_gen, dz_sys_misc, dz_sys_lag, dz_sys_pid, dz_sys_filt_bw, dz_sys_filt_maf, dz_sys_pex, dz_sys_lin]
+2019. 8.18. Renamed DZ_SYS_TAG and DZ_SYS_CONNECT_TAG to ZTK_TAG_DZSYS and ZTK_TAG_DZSYS_CONNECT, respectively. [dz_sys]
 2019. 8. 8. Reflected renaming of zNameDestroy to zNameFree. [dz_sys, dz_sys_pex, dz_sys_filt_bw]
 2019. 6.28. Reflected new specifications of zStrList and zStrAddrList. [app]
 2019. 6.18. Reflected new specification of zVecElem. [dz_pex]

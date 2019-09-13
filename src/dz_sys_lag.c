@@ -10,8 +10,8 @@
 /* first-order-lag system
  * ********************************************************** */
 
-#define __dz_sys_fol_tc(s)   ( ((double*)(s)->_prm)[0] )
-#define __dz_sys_fol_gain(s) ( ((double*)(s)->_prm)[1] )
+#define __dz_sys_fol_tc(s)   ( ((double*)(s)->prp)[0] )
+#define __dz_sys_fol_gain(s) ( ((double*)(s)->prp)[1] )
 
 static bool _dzSysFScanFOL(FILE *fp, void *val, char *buf, bool *success);
 
@@ -56,8 +56,8 @@ void dzSysFPrintFOL(FILE *fp, dzSys *sys)
   fprintf( fp, "gain: %g\n", __dz_sys_fol_gain(sys) );
 }
 
-dzSysMethod dz_sys_fol_met = {
-  type: "fol",
+dzSysCom dz_sys_fol_com = {
+  typestr: "fol",
   destroy: dzSysDestroyDefault,
   refresh: dzSysRefreshFOL,
   update: dzSysUpdateFOL,
@@ -71,11 +71,11 @@ bool dzSysCreateFOL(dzSys *sys, double tc, double gain)
   dzSysInit( sys );
   dzSysAllocInput( sys, 1 );
   if( dzSysInputNum(sys) == 0 || !dzSysAllocOutput( sys, 1 ) ||
-      !( sys->_prm = zAlloc( double, 2 ) ) ){
+      !( sys->prp = zAlloc( double, 2 ) ) ){
     ZALLOCERROR();
     return false;
   }
-  sys->_met = &dz_sys_fol_met;
+  sys->com = &dz_sys_fol_com;
   __dz_sys_fol_tc(sys) = tc;
   __dz_sys_fol_gain(sys) = gain;
   dzSysRefresh( sys );
@@ -96,13 +96,13 @@ void dzSysFOLSetGain(dzSys *sys, double gain)
 /* second-order-lag system
  * ********************************************************** */
 
-#define __dz_sys_sol_t1(s)      ( ((double*)(s)->_prm)[0] )
-#define __dz_sys_sol_t2(s)      ( ((double*)(s)->_prm)[1] )
-#define __dz_sys_sol_damp(s)    ( ((double*)(s)->_prm)[2] )
-#define __dz_sys_sol_gain(s)    ( ((double*)(s)->_prm)[3] )
-#define __dz_sys_sol_prevout(s) ( ((double*)(s)->_prm)[4] )
-#define __dz_sys_sol_previn(s)  ( ((double*)(s)->_prm)[5] )
-#define __dz_sys_sol_tr(s)      ( ((double*)(s)->_prm)[6] )
+#define __dz_sys_sol_t1(s)      ( ((double*)(s)->prp)[0] )
+#define __dz_sys_sol_t2(s)      ( ((double*)(s)->prp)[1] )
+#define __dz_sys_sol_damp(s)    ( ((double*)(s)->prp)[2] )
+#define __dz_sys_sol_gain(s)    ( ((double*)(s)->prp)[3] )
+#define __dz_sys_sol_prevout(s) ( ((double*)(s)->prp)[4] )
+#define __dz_sys_sol_previn(s)  ( ((double*)(s)->prp)[5] )
+#define __dz_sys_sol_tr(s)      ( ((double*)(s)->prp)[6] )
 
 static bool _dzSysFScanSOL(FILE *fp, void *val, char *buf, bool *success);
 
@@ -162,8 +162,8 @@ void dzSysFPrintSOL(FILE *fp, dzSys *sys)
   fprintf( fp, "gain: %g\n", __dz_sys_sol_gain(sys) );
 }
 
-dzSysMethod dz_sys_sol_met = {
-  type: "sol",
+dzSysCom dz_sys_sol_com = {
+  typestr: "sol",
   destroy: dzSysDestroyDefault,
   refresh: dzSysRefreshSOL,
   update: dzSysUpdateSOL,
@@ -181,11 +181,11 @@ bool dzSysCreateSOL(dzSys *sys, double t1, double t2, double damp, double gain)
   dzSysInit( sys );
   dzSysAllocInput( sys, 1 );
   if( dzSysInputNum(sys) == 0 || !dzSysAllocOutput( sys, 1 ) ||
-      !( sys->_prm = zAlloc( double, 7 ) ) ){
+      !( sys->prp = zAlloc( double, 7 ) ) ){
     ZALLOCERROR();
     return false;
   }
-  sys->_met = &dz_sys_sol_met;
+  sys->com = &dz_sys_sol_com;
   __dz_sys_sol_t1(sys) = t1;
   __dz_sys_sol_t2(sys) = t2;
   __dz_sys_sol_damp(sys) = damp;
@@ -204,10 +204,10 @@ bool dzSysCreateSOLGen(dzSys *sys, double a, double b, double c, double d, doubl
 /* phase compensator system
  * ********************************************************** */
 
-#define __dz_sys_pc_prev(s) ( ((double*)(s)->_prm)[0] )
-#define __dz_sys_pc_t1(s)   ( ((double*)(s)->_prm)[1] )
-#define __dz_sys_pc_t2(s)   ( ((double*)(s)->_prm)[2] )
-#define __dz_sys_pc_gain(s) ( ((double*)(s)->_prm)[3] )
+#define __dz_sys_pc_prev(s) ( ((double*)(s)->prp)[0] )
+#define __dz_sys_pc_t1(s)   ( ((double*)(s)->prp)[1] )
+#define __dz_sys_pc_t2(s)   ( ((double*)(s)->prp)[2] )
+#define __dz_sys_pc_gain(s) ( ((double*)(s)->prp)[3] )
 
 static bool _dzSysFScanPC(FILE *fp, void *val, char *buf, bool *success);
 
@@ -255,8 +255,8 @@ void dzSysFPrintPC(FILE *fp, dzSys *sys)
   fprintf( fp, "gain: %g\n", __dz_sys_pc_gain(sys) );
 }
 
-dzSysMethod dz_sys_pc_met = {
-  type: "pc",
+dzSysCom dz_sys_pc_com = {
+  typestr: "pc",
   destroy: dzSysDestroyDefault,
   refresh: dzSysRefreshPC,
   update: dzSysUpdatePC,
@@ -270,11 +270,11 @@ bool dzSysCreatePC(dzSys *sys, double t1, double t2, double gain)
   dzSysInit( sys );
   dzSysAllocInput( sys, 1 );
   if( dzSysInputNum(sys) == 0 || !dzSysAllocOutput( sys, 1 ) ||
-      !( sys->_prm = zAlloc( double, 4 ) ) ){
+      !( sys->prp = zAlloc( double, 4 ) ) ){
     ZALLOCERROR();
     return false;
   }
-  sys->_met = &dz_sys_pc_met;
+  sys->com = &dz_sys_pc_com;
   __dz_sys_pc_t1(sys) = t1;
   __dz_sys_pc_t2(sys) = t2;
   __dz_sys_pc_gain(sys) = gain;
@@ -286,9 +286,9 @@ bool dzSysCreatePC(dzSys *sys, double t1, double t2, double gain)
 /* adaptive system
  * ********************************************************** */
 
-#define __dz_sys_adapt_tc(s)     ( ((double*)(s)->_prm)[0] )
-#define __dz_sys_adapt_base(s)   ( ((double*)(s)->_prm)[1] )
-#define __dz_sys_adapt_offset(s) ( ((double*)(s)->_prm)[2] )
+#define __dz_sys_adapt_tc(s)     ( ((double*)(s)->prp)[0] )
+#define __dz_sys_adapt_base(s)   ( ((double*)(s)->prp)[1] )
+#define __dz_sys_adapt_offset(s) ( ((double*)(s)->prp)[2] )
 
 static bool _dzSysFScanAdapt(FILE *fp, void *val, char *buf, bool *success);
 
@@ -341,8 +341,8 @@ void dzSysFPrintAdapt(FILE *fp, dzSys *sys)
   fprintf( fp, "base: %g\n", __dz_sys_adapt_base(sys) );
 }
 
-dzSysMethod dz_sys_adapt_met = {
-  type: "adapt",
+dzSysCom dz_sys_adapt_com = {
+  typestr: "adapt",
   destroy: dzSysDestroyDefault,
   refresh: dzSysRefreshAdapt,
   update: dzSysUpdateAdapt,
@@ -360,11 +360,11 @@ bool dzSysCreateAdapt(dzSys *sys, double tc, double base)
   dzSysInit( sys );
   dzSysAllocInput( sys, 1 );
   if( dzSysInputNum(sys) == 0 || !dzSysAllocOutput( sys, 1 ) ||
-      !( sys->_prm = zAlloc( double, 3 ) ) ){
+      !( sys->prp = zAlloc( double, 3 ) ) ){
     ZALLOCERROR();
     return false;
   }
-  sys->_met = &dz_sys_adapt_met;
+  sys->com = &dz_sys_adapt_com;
   __dz_sys_adapt_tc(sys) = tc;
   __dz_sys_adapt_base(sys) = base;
   dzSysRefreshAdapt( sys );

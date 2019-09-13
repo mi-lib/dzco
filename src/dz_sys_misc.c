@@ -44,8 +44,8 @@ void dzSysFPrintAdder(FILE *fp, dzSys *sys)
   fprintf( fp, "in: %d\n", dzSysInputNum(sys) );
 }
 
-dzSysMethod dz_sys_adder_met = {
-  type: "adder",
+dzSysCom dz_sys_adder_com = {
+  typestr: "adder",
   destroy: dzSysDestroyDefault,
   refresh: dzSysRefreshDefault,
   update: dzSysUpdateAdder,
@@ -62,7 +62,7 @@ bool dzSysCreateAdder(dzSys *sys, int n)
     ZALLOCERROR();
     return false;
   }
-  sys->_met = &dz_sys_adder_met;
+  sys->com = &dz_sys_adder_com;
   return true;
 }
 
@@ -93,8 +93,8 @@ void dzSysFPrintSubtr(FILE *fp, dzSys *sys)
   fprintf( fp, "in: %d\n", dzSysInputNum(sys) );
 }
 
-dzSysMethod dz_sys_subtr_met = {
-  type: "subtr",
+dzSysCom dz_sys_subtr_com = {
+  typestr: "subtr",
   destroy: dzSysDestroyDefault,
   refresh: dzSysRefreshDefault,
   update: dzSysUpdateSubtr,
@@ -111,7 +111,7 @@ bool dzSysCreateSubtr(dzSys *sys, int n)
     ZALLOCERROR();
     return false;
   }
-  sys->_met = &dz_sys_subtr_met;
+  sys->com = &dz_sys_subtr_com;
   return true;
 }
 
@@ -124,7 +124,7 @@ static bool _dzSysFScanLimit(FILE *fp, void *val, char *buf, bool *success);
 zVec dzSysUpdateLimit(dzSys *sys, double dt)
 {
   dzSysOutputVal(sys,0) =
-    zLimit( dzSysInputVal(sys,0), ((double*)sys->_prm)[0], ((double*)sys->_prm)[1] );
+    zLimit( dzSysInputVal(sys,0), ((double*)sys->prp)[0], ((double*)sys->prp)[1] );
   return dzSysOutput(sys);
 }
 
@@ -152,15 +152,15 @@ void dzSysFPrintLimit(FILE *fp, dzSys *sys)
 {
   double max, min;
 
-  max = ((double*)sys->_prm)[0];
-  min = ((double*)sys->_prm)[1];
+  max = ((double*)sys->prp)[0];
+  min = ((double*)sys->prp)[1];
   if( max < min ) zSwap( double, max, min );
   fprintf( fp, "min: %g\n", min );
   fprintf( fp, "max: %g\n", max );
 }
 
-dzSysMethod dz_sys_limit_met = {
-  type: "limit",
+dzSysCom dz_sys_limit_com = {
+  typestr: "limit",
   destroy: dzSysDestroyDefault,
   refresh: dzSysRefreshDefault,
   update: dzSysUpdateLimit,
@@ -174,12 +174,12 @@ bool dzSysCreateLimit(dzSys *sys, double max, double min)
   dzSysInit( sys );
   dzSysAllocInput( sys, 1 );
   if( dzSysInputNum(sys) == 0 || !dzSysAllocOutput( sys, 1 ) ||
-      !( sys->_prm = zAlloc( double, 2 ) ) ){
+      !( sys->prp = zAlloc( double, 2 ) ) ){
     ZALLOCERROR();
     return false;
   }
-  ((double *)sys->_prm)[0] = zMin( max, min );
-  ((double *)sys->_prm)[1] = zMax( max, min );
-  sys->_met = &dz_sys_limit_met;
+  ((double *)sys->prp)[0] = zMin( max, min );
+  ((double *)sys->prp)[1] = zMax( max, min );
+  sys->com = &dz_sys_limit_com;
   return true;
 }
