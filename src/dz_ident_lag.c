@@ -6,9 +6,7 @@
 
 #include <dzco/dz_ident_lag.h>
 
-/* dzIdentTrig
- * - find trigger time stamp for system identification.
- */
+/* find trigger time stamp for system identification. */
 int dzIdentTrig(double r[], int n)
 {
   double r_old;
@@ -19,7 +17,7 @@ int dzIdentTrig(double r[], int n)
     if( !zIsTiny( r[i] - r_old ) ) return i;
     r_old = r[i];
   }
-  ZRUNERROR( "trigger not found" );
+  ZRUNERROR( DZ_ERR_IDENT_LAG_UNTRIGERRED );
   return -1;
 }
 
@@ -35,11 +33,7 @@ struct _dzIdentFOL_t{
   int trig;  /* trigger stamp */
 };
 
-static double _dzIdentFOLEval(zVec prm, void *priv);
-
-/* dzIdentFOLInit
- * - initial estimation of first-order-lag system parameters.
- */
+/* initial estimation of first-order-lag system parameters. */
 void dzIdentFOL1(double t[], double r[], double y[], int n, int trig, double *tc, double *gain)
 {
   register int i;
@@ -61,11 +55,8 @@ void dzIdentFOL1(double t[], double r[], double y[], int n, int trig, double *tc
   *tc = t[n-1] - t[trig]; /* out of range */
 }
 
-/* (static)
- * _dzIdentFOLEval
- * - evaluate residual of FOL system.
- */
-double _dzIdentFOLEval(zVec prm, void *priv)
+/* evaluate residual of FOL system. */
+static double _dzIdentFOLEval(zVec prm, void *priv)
 {
   struct _dzIdentFOL_t *ws = priv;
   register int i;
@@ -80,10 +71,7 @@ double _dzIdentFOLEval(zVec prm, void *priv)
   return eval;
 }
 
-/* dzIdentFOL
- * - identify first-order-lag system
- *   (time constant and gain).
- */
+/* identify first-order-lag system (time constant and gain). */
 bool dzIdentFOL(double t[], double r[], double y[], int n, int trig, double *tc, double *gain)
 {
   struct _dzIdentFOL_t ws;
@@ -123,15 +111,8 @@ struct _dzIdentSOL_t{
   int peak;  /* peak stamp */
 };
 
-static int _dzIdentSOLPeak(double y[], int n, int trig);
-static double _dzIdentSOL_ref(double t, double z, double k);
-static double _dzIdentSOLEval(zVec prm, void *priv);
-
-/* (static)
- * _dzIdentSOLPeak
- * - find peak time stamp for system identification.
- */
-int _dzIdentSOLPeak(double y[], int n, int trig)
+/* find peak time stamp for system identification. */
+static int _dzIdentSOLPeak(double y[], int n, int trig)
 {
   double y_max, val;
   register int i, peak;
@@ -145,9 +126,7 @@ int _dzIdentSOLPeak(double y[], int n, int trig)
   return peak;
 }
 
-/* dzIdentSOL1
- * - initial estimation of second-order-lag system parameters.
- */
+/* initial estimation of second-order-lag system parameters. */
 void dzIdentSOL1(double t[], double r[], double y[], int n, int trig, double *tc, double *z, double *gain)
 {
   int peak;
@@ -174,11 +153,8 @@ void dzIdentSOL1(double t[], double r[], double y[], int n, int trig, double *tc
   }
 }
 
-/* (static)
- * _dzIdentSOL_ref
- * - ideal referential value of SOL function.
- */
-double _dzIdentSOL_ref(double t, double z, double k)
+/* ideal referential value of SOL function. */
+static double _dzIdentSOL_ref(double t, double z, double k)
 {
   double d, l1, l2;
 
@@ -194,11 +170,8 @@ double _dzIdentSOL_ref(double t, double z, double k)
     return k * ( 1 - exp(-t) - t*exp(-t) );
 }
 
-/* (static)
- * _dzIdentSOLEval
- * - evaluate residual of SOL system.
- */
-double _dzIdentSOLEval(zVec prm, void *priv)
+/* evaluate residual of SOL system. */
+static double _dzIdentSOLEval(zVec prm, void *priv)
 {
   struct _dzIdentSOL_t *ws = priv;
   register int i;
@@ -214,10 +187,7 @@ double _dzIdentSOLEval(zVec prm, void *priv)
   return eval;
 }
 
-/* dzIdentSOL
- * - identify second-order-lag system
- *   (time constant, damping coefficient and gain).
- */
+/* identify second-order-lag system (time constant, damping coefficient and gain). */
 bool dzIdentSOL(double t[], double r[], double y[], int n, int trig, double *tc, double *z, double *gain)
 {
   struct _dzIdentSOL_t ws;

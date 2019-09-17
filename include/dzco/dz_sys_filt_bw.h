@@ -22,11 +22,10 @@ __BEGIN_DECLS
  * with the cut-off frequency \a cf and the dimension \a dim.
  * \a dt is the sampling time.
  * \retval
- * dzBWCreate() returns the true value, if succeeding.
- * Or, it returns the false value when failing by some
- * reasons.
+ * dzBWCreate() returns a pointer \a sys if succeeding.
+ * Or, it returns the null pointer when failing by any reasons.
  */
-__EXPORT bool dzSysCreateBW(dzSys *sys, double cf, uint dim);
+__EXPORT dzSys *dzSysCreateBW(dzSys *sys, double cf, uint dim);
 
 extern dzSysCom dz_sys_bw_com;
 

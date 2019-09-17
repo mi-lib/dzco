@@ -9,6 +9,8 @@
 
 #include <zm/zm.h>
 
+#include <dzco/dz_errmsg.h>
+
 __BEGIN_DECLS
 
 /* ********************************************************** */
@@ -33,8 +35,10 @@ typedef struct{
   const char *typestr;
   void (*destroy)(struct _dzSys*);
   void (*refresh)(struct _dzSys*);
-  zVec (*update)(struct _dzSys*, double dt);
+  zVec (*update)(struct _dzSys*, double);
   struct _dzSys *(*fscan)(FILE *fp, struct _dzSys*);
+  bool (*regZTK)(ZTK*);
+  struct _dzSys *(*fromZTK)(struct _dzSys*, ZTK*);
   void (*fprint)(FILE *fp, struct _dzSys*);
 } dzSysCom;
 
@@ -123,6 +127,8 @@ __EXPORT void dzSysRefreshDefault(dzSys *sys);
 #define ZTK_TAG_DZSYS "sys"
 #define ZTK_TAG_DZSYS_CONNECT "connect"
 
+__EXPORT void *dzSysFromZTK(dzSys *sys, ZTK *ztk);
+
 __EXPORT dzSys *dzSysFScan(FILE *fp, dzSys *sys);
 __EXPORT void dzSysFPrint(FILE *fp, dzSys *sys);
 
@@ -132,11 +138,21 @@ __EXPORT void dzSysFPrint(FILE *fp, dzSys *sys);
 
 zArrayClass( dzSysArray, dzSys );
 
+/*! \brief allocate an array of systems. */
+__EXPORT dzSysArray *dzSysArrayAlloc(dzSysArray *arr, int size);
+
+/*! \brief destroy an array of systems. */
 __EXPORT void dzSysArrayDestroy(dzSysArray *arr);
 
+/*! \brief find a system from array by name. */
 __EXPORT dzSys *dzSysArrayNameFind(dzSysArray *arr, const char *name);
 
+/*! \brief update all systems of an array. */
 __EXPORT void dzSysArrayUpdate(dzSysArray *arr, double dt);
+
+__EXPORT bool dzSysRegZTK(ZTK *ztk);
+__EXPORT dzSysArray *dzSysArrayFromZTK(dzSysArray *sarray, ZTK *ztk);
+__EXPORT dzSysArray *dzSysArrayScanZTK(dzSysArray *sarray, char filename[]);
 
 __EXPORT bool dzSysArrayFScan(FILE *fp, dzSysArray *sys);
 __EXPORT void dzSysArrayFPrint(FILE *fp, dzSysArray *sys);
@@ -149,7 +165,7 @@ __END_DECLS
 #include <dzco/dz_sys_pid.h>  /* PID compensators */
 #include <dzco/dz_sys_lag.h>  /* first-order and second-order lag systems */
 #include <dzco/dz_sys_lin.h>  /* linear systems */
-#include <dzco/dz_sys_pex.h>  /* polynomial rational transfer functions */
+#include <dzco/dz_sys_tf.h>   /* transfer function by polynomial rational expression */
 
 #include <dzco/dz_sys_filt_maf.h> /* moving-average filter */
 #include <dzco/dz_sys_filt_bw.h>  /* Butterworth filter */

@@ -19,16 +19,17 @@ __BEGIN_DECLS
  *
  * dzSysCreateAdder() and dzSysCreateSubtr() creates an adder and
  * a subtractor, respectively.
- * The system created is stored into \a c.
+ * The system created is stored into \a sys.
  * \retval
- * dzSysCreateAdder() and dzSysCreateSubtr() return the true value
- * without exception.
+ * dzSysCreateAdder() and dzSysCreateSubtr() return the null poiter
+ * if they fail to allocate internal memory. Otherwise, a pointer
+ * \a sys is returned.
  */
-__EXPORT bool dzSysCreateAdder(dzSys *c, int n);
+__EXPORT dzSys *dzSysCreateAdder(dzSys *sys, int n);
 
 extern dzSysCom dz_sys_adder_com;
 
-__EXPORT bool dzSysCreateSubtr(dzSys *c, int n);
+__EXPORT dzSys *dzSysCreateSubtr(dzSys *sys, int n);
 
 extern dzSysCom dz_sys_subtr_com;
 
@@ -38,17 +39,17 @@ extern dzSysCom dz_sys_subtr_com;
 
 /*! \brief create saturater.
  *
- * dzSysCreateLimit() creates a saturater \a c. \a min and \a max
+ * dzSysCreateLimit() creates a saturater \a sys. \a min and \a max
  * are the minimum and maximum borders, respectively. The output
- * of \a c is saturated by \a min and \a max.
+ * of \a sys is saturated by \a min and \a max.
  * \retval
- * dzSysCreateLimit() returns the false value if it fails to allocate
- * the internal work space. Otherwise, the true value is returned.
+ * dzSysCreateLimit() returns the null pointer if it fails to allocate
+ * the internal work space. Otherwise, a pointer \a sys is returned.
  * \notes
  * When \a max is less than \a min, the border is automatically
  * corrected by swapping the two values.
  */
-__EXPORT bool dzSysCreateLimit(dzSys *c, double max, double min);
+__EXPORT dzSys *dzSysCreateLimit(dzSys *sys, double min, double max);
 
 extern dzSysCom dz_sys_limit_com;
 

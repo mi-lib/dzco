@@ -7,11 +7,9 @@ int main(int argc, char *argv[])
 {
   dzSysArray arr;
   dzSys *sys_out;
-  FILE *fp;
   register int i;
 
-  fp = fopen( "connect_test.ztk", "r" );
-  dzSysArrayFScan( fp, &arr );
+  dzSysArrayScanZTK( &arr, "connect_test.ztk" );
   dzSysArrayFPrint( stderr, &arr );
   sys_out = dzSysArrayNameFind( &arr, "intg2" );
   for( i=0; i<=STEP; i++ ){

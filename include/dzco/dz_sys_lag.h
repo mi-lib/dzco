@@ -19,19 +19,19 @@ __BEGIN_DECLS
 
 /*!\brief create first-order-lag system.
  *
- * dzSysCreateFOL() creates a first-order-lag system \a c.
+ * dzSysCreateFOL() creates a first-order-lag system \a sys.
  * \a dt is the sampling time for descrete integration.
  * \a t is the time constant of the system.
  * \a gain is the gain.
  * \return
- * dzSysCreateFOL() returns the false value if \a dt is a
+ * dzSysCreateFOL() returns a pointer \a sys if \a dt is a
  * too short or negative value, or it fails to allocate the
  * internal work space. Otherwise, the true value is returned.
  */
-__EXPORT bool dzSysCreateFOL(dzSys *c, double tc, double gain);
+__EXPORT dzSys *dzSysCreateFOL(dzSys *sys, double tc, double gain);
 
-__EXPORT void dzSysFOLSetTC(dzSys *c, double tc);
-__EXPORT void dzSysFOLSetGain(dzSys *c, double gain);
+__EXPORT void dzSysFOLSetTC(dzSys *sys, double tc);
+__EXPORT void dzSysFOLSetGain(dzSys *sys, double gain);
 
 extern dzSysCom dz_sys_fol_com;
 
@@ -43,7 +43,7 @@ extern dzSysCom dz_sys_fol_com;
 
 /*! \brief create second-order-lag system.
  *
- * dzSysCreateSOL() creates a second-order-lag system \a g.
+ * dzSysCreateSOL() creates a second-order-lag system \a sys.
  * \a dt is the sampling time for descrete integration.
  * \a damp is the damping coefficient.
  * \a t1 is the dominant time constant.
@@ -57,7 +57,7 @@ extern dzSysCom dz_sys_fol_com;
  *   (\a t1 s)^2 + 2*\a damp*\a t1 s + 1
  *
  * dzSysCreateSOLGen() is another constructor of a second-order-lag
- * system \a g. \a a, \a b, \a c, \a d and \a e defines the
+ * system \a sys. \a a, \a b, \a c, \a d and \a e defines the
  * system by the following transfer function.
  *
  *        \a d s + \a e
@@ -67,13 +67,13 @@ extern dzSysCom dz_sys_fol_com;
  * It is preferable when the coefficients are known
  * rather than the characteristic parameters.
  * \return
- * dzSysCreateSOL() and dzSysCreateSOL_Gen() return the false
- * value if \a dt is a too short or negative value, or they
- * fail to allocate the internal work space. Otherwise, the
- * true value is returned.
+ * dzSysCreateSOL() and dzSysCreateSOL_Gen() return the null
+ * pointer if \a dt is a too short or negative value, or they
+ * fail to allocate the internal work space. Otherwise, a
+ * pointer \a sys is returned.
  */
-__EXPORT bool dzSysCreateSOL(dzSys *sys, double t1, double t2, double damp, double gain);
-__EXPORT bool dzSysCreateSOLGen(dzSys *sys, double a, double b, double c, double d, double e);
+__EXPORT dzSys *dzSysCreateSOL(dzSys *sys, double t1, double t2, double damp, double gain);
+__EXPORT dzSys *dzSysCreateSOLGen(dzSys *sys, double a, double b, double c, double d, double e);
 
 extern dzSysCom dz_sys_sol_com;
 
@@ -85,20 +85,20 @@ extern dzSysCom dz_sys_sol_com;
 
 /*! \brief create phase compensator.
  *
- * dzSysCreatePC() creates a phase compensator \a c.
+ * dzSysCreatePC() creates a phase compensator \a sys.
  * \a dt is the sampling time for descrete integration.
  * The other parameters consist of the following transfer function.
  *                \a t2 s + 1
  *  G(s) = \a gain ----------
  *                \a t1 s + 1
- * When \a t2 < \a t1, \a c is a phase-lag compensator.
- * When \a t2 > \a t1, \a c is a phase-lead compensator.
+ * When \a t2 < \a t1, \a sys is a phase-lag compensator.
+ * When \a t2 > \a t1, \a sys is a phase-lead compensator.
  * \return
- * dzSysCreatePC() returns the false value if \a dt is a too
+ * dzSysCreatePC() returns the null pointer if \a dt is a too
  * short or a negative value, or it fails to allocate the
- * internal work space. Otherwise, the true value is returned.
+ * internal work space. Otherwise, a pointer \a sys is returned.
  */
-__EXPORT bool dzSysCreatePC(dzSys *c, double t1, double t2, double gain);
+__EXPORT dzSys *dzSysCreatePC(dzSys *sys, double t1, double t2, double gain);
 
 extern dzSysCom dz_sys_pc_com;
 
@@ -112,14 +112,15 @@ __EXPORT void dzSysAdaptSetBase(dzSys *sys, double base);
 
 /*!\brief create adaptive system.
  *
- * dzSysCreateAdapt() creates an adaptive system \a c.
+ * dzSysCreateAdapt() creates an adaptive system \a sys.
  * \a dt is the sampling time for descrete integration, \a t is
  * the time constant, and \a base is the base value of the output.
- * \retval false if \a dt is too small or negative, or if it fails
- * to allocate the internal work space.
- * \retval true otherwise.
+ * \retval
+ * dzSysCreateAdapt() returns the null pointer if \a dt is too small
+ * or negative, or if it fails to allocate the internal work space.
+ * Otherwise, a pointer \a sys is returned.
  */
-__EXPORT bool dzSysCreateAdapt(dzSys *c, double tc, double base);
+__EXPORT dzSys *dzSysCreateAdapt(dzSys *sys, double tc, double base);
 
 extern dzSysCom dz_sys_adapt_com;
 

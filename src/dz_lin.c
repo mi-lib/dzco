@@ -40,7 +40,6 @@ bool dzLinAlloc(dzLin *lin, int dim)
   lin->d = 0;
   lin->x = zVecAlloc( dim );
   if( !lin->a || !lin->b || !lin->c || !lin->x || !_dzLinAllocODE( lin ) ){
-    ZRUNERROR( "cannot create a linear system" );
     _dzLinDestroy( lin );
     return false;
   }
@@ -58,7 +57,6 @@ bool _dzLinAllocODE(dzLin *lin)
   zODEAssign( &lin->_ode, RKG, NULL, NULL ); /* Runge-Kutta-Gill's method */
   if( !lin->_ax || !lin->_bu ||
       !zODEInit( &lin->_ode, dim, 0, __dz_lin_state_dif ) ){
-    ZRUNERROR( "cannot create a linear system" );
     _dzLinDestroyODE( lin );
     return false;
   }
@@ -139,14 +137,10 @@ bool _dzLinCOMatPrep(dzLin *c, zMat m, uint size, zVec *v)
 {
   if( zMatRowSize(m) != zMatRowSize(c->a) ||
       zMatColSize(m) != zMatColSize(c->a) ){
-    ZRUNERROR( "size mismatch of matrices" );
+    ZRUNERROR( ZM_ERR_SIZMIS_MAT );
     return false;
   }
-  if( !( *v  = zVecAlloc( size ) ) ){
-    ZRUNERROR( "cannot create controllable matrix" );
-    return false;
-  }
-  return true;
+  return ( *v = zVecAlloc( size ) ) ? true : false;
 }
 
 /* create controllable matrix. */
@@ -253,7 +247,7 @@ zMat dzLinCtrlCanon(dzLin *c, zMat t)
 
   dzLinCtrlMat( c, uc );
   if( !zMatInv( uc, uc_inv ) ){
-    ZRUNERROR( "system is not controllable" );
+    ZRUNERROR( DZ_ERR_LIN_UNCTRL );
     t = NULL;
     goto TERMINATE;
   }
@@ -286,7 +280,7 @@ zVec dzLinPoleAssign(dzLin *c, zVec pole, zVec f)
     goto TERMINATE;
   }
   if( !dzLinCtrlCanon( c, t ) ){
-    ZRUNERROR( "cannot assign desired pole" );
+    ZRUNERROR( DZ_ERR_LIN_UNASSIGNABLE_POLE );
     f = NULL;
     goto TERMINATE;
   }
@@ -461,71 +455,67 @@ zVec dzLinLQR(dzLin *c, zVec q, double r, zVec f)
 /* conversion from polynomial transfer function to linear system
  * in controllable / observable canonical form.
  */
-static dzLin *_dzPex2LinCtrlCanon_sp(dzPex *sp, dzLin *lin);
-static dzLin *_dzPex2LinObsCanon_sp(dzPex *sp, dzLin *lin);
-static dzLin *_dzPex2LinCanon_non_sp(dzPex *sp, dzLin *lin, dzLin *(*pex2lin_sp)(dzPex*,dzLin*));
-static dzLin *_dzPex2LinCanon(dzPex *sp, dzLin *lin, dzLin *(*pex2lin_sp)(dzPex*,dzLin*));
-
-dzLin *_dzPex2LinCtrlCanon_sp(dzPex *sp, dzLin *lin)
+static dzLin *_dzTF2LinCtrlCanon_tf(dzTF *tf, dzLin *lin)
 {
   register uint i, n;
   double a;
 
-  n = dzPexDenDim(sp) - 1;
+  n = dzTFDenDim(tf) - 1;
   if( !dzLinAlloc( lin, n+1 ) ){
-    ZRUNERROR( "cannot convert the transfer function to linear system" );
+    ZRUNERROR( DZ_ERR_LIN_UNCONVERTIBLE_TF );
     return NULL;
   }
   for( i=1; i<=n; i++ )
     zMatSetElem( lin->a, i-1, i, 1.0 );
-  a = dzPexDenElem( sp, n+1 );
+  a = dzTFDenElem( tf, n+1 );
   for( i=0; i<=n; i++ )
-    zMatSetElem( lin->a, n, i, -dzPexDenElem( sp, i ) / a );
+    zMatSetElem( lin->a, n, i, -dzTFDenElem( tf, i ) / a );
   zVecSetElem( lin->b, n, 1.0 );
   for( i=0; i<=n; i++ )
-    zVecSetElem( lin->c, i, dzPexNumElem( sp, i ) / a );
+    zVecSetElem( lin->c, i, dzTFNumElem( tf, i ) / a );
   return lin;
 }
 
-dzLin *_dzPex2LinObsCanon_sp(dzPex *sp, dzLin *lin)
+static dzLin *_dzTF2LinObsCanon_tf(dzTF *tf, dzLin *lin)
 {
   register int i, n;
   double a;
 
-  n = dzPexDenDim(sp) - 1;
+  n = dzTFDenDim(tf) - 1;
   if( !dzLinAlloc( lin, n+1 ) ){
-    ZRUNERROR( "cannot convert the transfer function to linear system" );
+    ZRUNERROR( DZ_ERR_LIN_UNCONVERTIBLE_TF );
     return NULL;
   }
   for( i=1; i<=n; i++ )
     zMatSetElem( lin->a, i, i-1, 1.0 );
-  a = dzPexDenElem( sp, n+1 );
+  a = dzTFDenElem( tf, n+1 );
   for( i=0; i<=n; i++ )
-    zMatSetElem( lin->a, i, n, -dzPexDenElem( sp, i ) / a );
+    zMatSetElem( lin->a, i, n, -dzTFDenElem( tf, i ) / a );
   for( i=0; i<=n; i++ )
-    zVecSetElem( lin->b, i, dzPexNumElem( sp, i ) / a );
+    zVecSetElem( lin->b, i, dzTFNumElem( tf, i ) / a );
   zVecSetElem( lin->c, n, 1.0 );
   return lin;
 }
 
-dzLin *_dzPex2LinCanon_non_sp(dzPex *sp, dzLin *lin, dzLin *(*pex2lin_sp)(dzPex*,dzLin*))
+static dzLin *_dzTF2LinCanon_non_tf(dzTF *tf, dzLin *lin, dzLin *(*tf2lin_tf)(dzTF*,dzLin*));
+dzLin *_dzTF2LinCanon_non_tf(dzTF *tf, dzLin *lin, dzLin *(*tf2lin_tf)(dzTF*,dzLin*))
 {
   zPex q, org_num, new_num;
 
-  if( !zPexDiv( dzPexNum(sp), dzPexDen(sp), &q, &new_num ) ){
+  if( !zPexDiv( dzTFNum(tf), dzTFDen(tf), &q, &new_num ) ){
     ZALLOCERROR();
     lin = NULL;
     goto TERMINATE;
   }
   if( zPexDim(q) != 0 ){
-    ZRUNERROR( "fatal error - wrong denominator" );
-    zPexFPrint( stderr, dzPexDen(sp) );
+    ZRUNERROR( DZ_ERR_TF_INVALID_DEN );
+    zPexFPrint( stderr, dzTFDen(tf) );
     goto TERMINATE;
   }
-  org_num = dzPexNum(sp);
-  dzPexSetNum( sp, new_num );
-  pex2lin_sp( sp, lin );
-  dzPexSetNum( sp, org_num );
+  org_num = dzTFNum(tf);
+  dzTFSetNum( tf, new_num );
+  tf2lin_tf( tf, lin );
+  dzTFSetNum( tf, org_num );
   lin->d = zPexCoeff( q, 0 );
  TERMINATE:
   zPexFree( q );
@@ -533,23 +523,24 @@ dzLin *_dzPex2LinCanon_non_sp(dzPex *sp, dzLin *lin, dzLin *(*pex2lin_sp)(dzPex*
   return lin;
 }
 
-dzLin *_dzPex2LinCanon(dzPex *sp, dzLin *lin, dzLin *(*pex2lin_sp)(dzPex*,dzLin*))
+static dzLin *_dzTF2LinCanon(dzTF *tf, dzLin *lin, dzLin *(*tf2lin_tf)(dzTF*,dzLin*));
+dzLin *_dzTF2LinCanon(dzTF *tf, dzLin *lin, dzLin *(*tf2lin_tf)(dzTF*,dzLin*))
 {
-  if( dzPexDenDim(sp) < dzPexNumDim(sp) ){ /* non-proper case */
-    ZRUNERROR( "system is not proper" );
+  if( dzTFDenDim(tf) < dzTFNumDim(tf) ){ /* non-proper case */
+    ZRUNERROR( DZ_ERR_TF_NONPROPER );
     return NULL;
   }
-  if( dzPexDenDim(sp) == dzPexNumDim(sp) ) /* not-strictly-proper case */
-    return _dzPex2LinCanon_non_sp( sp, lin, pex2lin_sp );
-  return pex2lin_sp( sp, lin );
+  if( dzTFDenDim(tf) == dzTFNumDim(tf) ) /* not-strictly-proper case */
+    return _dzTF2LinCanon_non_tf( tf, lin, tf2lin_tf );
+  return tf2lin_tf( tf, lin );
 }
 
-dzLin *dzPex2LinCtrlCanon(dzPex *sp, dzLin *lin){
-  return _dzPex2LinCanon( sp, lin, _dzPex2LinCtrlCanon_sp );
+dzLin *dzTF2LinCtrlCanon(dzTF *tf, dzLin *lin){
+  return _dzTF2LinCanon( tf, lin, _dzTF2LinCtrlCanon_tf );
 }
 
-dzLin *dzPex2LinObsCanon(dzPex *sp, dzLin *lin){
-  return _dzPex2LinCanon( sp, lin, _dzPex2LinObsCanon_sp );
+dzLin *dzTF2LinObsCanon(dzTF *tf, dzLin *lin){
+  return _dzTF2LinCanon( tf, lin, _dzTF2LinObsCanon_tf );
 }
 
 /* scan a linear system from a file. */
@@ -577,28 +568,81 @@ dzLin *dzLinFScan(FILE *fp, dzLin *lin)
   dzLinInit( lin );
   zFieldFScan( fp, _dzLinFScan, lin );
   if( !lin->a || !lin->b || !lin->c ){
-    ZALLOCERROR();
     _dzLinDestroy( lin );
     return NULL;
   }
   if( !_dzLinCheckSize( lin ) ){
-    ZRUNERROR( "inconsistent system dimension" );
+    ZRUNERROR( DZ_ERR_LIN_SIZMIS );
     return NULL;
   }
   if( !( lin->x = zVecAlloc( zVecSize(lin->c) ) ) ||
       !_dzLinAllocODE( lin ) ){
-    ZALLOCERROR();
     _dzLinDestroy( lin );
     return NULL;
   }
   return lin;
 }
 
-/* print a linear system to a file. */
+static void *_dzLinFromZTKA(void *obj, int i, void *arg, ZTK *ztk){
+  return ( ((dzLin*)obj)->a = zMatFromZTK( ztk ) ) ? obj : NULL;
+}
+static void *_dzLinFromZTKB(void *obj, int i, void *arg, ZTK *ztk){
+  return ( ((dzLin*)obj)->b = zVecFromZTK( ztk ) ) ? obj : NULL;
+}
+static void *_dzLinFromZTKC(void *obj, int i, void *arg, ZTK *ztk){
+  return ( ((dzLin*)obj)->c = zVecFromZTK( ztk ) ) ? obj : NULL;
+}
+static void *_dzLinFromZTKD(void *obj, int i, void *arg, ZTK *ztk){
+  ((dzLin*)obj)->d = ZTKDouble(ztk);
+  return obj;
+}
+
+static void _dzLinFPrintA(FILE *fp, int i, void *prp){
+  zMatFPrint( fp, ((dzLin*)prp)->a );
+}
+static void _dzLinFPrintB(FILE *fp, int i, void *prp){
+  zVecFPrint( fp, ((dzLin*)prp)->b );
+}
+static void _dzLinFPrintC(FILE *fp, int i, void *prp){
+  zVecFPrint( fp, ((dzLin*)prp)->c );
+}
+static void _dzLinFPrintD(FILE *fp, int i, void *prp){
+  fprintf( fp, "%.10g\n", ((dzLin*)prp)->d );
+}
+
+static ZTKPrp __ztk_prp_dzlin[] = {
+  { "a", 1, _dzLinFromZTKA, _dzLinFPrintA },
+  { "b", 1, _dzLinFromZTKB, _dzLinFPrintB },
+  { "c", 1, _dzLinFromZTKC, _dzLinFPrintC },
+  { "d", 1, _dzLinFromZTKD, _dzLinFPrintD },
+};
+
+bool dzLinRegZTK(ZTK *ztk, char *tag)
+{
+  return ZTKDefRegPrp( ztk, tag, __ztk_prp_dzlin ) ? true : false;
+}
+
+dzLin *dzLinFromZTK(dzLin *lin, ZTK *ztk)
+{
+  dzLinInit( lin );
+  if( !ZTKEncodeKey( lin, NULL, ztk, __ztk_prp_dzlin ) ) return NULL;
+  if( !lin->a || !lin->b || !lin->c ){
+    _dzLinDestroy( lin );
+    return NULL;
+  }
+  if( !_dzLinCheckSize( lin ) ){
+    ZRUNERROR( DZ_ERR_LIN_SIZMIS );
+    return NULL;
+  }
+  if( !( lin->x = zVecAlloc( zVecSize(lin->c) ) ) ||
+      !_dzLinAllocODE( lin ) ){
+    _dzLinDestroy( lin );
+    return NULL;
+  }
+  return lin;
+}
+
 void dzLinFPrint(FILE *fp, dzLin *lin)
 {
-  fprintf( fp, "a: " ); zMatFPrint( fp, lin->a );
-  fprintf( fp, "b: " ); zVecFPrint( fp, lin->b );
-  fprintf( fp, "c: " ); zVecFPrint( fp, lin->c );
-  fprintf( fp, "d: %g\n", lin->d );
+  ZTKPrpKeyFPrint( fp, lin, __ztk_prp_dzlin );
 }

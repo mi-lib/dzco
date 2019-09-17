@@ -9,18 +9,15 @@
 #define __dz_sys_maf_ff(s)  ( ((double*)(s)->prp)[0] )
 #define __dz_sys_maf_iov(s) ( ((double*)(s)->prp)[1] )
 
-static double _dzSysMAFCF2FF(double cf, double dt);
-static double _dzSysMAFFF2CF(double ff, double dt);
-
 static bool _dzSysFScanMAF(FILE *fp, void *val, char *buf, bool *success);
 
 /* cut-off frequency to forgetting-factor */
-double _dzSysMAFCF2FF(double cf, double dt){
+static double _dzSysMAFCF2FF(double cf, double dt){
   return 1.0 / ( 1 + 2*zPI*cf*dt );
 }
 
 /* forgetting-factor to cut-off frequency */
-double _dzSysMAFFF2CF(double ff, double dt){
+static double _dzSysMAFFF2CF(double ff, double dt){
   return ( 1.0/ff - 1.0 ) / ( 2*zPI*dt );
 }
 
@@ -52,12 +49,37 @@ dzSys *dzSysFScanMAF(FILE *fp, dzSys *sys)
   double ff = 0;
 
   zFieldFScan( fp, _dzSysFScanMAF, &ff );
-  return dzSysCreateMAF( sys, ff ) ? sys : NULL;
+  return dzSysCreateMAF( sys, ff );
 }
 
-void dzSysFPrintMAF(FILE *fp, dzSys *sys)
+static void *_dzSysFromZTKMAFFF(void *val, int i, void *arg, ZTK *ztk){
+  *(double*)val = ZTKDouble(ztk);
+  return val;
+}
+
+static void _dzSysFPrintMAFFF(FILE *fp, int i, void *prp){
+  fprintf( fp, "%.10g\n", __dz_sys_maf_ff((dzSys*)prp) );
+}
+
+static ZTKPrp __ztk_prp_dzsys_maf[] = {
+  { "ff", 1, _dzSysFromZTKMAFFF, _dzSysFPrintMAFFF },
+};
+
+static bool _dzSysRegZTKMAF(ZTK *ztk)
 {
-  fprintf( fp, "ff: %g\n", __dz_sys_maf_ff(sys) );
+  return ZTKDefRegPrp( ztk, ZTK_TAG_DZSYS, __ztk_prp_dzsys_maf ) ? true : false;
+}
+
+static dzSys *_dzSysFromZTKMAF(dzSys *sys, ZTK *ztk)
+{
+  double ff = 0;
+  if( !ZTKEncodeKey( &ff, NULL, ztk, __ztk_prp_dzsys_maf ) ) return NULL;
+  return dzSysCreateMAF( sys, ff );
+}
+
+static void _dzSysFPrintMAF(FILE *fp, dzSys *sys)
+{
+  ZTKPrpKeyFPrint( fp, sys, __ztk_prp_dzsys_maf );
 }
 
 dzSysCom dz_sys_maf_com = {
@@ -66,7 +88,9 @@ dzSysCom dz_sys_maf_com = {
   refresh: dzSysRefreshMAF,
   update: dzSysUpdateMAF,
   fscan: dzSysFScanMAF,
-  fprint: dzSysFPrintMAF,
+  regZTK: _dzSysRegZTKMAF,
+  fromZTK: _dzSysFromZTKMAF,
+  fprint: _dzSysFPrintMAF,
 };
 
 void dzSysMAFSetCF(dzSys *sys, double cf, double dt)
@@ -80,17 +104,15 @@ double dzSysMAFCF(dzSys *sys, double dt)
 }
 
 /* create a moving-average filter. */
-bool dzSysCreateMAF(dzSys *sys, double ff)
+dzSys *dzSysCreateMAF(dzSys *sys, double ff)
 {
   dzSysInit( sys );
-  dzSysAllocInput( sys, 1 );
-  if( dzSysInputNum(sys) == 0 || !dzSysAllocOutput( sys, 1 ) ||
-      !( sys->prp = zAlloc( double, 2 ) ) ){
-    ZALLOCERROR();
-    return false;
-  }
   sys->com = &dz_sys_maf_com;
+  dzSysAllocInput( sys, 1 );
+  if( dzSysInputNum(sys) != 1 ||
+      !dzSysAllocOutput( sys, 1 ) ||
+      !( sys->prp = zAlloc( double, 2 ) ) ) return NULL;
   __dz_sys_maf_ff(sys) = ff;
   dzSysRefresh( sys );
-  return true;
+  return sys;
 }

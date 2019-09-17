@@ -32,18 +32,28 @@ dzSys *dzSysFScanLin(FILE *fp, dzSys *sys)
 {
   dzLin *lin;
 
-  if( !( lin = zAlloc( dzLin, 1 ) ) ){
-    ZALLOCERROR();
-    return NULL;
-  }
+  if( !( lin = zAlloc( dzLin, 1 ) ) ) return NULL;
   dzLinFScan( fp, lin );
-  if( !dzSysCreateLin( sys, lin ) ) sys = NULL;
-  return sys;
+  return dzSysCreateLin( sys, lin );
 }
 
 void dzSysFPrintLin(FILE *fp, dzSys *sys)
 {
   dzLinFPrint( fp, sys->prp );
+}
+
+static bool _dzSysRegZTKLin(ZTK *ztk)
+{
+  return dzLinRegZTK( ztk, ZTK_TAG_DZSYS );
+}
+
+static dzSys *_dzSysFromZTKLin(dzSys *sys, ZTK *ztk)
+{
+  dzLin *lin;
+
+  if( !( lin = zAlloc( dzLin, 1 ) ) ) return NULL;
+  if( !dzLinFromZTK( lin, ztk ) ) return NULL;
+  return dzSysCreateLin( sys, lin );
 }
 
 dzSysCom dz_sys_lin_com = {
@@ -52,20 +62,22 @@ dzSysCom dz_sys_lin_com = {
   refresh: dzSysRefreshLin,
   update: dzSysUpdateLin,
   fscan: dzSysFScanLin,
+  regZTK: _dzSysRegZTKLin,
+  fromZTK: _dzSysFromZTKLin,
   fprint: dzSysFPrintLin,
 };
 
 /* create a linear system. */
-bool dzSysCreateLin(dzSys *sys, dzLin *lin)
+dzSys *dzSysCreateLin(dzSys *sys, dzLin *lin)
 {
   dzSysInit( sys );
   dzSysAllocInput( sys, 1 );
   if( dzSysInputNum(sys) == 0 || !dzSysAllocOutput( sys, 1 ) ){
     ZALLOCERROR();
-    return false;
+    return NULL;
   }
   sys->prp = lin;
   sys->com = &dz_sys_lin_com;
   dzSysRefresh( sys );
-  return true;
+  return sys;
 }

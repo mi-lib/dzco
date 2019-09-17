@@ -7,7 +7,7 @@
 #ifndef __DZ_LIN_H__
 #define __DZ_LIN_H__
 
-#include <dzco/dz_pex.h>
+#include <dzco/dz_tf.h>
 
 __BEGIN_DECLS
 
@@ -229,23 +229,27 @@ __EXPORT zVec dzLinLQR(dzLin *c, zVec q, double r, zVec f);
 
 /*! \brief conversion from polynomial transfer function to linear system.
  *
- * dzPex2LinCtrlCanon() converts the given polynomial transfer
- * function \a sp to an equivalent linear state equation and
+ * dzTF2LinCtrlCanon() converts the given polynomial transfer
+ * function \a tf to an equivalent linear state equation and
  * output equation in controllable canonical form. The result
- * is put into \a sl.
+ * is put into \a lin.
  *
- * dzPex2LinObsCanon() converts the given polynomial transfer
- * function \a sp to an equivalent linear state equation and
+ * dzTF2LinObsCanon() converts the given polynomial transfer
+ * function \a tf to an equivalent linear state equation and
  * output equation in observable canonical form. The result
- * is put into \a sl.
+ * is put into \a lin.
  * \return
- * dzPex2LinCtrlCanon() and dzPex2LinObsCanon() return a
- * pointer \a sl.
+ * dzTF2LinCtrlCanon() and dzTF2LinObsCanon() return a
+ * pointer \a lin.
  * If the equivalent expression does not exist, they return
  * the null pointer.
  */
-__EXPORT dzLin *dzPex2LinCtrlCanon(dzPex *sp, dzLin *sl);
-__EXPORT dzLin *dzPex2LinObsCanon(dzPex *sp, dzLin *sl);
+__EXPORT dzLin *dzTF2LinCtrlCanon(dzTF *tf, dzLin *lin);
+__EXPORT dzLin *dzTF2LinObsCanon(dzTF *tf, dzLin *lin);
+
+__EXPORT bool dzLinRegZTK(ZTK *ztk, char *tag);
+__EXPORT dzLin *dzLinFromZTK(dzLin *lin, ZTK *ztk);
+__EXPORT void dzLinFPrint(FILE *fp, dzLin *lin);
 
 /*! \brief scan and print a linear system.
  */

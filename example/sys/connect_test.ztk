@@ -11,7 +11,7 @@ in: 2
 
 [sys]
 name: PID
-type: pid
+type: PID
 pgain: 10.0
 igain: 2.0
 dgain: 5.0
@@ -20,12 +20,12 @@ fgt: 0
 
 [sys]
 name: intg1
-type: i
+type: integrator
 gain: 1.0
 
 [sys]
 name: intg2
-type: i
+type: integrator
 gain: 1.0
 
 [connect]

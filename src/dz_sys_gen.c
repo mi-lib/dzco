@@ -40,11 +40,41 @@ bool _dzSysFScanGen(FILE *fp, void *val, char *buf, bool *success)
   return true;
 }
 
-void dzSysFPrintGen(FILE *fp, dzSys *sys)
+static void *_dzSysFromZTKGenAmp(void *val, int i, void *arg, ZTK *ztk){
+  ((double*)val)[0] = ZTKDouble(ztk);
+  return val;
+}
+static void *_dzSysFromZTKGenDelay(void *val, int i, void *arg, ZTK *ztk){
+  ((double*)val)[1] = ZTKDouble(ztk);
+  return val;
+}
+static void *_dzSysFromZTKGenPeriod(void *val, int i, void *arg, ZTK *ztk){
+  ((double*)val)[2] = ZTKDouble(ztk);
+  return val;
+}
+static void _dzSysFPrintGenAmp(FILE *fp, int i, void *prp){
+  fprintf( fp, "%.10g\n", __dz_sys_gen_amp((dzSys*)prp) );
+}
+static void _dzSysFPrintGenDelay(FILE *fp, int i, void *prp){
+  fprintf( fp, "%.10g\n", __dz_sys_gen_delay((dzSys*)prp) );
+}
+static void _dzSysFPrintGenPeriod(FILE *fp, int i, void *prp){
+  fprintf( fp, "%.10g\n", __dz_sys_gen_period((dzSys*)prp) );
+}
+static ZTKPrp __ztk_prp_dzsys_gen[] = {
+  { "amp", 1, _dzSysFromZTKGenAmp, _dzSysFPrintGenAmp },
+  { "delay", 1, _dzSysFromZTKGenDelay, _dzSysFPrintGenDelay },
+  { "period", 1, _dzSysFromZTKGenPeriod, _dzSysFPrintGenPeriod },
+};
+
+static bool _dzSysRegZTKGen(ZTK *ztk)
 {
-  fprintf( fp, "amp: %g\n", __dz_sys_gen_amp(sys) );
-  fprintf( fp, "delay: %g\n", __dz_sys_gen_delay(sys) );
-  fprintf( fp, "period: %g\n", __dz_sys_gen_period(sys) );
+  return ZTKDefRegPrp( ztk, ZTK_TAG_DZSYS, __ztk_prp_dzsys_gen ) ? true : false;
+}
+
+static void _dzSysFPrintGen(FILE *fp, dzSys *sys)
+{
+  ZTKPrpKeyFPrint( fp, sys, __ztk_prp_dzsys_gen );
 }
 
 /* ********************************************************** */

@@ -6,15 +6,36 @@
 
 #include <dzco/dz_sys.h>
 
-static bool _dzSysFScanMI(FILE *fp, void *val, char *buf, bool *success);
-
-bool _dzSysFScanMI(FILE *fp, void *val, char *buf, bool *success)
+static bool _dzSysFScanMI(FILE *fp, void *val, char *buf, bool *success)
 {
   if( strcmp( buf, "in" ) == 0 ){
     *(int *)val = zFInt( fp );
     return true;
   }
   return false;
+}
+
+static void *_dzSysFromZTKMIIn(void *val, int i, void *arg, ZTK *ztk){
+  *((int*)val) = ZTKInt(ztk);
+  return val;
+}
+
+static void _dzSysFPrintMIIn(FILE *fp, int i, void *prp){
+  fprintf( fp, "%d\n", dzSysInputNum((dzSys*)prp) );
+}
+
+static ZTKPrp __ztk_prp_dzsys_mi[] = {
+  { "in", 1, _dzSysFromZTKMIIn, _dzSysFPrintMIIn },
+};
+
+static bool _dzSysRegZTKMI(ZTK *ztk)
+{
+  return ZTKDefRegPrp( ztk, ZTK_TAG_DZSYS, __ztk_prp_dzsys_mi ) ? true : false;
+}
+
+static void _dzSysFPrintMI(FILE *fp, dzSys *sys)
+{
+  ZTKPrpKeyFPrint( fp, sys, __ztk_prp_dzsys_mi );
 }
 
 /* ********************************************************** */
@@ -36,12 +57,14 @@ dzSys *dzSysFScanAdder(FILE *fp, dzSys *sys)
   int n = 2;
 
   zFieldFScan( fp, _dzSysFScanMI, &n );
-  return dzSysCreateAdder( sys, n ) ? sys : NULL;
+  return dzSysCreateAdder( sys, n );
 }
 
-void dzSysFPrintAdder(FILE *fp, dzSys *sys)
+static dzSys *_dzSysFromZTKAdder(dzSys *sys, ZTK *ztk)
 {
-  fprintf( fp, "in: %d\n", dzSysInputNum(sys) );
+  int n;
+  if( !ZTKEncodeKey( &n, NULL, ztk, __ztk_prp_dzsys_mi ) ) return NULL;
+  return dzSysCreateAdder( sys, n );
 }
 
 dzSysCom dz_sys_adder_com = {
@@ -50,20 +73,19 @@ dzSysCom dz_sys_adder_com = {
   refresh: dzSysRefreshDefault,
   update: dzSysUpdateAdder,
   fscan: dzSysFScanAdder,
-  fprint: dzSysFPrintAdder,
+  regZTK: _dzSysRegZTKMI,
+  fromZTK: _dzSysFromZTKAdder,
+  fprint: _dzSysFPrintMI,
 };
 
 /* create an adder. */
-bool dzSysCreateAdder(dzSys *sys, int n)
+dzSys *dzSysCreateAdder(dzSys *sys, int n)
 {
   dzSysInit( sys );
-  dzSysAllocInput( sys, n );
-  if( dzSysInputNum(sys) == 0 || !dzSysAllocOutput( sys, 1 ) ){
-    ZALLOCERROR();
-    return false;
-  }
   sys->com = &dz_sys_adder_com;
-  return true;
+  dzSysAllocInput( sys, n );
+  return dzSysInputNum(sys) == n &&
+         dzSysAllocOutput( sys, 1 ) ? sys : NULL;
 }
 
 /* ********************************************************** */
@@ -85,12 +107,14 @@ dzSys *dzSysFScanSubtr(FILE *fp, dzSys *sys)
   int n = 2;
 
   zFieldFScan( fp, _dzSysFScanMI, &n );
-  return dzSysCreateSubtr( sys, n ) ? sys : NULL;
+  return dzSysCreateSubtr( sys, n );
 }
 
-void dzSysFPrintSubtr(FILE *fp, dzSys *sys)
+static dzSys *_dzSysFromZTKSubtr(dzSys *sys, ZTK *ztk)
 {
-  fprintf( fp, "in: %d\n", dzSysInputNum(sys) );
+  int n;
+  if( !ZTKEncodeKey( &n, NULL, ztk, __ztk_prp_dzsys_mi ) ) return NULL;
+  return dzSysCreateSubtr( sys, n );
 }
 
 dzSysCom dz_sys_subtr_com = {
@@ -99,32 +123,34 @@ dzSysCom dz_sys_subtr_com = {
   refresh: dzSysRefreshDefault,
   update: dzSysUpdateSubtr,
   fscan: dzSysFScanSubtr,
-  fprint: dzSysFPrintSubtr,
+  regZTK: _dzSysRegZTKMI,
+  fromZTK: _dzSysFromZTKSubtr,
+  fprint: _dzSysFPrintMI,
 };
 
 /* create a subtractor. */
-bool dzSysCreateSubtr(dzSys *sys, int n)
+dzSys *dzSysCreateSubtr(dzSys *sys, int n)
 {
   dzSysInit( sys );
-  dzSysAllocInput( sys, n );
-  if( dzSysInputNum(sys) == 0 || !dzSysAllocOutput( sys, 1 ) ){
-    ZALLOCERROR();
-    return false;
-  }
   sys->com = &dz_sys_subtr_com;
-  return true;
+  dzSysAllocInput( sys, n );
+  return dzSysInputNum(sys) == n &&
+         dzSysAllocOutput( sys, 1 ) ? sys : NULL;
 }
 
 /* ********************************************************** */
 /* saturater
  * ********************************************************** */
 
+#define __dz_sys_limit_min(s) ( ((double *)(s)->prp)[0] )
+#define __dz_sys_limit_max(s) ( ((double *)(s)->prp)[1] )
+
 static bool _dzSysFScanLimit(FILE *fp, void *val, char *buf, bool *success);
 
 zVec dzSysUpdateLimit(dzSys *sys, double dt)
 {
   dzSysOutputVal(sys,0) =
-    zLimit( dzSysInputVal(sys,0), ((double*)sys->prp)[0], ((double*)sys->prp)[1] );
+    zLimit( dzSysInputVal(sys,0), __dz_sys_limit_min(sys), __dz_sys_limit_max(sys) );
   return dzSysOutput(sys);
 }
 
@@ -145,41 +171,68 @@ dzSys *dzSysFScanLimit(FILE *fp, dzSys *sys)
   double val[] = { -HUGE_VAL, HUGE_VAL };
 
   zFieldFScan( fp, _dzSysFScanLimit, val );
-  return dzSysCreateLimit( sys, val[0], val[1] ) ? sys : NULL;
+  return dzSysCreateLimit( sys, val[0], val[1] );
 }
 
-void dzSysFPrintLimit(FILE *fp, dzSys *sys)
-{
-  double max, min;
+static void *_dzSysFromZTKLimitMin(void *val, int i, void *arg, ZTK *ztk){
+  ((double*)val)[0] = ZTKDouble(ztk);
+  return val;
+}
+static void *_dzSysFromZTKLimitMax(void *val, int i, void *arg, ZTK *ztk){
+  ((double*)val)[1] = ZTKDouble(ztk);
+  return val;
+}
 
-  max = ((double*)sys->prp)[0];
-  min = ((double*)sys->prp)[1];
-  if( max < min ) zSwap( double, max, min );
-  fprintf( fp, "min: %g\n", min );
-  fprintf( fp, "max: %g\n", max );
+static void _dzSysFPrintLimitMin(FILE *fp, int i, void *prp){
+  fprintf( fp, "%.10g\n", __dz_sys_limit_min((dzSys*)prp) );
+}
+static void _dzSysFPrintLimitMax(FILE *fp, int i, void *prp){
+  fprintf( fp, "%.10g\n", __dz_sys_limit_max((dzSys*)prp) );
+}
+
+static ZTKPrp __ztk_prp_dzsys_limit[] = {
+  { "min", 1, _dzSysFromZTKLimitMin, _dzSysFPrintLimitMin },
+  { "max", 1, _dzSysFromZTKLimitMax, _dzSysFPrintLimitMax },
+};
+
+static bool _dzSysRegZTKLimit(ZTK *ztk)
+{
+  return ZTKDefRegPrp( ztk, ZTK_TAG_DZSYS, __ztk_prp_dzsys_limit ) ? true : false;
+}
+
+static dzSys *_dzSysFromZTKLimit(dzSys *sys, ZTK *ztk)
+{
+  double val[2];
+  if( !ZTKEncodeKey( val, NULL, ztk, __ztk_prp_dzsys_limit ) ) return NULL;
+  return dzSysCreateLimit( sys, val[0], val[1] );
+}
+
+static void _dzSysFPrintLimit(FILE *fp, dzSys *sys)
+{
+  ZTKPrpKeyFPrint( fp, sys, __ztk_prp_dzsys_limit );
 }
 
 dzSysCom dz_sys_limit_com = {
-  typestr: "limit",
+  typestr: "limiter",
   destroy: dzSysDestroyDefault,
   refresh: dzSysRefreshDefault,
   update: dzSysUpdateLimit,
   fscan: dzSysFScanLimit,
-  fprint: dzSysFPrintLimit,
+  regZTK: _dzSysRegZTKLimit,
+  fromZTK: _dzSysFromZTKLimit,
+  fprint: _dzSysFPrintLimit,
 };
 
 /* create a saturater. */
-bool dzSysCreateLimit(dzSys *sys, double max, double min)
+dzSys *dzSysCreateLimit(dzSys *sys, double min, double max)
 {
   dzSysInit( sys );
-  dzSysAllocInput( sys, 1 );
-  if( dzSysInputNum(sys) == 0 || !dzSysAllocOutput( sys, 1 ) ||
-      !( sys->prp = zAlloc( double, 2 ) ) ){
-    ZALLOCERROR();
-    return false;
-  }
-  ((double *)sys->prp)[0] = zMin( max, min );
-  ((double *)sys->prp)[1] = zMax( max, min );
   sys->com = &dz_sys_limit_com;
-  return true;
+  dzSysAllocInput( sys, 1 );
+  if( dzSysInputNum(sys) != 1 ||
+      !dzSysAllocOutput( sys, 1 ) ||
+      !( sys->prp = zAlloc( double, 2 ) ) ) return NULL;
+  __dz_sys_limit_min(sys) = zMin( max, min );
+  __dz_sys_limit_max(sys) = zMax( max, min );
+  return sys;
 }

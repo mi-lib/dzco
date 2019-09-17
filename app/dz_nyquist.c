@@ -1,4 +1,4 @@
-#include <dzco/dz_pex.h>
+#include <dzco/dz_tf.h>
 
 bool dz_nyq_parse_range(char *str, double *from, double *to, double *d)
 {
@@ -14,17 +14,17 @@ bool dz_nyq_parse_range(char *str, double *from, double *to, double *d)
   return true;
 }
 
-void dz_nyq_output(FILE *fp, dzPex *pex, double from, double to, double d)
+void dz_nyq_output(FILE *fp, dzTF *tf, double from, double to, double d)
 {
   double frq;
   zComplex c;
 
   for( frq=to; frq>from; frq/=d ){
-    dzPexFreqRes( pex, -2*zPI*frq, &c );
+    dzTFFreqRes( tf, -2*zPI*frq, &c );
     fprintf( fp, "%f %f\n", c.re, c.im );
   }
   for( frq=from; frq<to; frq*=d ){
-    dzPexFreqRes( pex, 2*zPI*frq, &c );
+    dzTFFreqRes( tf, 2*zPI*frq, &c );
     fprintf( fp, "%f %f\n", c.re, c.im );
   }
 }
@@ -45,13 +45,13 @@ void dz_nyq_script(FILE *fp, char *logfile)
 }
 
 enum{
-  OPT_PEXFILE=0, OPT_OUTPUTFILE, OPT_SCRIPTFILE,
+  OPT_TFFILE=0, OPT_OUTPUTFILE, OPT_SCRIPTFILE,
   OPT_RANGE,
   OPT_HELP,
   OPT_INVALID
 };
 zOption opt[] = {
-  { "p", "pex", "<.dzp file>", "transfer function definition file", NULL, false },
+  { "f", "tf", "<.ztk file>", "transfer function definition file", NULL, false },
   { "o", "out", "<output file>", "result output file", "nyq_out", false },
   { "s", "script", "<script file>", "script file to plot the result on gnuplot", "nyq.plot", false },
   { "r", "range", "<string>", "output range in logarism scale", "-3:3:.001", false },
@@ -61,7 +61,7 @@ zOption opt[] = {
 
 void dz_nyq_usage(char *arg)
 {
-  eprintf( "Usage: %s [-range <string>] <.dzp file> [output file] [script file]\n", arg );
+  eprintf( "Usage: %s [-range <string>] <.ztk file> [output file] [script file]\n", arg );
   eprintf( "<options>\n" );
   zOptionHelp( opt );
   eprintf( "string format:\n" );
@@ -80,10 +80,10 @@ bool dz_nyq_commandarg(int argc, char *argv[])
   if( !zOptionRead( opt, argv, &arglist ) ) return false;
   if( opt[OPT_HELP].flag ) dz_nyq_usage( "dz_nyquist" );
   if( !zListIsEmpty(&arglist) ){
-    opt[OPT_PEXFILE].flag = true;
-    opt[OPT_PEXFILE].arg  = zListTail(&arglist)->data;
+    opt[OPT_TFFILE].flag = true;
+    opt[OPT_TFFILE].arg  = zListTail(&arglist)->data;
   }
-  if( !opt[OPT_PEXFILE].flag ){
+  if( !opt[OPT_TFFILE].flag ){
     ZRUNERROR( "transfer function not specified" );
     return false;
   }
@@ -93,25 +93,25 @@ bool dz_nyq_commandarg(int argc, char *argv[])
 
 int main(int argc, char *argv[])
 {
-  dzPex pex;
+  dzTF tf;
   double from, to, d;
   FILE *fp;
 
   if( argc < 2 ) dz_nyq_usage( argv[0] );
   if( !dz_nyq_commandarg( argc, argv+1 ) ) return 1;
-  if( !( fp = fopen( opt[OPT_PEXFILE].arg, "r" ) ) ){
-    ZOPENERROR( opt[OPT_PEXFILE].arg );
+  if( !( fp = fopen( opt[OPT_TFFILE].arg, "r" ) ) ){
+    ZOPENERROR( opt[OPT_TFFILE].arg );
     return 1;
   }
-  if( !dzPexFScan( fp, &pex ) ) return 1;
+  if( !dzTFFScan( fp, &tf ) ) return 1;
   fclose( fp );
   dz_nyq_parse_range( opt[OPT_RANGE].arg, &from, &to, &d );
 
   fp = fopen( opt[OPT_OUTPUTFILE].arg, "w" );
-  dz_nyq_output( fp, &pex, from, to, d );
+  dz_nyq_output( fp, &tf, from, to, d );
   fclose( fp );
 
-  dzPexDestroy( &pex );
+  dzTFDestroy( &tf );
   fp = fopen( opt[OPT_SCRIPTFILE].arg, "w" );
   dz_nyq_script( fp, opt[OPT_OUTPUTFILE].arg );
   fclose( fp );

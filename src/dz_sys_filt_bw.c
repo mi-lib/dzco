@@ -11,15 +11,12 @@ typedef struct{
   double out;
 } _dzBW1;
 
-static void _dzBW1Refresh(_dzBW1 *p);
-static double _dzBW1Update(_dzBW1 *p, double wt, double input);
-
-void _dzBW1Refresh(_dzBW1 *p)
+static void _dzBW1Refresh(_dzBW1 *p)
 {
   p->out = 0;
 }
 
-double _dzBW1Update(_dzBW1 *p, double wt, double input)
+static double _dzBW1Update(_dzBW1 *p, double wt, double input)
 {
   return ( p->out = ( p->out + wt * input ) / ( 1 + wt ) );
 }
@@ -32,23 +29,19 @@ typedef struct{
   double prevdt;
 } _dzBW2;
 
-static void _dzBW2Refresh(_dzBW2 *p);
-static void _dzBW2Create(_dzBW2 *p, int i, int dim);
-static double _dzBW2Update(_dzBW2 *p, double wt, double input, double dt);
-
-void _dzBW2Refresh(_dzBW2 *p)
+static void _dzBW2Refresh(_dzBW2 *p)
 {
   p->out = p->prevout = 0;
   p->prevdt = 1.0; /* dummy */
 }
 
-void _dzBW2Create(_dzBW2 *p, int i, int dim)
+static void _dzBW2Create(_dzBW2 *p, int i, int dim)
 {
   p->zeta = sin( zPI * (double)( 2*i + 1.0 ) / dim );
   _dzBW2Refresh( p );
 }
 
-double _dzBW2Update(_dzBW2 *p, double wt, double input, double dt)
+static double _dzBW2Update(_dzBW2 *p, double wt, double input, double dt)
 {
   double tr, zwt2, ret;
 
@@ -72,21 +65,21 @@ typedef struct{
   int dim;   /* only for memory */
 } _dzBW;
 
-static bool _dzBWCreate(_dzBW *bw, double cf, int dim);
-static void _dzBWDestroy(_dzBW *bw);
-static double _dzBWUpdate(_dzBW *bw, double input, double dt);
-
-void _dzBWDestroy(_dzBW *bw)
+static void _dzBWDestroy(_dzBW *bw)
 {
   if( bw->n1 > 0 ) zFree( bw->f1 );
   if( bw->n2 > 0 ) zFree( bw->f2 );
   bw->n1 = bw->n2 = 0;
 }
 
-bool _dzBWCreate(_dzBW *bw, double cf, int dim)
+static bool _dzBWCreate(_dzBW *bw, double cf, int dim)
 {
   register int i;
 
+  if( dim == 0 ){
+    ZRUNERROR( DZ_ERR_SYS_BW_ZEROORDER );
+    return false;
+  }
   bw->n1 = ( bw->dim = dim ) % 2;
   bw->n2 = ( dim - bw->n1 ) / 2;
   bw->f1 = bw->n1 > 0 ? zAlloc( _dzBW1, bw->n1 ) : NULL;
@@ -102,7 +95,7 @@ bool _dzBWCreate(_dzBW *bw, double cf, int dim)
   return true;
 }
 
-double _dzBWUpdate(_dzBW *bw, double input, double dt)
+static double _dzBWUpdate(_dzBW *bw, double input, double dt)
 {
   double wt, output;
   register int i;
@@ -179,13 +172,45 @@ dzSys *dzSysFScanBW(FILE *fp, dzSys *sys)
   _dzBWParam prm = { 1.0, 1 };
 
   zFieldFScan( fp, _dzSysFScanBW, &prm );
-  return dzSysCreateBW( sys, prm.cf, prm.dim ) ? sys : NULL;
+  return dzSysCreateBW( sys, prm.cf, prm.dim );
 }
 
-void dzSysFPrintBW(FILE *fp, dzSys *sys)
+static void *_dzSysFromZTKBWCF(void *val, int i, void *arg, ZTK *ztk){
+  ((_dzBWParam*)val)->cf = ZTKDouble(ztk);
+  return val;
+}
+static void *_dzSysFromZTKBWDim(void *val, int i, void *arg, ZTK *ztk){
+  ((_dzBWParam*)val)->dim = ZTKDouble(ztk);
+  return val;
+}
+
+static void _dzSysFPrintBWCF(FILE *fp, int i, void *prp){
+  fprintf( fp, "%.10g\n", ((_dzBW*)((dzSys*)prp)->prp)->cf );
+}
+static void _dzSysFPrintBWDim(FILE *fp, int i, void *prp){
+  fprintf( fp, "%d\n", ((_dzBW*)((dzSys*)prp)->prp)->dim );
+}
+
+static ZTKPrp __ztk_prp_dzsys_bw[] = {
+  { "cf", 1, _dzSysFromZTKBWCF, _dzSysFPrintBWCF },
+  { "dim", 1, _dzSysFromZTKBWDim, _dzSysFPrintBWDim },
+};
+
+static bool _dzSysRegZTKBW(ZTK *ztk)
 {
-  fprintf( fp, "cf: %g\n", ((_dzBW*)sys->prp)->cf );
-  fprintf( fp, "dim: %d\n", ((_dzBW*)sys->prp)->dim );
+  return ZTKDefRegPrp( ztk, ZTK_TAG_DZSYS, __ztk_prp_dzsys_bw ) ? true : false;
+}
+
+static dzSys *_dzSysFromZTKBW(dzSys *sys, ZTK *ztk)
+{
+  _dzBWParam prm = { 1.0, 1 };
+  if( !ZTKEncodeKey( &prm, NULL, ztk, __ztk_prp_dzsys_bw ) ) return NULL;
+  return dzSysCreateBW( sys, prm.cf, prm.dim );
+}
+
+static void _dzSysFPrintBW(FILE *fp, dzSys *sys)
+{
+  ZTKPrpKeyFPrint( fp, sys, __ztk_prp_dzsys_bw );
 }
 
 dzSysCom dz_sys_bw_com = {
@@ -194,33 +219,19 @@ dzSysCom dz_sys_bw_com = {
   refresh: dzSysRefreshBW,
   update: dzSysUpdateBW,
   fscan: dzSysFScanBW,
-  fprint: dzSysFPrintBW,
+  regZTK: _dzSysRegZTKBW,
+  fromZTK: _dzSysFromZTKBW,
+  fprint: _dzSysFPrintBW,
 };
 
 /* create a Butterworth filter. */
-bool dzSysCreateBW(dzSys *sys, double cf, uint dim)
+dzSys *dzSysCreateBW(dzSys *sys, double cf, uint dim)
 {
-  _dzBW *bw;
-
-  if( dim == 0 ){
-    ZRUNERROR( "zero-order filter required" );
-    return false;
-  }
-  if( !( bw = zAlloc( _dzBW, 1 ) ) ){
-    ZALLOCERROR();
-    return false;
-  }
-  if( !_dzBWCreate( bw, cf, dim ) ){
-    zFree( bw );
-    return false;
-  }
   dzSysInit( sys );
-  dzSysAllocInput( sys, 1 );
-  if( dzSysInputNum(sys) == 0 || !dzSysAllocOutput( sys, 1 ) ){
-    ZALLOCERROR();
-    return false;
-  }
-  sys->prp = bw;
   sys->com = &dz_sys_bw_com;
-  return true;
+  dzSysAllocInput( sys, 1 );
+  return dzSysInputNum(sys) == 1 &&
+         dzSysAllocOutput( sys, 1 ) &&
+         ( sys->prp = zAlloc( _dzBW, 1 ) ) &&
+         _dzBWCreate( sys->prp, cf, dim ) ? sys : NULL;
 }

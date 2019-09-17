@@ -13,7 +13,7 @@ __BEGIN_DECLS
 
 /* value map: [ff][inverse of variance] */
 
-__EXPORT bool dzSysCreateMAF(dzSys *sys, double ff);
+__EXPORT dzSys *dzSysCreateMAF(dzSys *sys, double ff);
 
 /* set forgetting-factor based on the cut-off frequency */
 __EXPORT void dzSysMAFSetCF(dzSys *sys, double cf, double dt);
