@@ -172,4 +172,21 @@ __END_DECLS
 
 #include <dzco/dz_sys_gen.h> /* function generators */
 
+__BEGIN_DECLS
+
+/* add a handle to the following list when you create a new system class. */
+#define DZ_SYS_COM_ARRAY \
+  dzSysCom *_dz_sys_com[] = {\
+    &dz_sys_adder_com, &dz_sys_subtr_com, &dz_sys_limit_com,\
+    &dz_sys_p_com, &dz_sys_i_com, &dz_sys_d_com, &dz_sys_pid_com, &dz_sys_qpd_com,\
+    &dz_sys_fol_com, &dz_sys_sol_com, &dz_sys_pc_com, &dz_sys_adapt_com,\
+    &dz_sys_lin_com,\
+    &dz_sys_tf_com,\
+    &dz_sys_maf_com, &dz_sys_bw_com,\
+    &dz_sys_step_com, &dz_sys_ramp_com, &dz_sys_sine_com, &dz_sys_whitenoise_com,\
+    NULL,\
+  }
+
+__END_DECLS
+
 #endif /* __DZ_SYS_H__ */

@@ -57,21 +57,11 @@ void dzSysChain(int n, ...)
 
 static dzSysCom *_dzSysComByStr(char str[])
 {
-  static dzSysCom *com_array[] = {
-    &dz_sys_adder_com, &dz_sys_subtr_com, &dz_sys_limit_com,
-    &dz_sys_p_com, &dz_sys_i_com, &dz_sys_d_com, &dz_sys_pid_com, &dz_sys_qpd_com,
-    &dz_sys_fol_com, &dz_sys_sol_com, &dz_sys_pc_com, &dz_sys_adapt_com,
-    &dz_sys_lin_com,
-    &dz_sys_tf_com,
-    &dz_sys_maf_com, &dz_sys_bw_com,
-    &dz_sys_step_com, &dz_sys_ramp_com, &dz_sys_sine_com, &dz_sys_whitenoise_com,
-    NULL,
-  };
+  DZ_SYS_COM_ARRAY;
   register int i;
 
-  for( i=0; com_array[i]; i++ ){
-    if( strcmp( com_array[i]->typestr, str ) == 0 ) return com_array[i];
-  }
+  for( i=0; _dz_sys_com[i]; i++ )
+    if( strcmp( _dz_sys_com[i]->typestr, str ) == 0 ) return _dz_sys_com[i];
   ZRUNWARN( DZ_WARN_SYS_TYPE_UNFOUND, str );
   return NULL;
 }
@@ -120,24 +110,14 @@ dzSys *dzSysFScan(FILE *fp, dzSys *sys)
   return NULL;
 }
 
-static dzSysCom *__dz_sys_com[] = {
-  &dz_sys_adder_com, &dz_sys_subtr_com, &dz_sys_limit_com,
-  &dz_sys_p_com, &dz_sys_i_com, &dz_sys_d_com, &dz_sys_pid_com, &dz_sys_qpd_com,
-  &dz_sys_fol_com, &dz_sys_sol_com, &dz_sys_pc_com, &dz_sys_adapt_com,
-  &dz_sys_lin_com,
-  &dz_sys_tf_com,
-  &dz_sys_maf_com, &dz_sys_bw_com,
-  &dz_sys_step_com, &dz_sys_ramp_com, &dz_sys_sine_com, &dz_sys_whitenoise_com,
-  NULL,
-};
-
 static dzSys *_dzSysQueryAssign(dzSys *sys, char *str)
 {
+  DZ_SYS_COM_ARRAY;
   register int i;
 
-  for( i=0; __dz_sys_com[i]; i++ )
-    if( strcmp( __dz_sys_com[i]->typestr, str ) == 0 ){
-      sys->com = __dz_sys_com[i];
+  for( i=0; _dz_sys_com[i]; i++ )
+    if( strcmp( _dz_sys_com[i]->typestr, str ) == 0 ){
+      sys->com = _dz_sys_com[i];
       return sys;
     }
   ZRUNERROR( DZ_WARN_SYS_TYPE_UNFOUND, str );
@@ -386,11 +366,12 @@ static ZTKPrp __ztk_prp_tag_dzsys[] = {
 
 bool dzSysRegZTK(ZTK *ztk)
 {
+  DZ_SYS_COM_ARRAY;
   register int i;
 
   if( !ZTKDefRegPrp( ztk, ZTK_TAG_DZSYS, __ztk_prp_dzsys ) ) return false;
-  for( i=0; __dz_sys_com[i]; i++ )
-    if( !__dz_sys_com[i]->regZTK( ztk ) ) return false;
+  for( i=0; _dz_sys_com[i]; i++ )
+    if( !_dz_sys_com[i]->regZTK( ztk ) ) return false;
   return ZTKDefRegTag( ztk, ZTK_TAG_DZSYS_CONNECT ) ? true : false;
 }
 

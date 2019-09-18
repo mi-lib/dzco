@@ -1,3 +1,5 @@
+2019. 9.18. Reimplemented _dzSysComByStr, _dzSysQueryAssign and dzSysRegZTK. [dz_sys]
+2019. 9.18. Defined DZ_SYS_COM_ARRAY. [dz_sys]
 2019. 9.17. Reimplemented dzSysFPrint and dzSysArrayFPrint. [dz_sys]
 2019. 9.17. Added dzSysFromZTK, dzSysRegZTK, dzSysArrayFromZTK and dzSysArrayScanZTK. [dz_sys]
 2019. 9.17. Created dz_errmsg.h. [dz_tf, dz_lin, dz_ident, dz_sys, dz_sys_pid, dz_sys_lag, dz_sys_filt_bw, dz_sys_tf]
