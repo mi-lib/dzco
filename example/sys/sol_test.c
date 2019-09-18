@@ -10,8 +10,8 @@ int main(int argc, char *argv[])
   double ref;
 
   ref = argc > 1 ? atof( argv[1] ) : 1.0;
-  dzSysCreateSOL( &sol, 0.1, 0.0, 0.8, 2.0 );
-  dzSysCreateSOLGen( &solgen, 0.1*0.1, 2*0.8*0.1, 1.0, 0.0, 2.0 );
+  dzSysSOLCreate( &sol, 0.1, 0.0, 0.8, 2.0 );
+  dzSysSOLCreateGeneric( &solgen, 0.1*0.1, 2*0.8*0.1, 1.0, 0.0, 2.0 );
   dzSysInputPtr(&sol,0) = &ref;
   dzSysInputPtr(&solgen,0) = &ref;
   for( i=0; i<=STEP; i++ )

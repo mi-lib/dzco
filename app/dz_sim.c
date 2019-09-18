@@ -8,7 +8,7 @@ enum{
   OPT_INVALID
 };
 zOption opt[] = {
-  { "s", "sys", "<.dzs file>", "system definition file", NULL, false },
+  { "s", "sys", "<.ztk file>", "system definition file", NULL, false },
   { "o", "out", "<output file>", "result output file", "sim_out", false },
   { "s", "script", "<script file>", "script file to plot the result on gnuplot", "sim.plot", false },
   { "dt", "dt", "<value>", "discretized time step", "0.001", false },
@@ -20,7 +20,7 @@ zOption opt[] = {
 
 void dz_sim_usage(char *arg)
 {
-  eprintf( "Usage: %s [option] <.dzs file> [output file] [script file]\n", arg );
+  eprintf( "Usage: %s [option] <.ztk file> [output file] [script file]\n", arg );
   eprintf( "<options>\n" );
   zOptionHelp( opt );
   eprintf( "In order to plot the result, execute gnuplot and load the script file.\n" );
@@ -84,12 +84,7 @@ int main(int argc, char *argv[])
 
   if( argc < 2 ) dz_sim_usage( argv[0] );
   if( !dz_sim_commandarg( argc, argv+1 ) ) return 1;
-  if( !( fp = fopen( opt[OPT_SYSFILE].arg, "r" ) ) ){
-    ZOPENERROR( opt[OPT_SYSFILE].arg );
-    return 1;
-  }
-  if( !dzSysArrayFScan( fp, &arr ) ) return 1;
-  fclose( fp );
+  if( !dzSysArrayScanZTK( &arr, opt[OPT_SYSFILE].arg ) ) return 1;
 
   fp = fopen( opt[OPT_OUTPUTFILE].arg, "w" );
   dz_sim_output( fp, &arr );

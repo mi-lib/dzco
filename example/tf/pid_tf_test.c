@@ -16,8 +16,8 @@ s^3 + Kd s^2 + Kp s + Ki
 int main(int argc, char *argv[])
 {
   register int i;
-  dzSys pid, intg1, intg2, cpex;
-  dzPex *pex;
+  dzSys pid, intg1, intg2, ctf;
+  dzTF *tf;
   double ref, cur;
   double kp, ki, kd;
 
@@ -26,24 +26,24 @@ int main(int argc, char *argv[])
   kd = KD;
 
   /* PID */
-  dzSysCreatePID( &pid, kp, ki, kd, 0, 0 );
-  dzSysCreateI( &intg1, 1.0, 0.0 );
-  dzSysCreateI( &intg2, 1.0, 0.0 );
+  dzSysPIDCreate( &pid, kp, ki, kd, 0, 0 );
+  dzSysICreate( &intg1, 1.0, 0.0 );
+  dzSysICreate( &intg2, 1.0, 0.0 );
   dzSysInputPtr(&pid,0) = &cur;
   dzSysConnect( &pid, 0, &intg1, 0 );
   dzSysConnect( &intg1, 0, &intg2, 0 );
-  /* PEX */
-  pex = zAlloc( dzPex, 1 );
-  dzPexAlloc( pex, 2, 3 );
-  dzPexSetNumElem( pex, 0, ki );
-  dzPexSetNumElem( pex, 1, kp );
-  dzPexSetNumElem( pex, 2, kd );
-  dzPexSetDenElem( pex, 0, ki );
-  dzPexSetDenElem( pex, 1, kp );
-  dzPexSetDenElem( pex, 2, kd );
-  dzPexSetDenElem( pex, 3, 1 );
-  dzSysCreatePex( &cpex, pex );
-  dzSysInputPtr(&cpex,0) = &ref;
+  /* TF */
+  tf = zAlloc( dzTF, 1 );
+  dzTFAlloc( tf, 2, 3 );
+  dzTFSetNumElem( tf, 0, ki );
+  dzTFSetNumElem( tf, 1, kp );
+  dzTFSetNumElem( tf, 2, kd );
+  dzTFSetDenElem( tf, 0, ki );
+  dzTFSetDenElem( tf, 1, kp );
+  dzTFSetDenElem( tf, 2, kd );
+  dzTFSetDenElem( tf, 3, 1 );
+  dzSysTFCreate( &ctf, tf );
+  dzSysInputPtr(&ctf,0) = &ref;
 
   ref = argc > 1 ? atoi( argv[1] ) : 1.0;
 
@@ -52,12 +52,12 @@ int main(int argc, char *argv[])
     dzSysUpdate( &pid, DT );
     dzSysUpdate( &intg1, DT );
     dzSysUpdate( &intg2, DT );
-    dzSysUpdate( &cpex, DT );
-    printf( "%f %f %f %f %f\n", ref, dzSysOutputVal(&pid,0), dzSysOutputVal(&intg1,0), dzSysOutputVal(&intg2,0), dzSysOutputVal(&cpex,0) );
+    dzSysUpdate( &ctf, DT );
+    printf( "%f %f %f %f %f\n", ref, dzSysOutputVal(&pid,0), dzSysOutputVal(&intg1,0), dzSysOutputVal(&intg2,0), dzSysOutputVal(&ctf,0) );
   }
   dzSysDestroy( &pid );
   dzSysDestroy( &intg1 );
   dzSysDestroy( &intg2 );
-  dzSysDestroy( &cpex );
+  dzSysDestroy( &ctf );
   return 0;
 }

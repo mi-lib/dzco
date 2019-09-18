@@ -9,7 +9,7 @@
 #include <stdarg.h>
 
 /* default destroying method */
-void dzSysDestroyDefault(dzSys *sys)
+void dzSysDefaultDestroy(dzSys *sys)
 {
   zNameFree( sys );
   zArrayFree( dzSysInput(sys) );
@@ -19,7 +19,7 @@ void dzSysDestroyDefault(dzSys *sys)
 }
 
 /* default refreshing method */
-void dzSysRefreshDefault(dzSys *sys){}
+void dzSysDefaultRefresh(dzSys *sys){}
 
 /* connect two systems. */
 bool dzSysConnect(dzSys *s1, int p1, dzSys *s2, int p2)
@@ -55,61 +55,6 @@ void dzSysChain(int n, ...)
   va_end( arg );
 }
 
-static dzSysCom *_dzSysComByStr(char str[])
-{
-  DZ_SYS_COM_ARRAY;
-  register int i;
-
-  for( i=0; _dz_sys_com[i]; i++ )
-    if( strcmp( _dz_sys_com[i]->typestr, str ) == 0 ) return _dz_sys_com[i];
-  ZRUNWARN( DZ_WARN_SYS_TYPE_UNFOUND, str );
-  return NULL;
-}
-
-typedef struct{
-  dzSysCom *com;
-  char name[BUFSIZ];
-} _dzSysParam;
-
-/* scan a system from a file. */
-bool _dzSysFScan(FILE *fp, void *instance, char *buf, bool *success)
-{
-  if( strcmp( buf, "type" ) == 0 ){
-    if( !( ((_dzSysParam *)instance)->com = _dzSysComByStr( zFToken(fp,buf,BUFSIZ) ) ) )
-      *success = false;
-  } else
-  if( strcmp( buf, "name" ) == 0 ){
-    if( !zFToken( fp, ((_dzSysParam *)instance)->name, BUFSIZ ) )
-      *success = false;
-  } else
-    return false;
-  return true;
-}
-
-dzSys *dzSysFScan(FILE *fp, dzSys *sys)
-{
-  _dzSysParam prm;
-  int cur;
-
-  prm.com = NULL;
-  prm.name[0] = '\0';
-  cur = ftell( fp );
-  zFieldFScan( fp, _dzSysFScan, &prm );
-  if( !prm.com ){
-    ZRUNERROR( DZ_ERR_SYS_TYPE_UNSPECIFIED );
-    return NULL;
-  }
-  fseek( fp, cur, SEEK_SET );
-  if( prm.com->fscan( fp, sys ) ){
-    if( !zNameSet( sys, prm.name ) ){
-      ZALLOCERROR();
-      return NULL;
-    }
-    return sys;
-  }
-  return NULL;
-}
-
 static dzSys *_dzSysQueryAssign(dzSys *sys, char *str)
 {
   DZ_SYS_COM_ARRAY;
@@ -131,16 +76,16 @@ static void *_dzSysTypeFromZTK(void *obj, int i, void *arg, ZTK *ztk){
   return _dzSysQueryAssign( (dzSys*)obj, ZTKVal(ztk) ) ? obj : NULL;
 }
 
-static void _dzSysNameFPrint(FILE *fp, int i, void *obj){
+static void _dzSysNameFPrintZTK(FILE *fp, int i, void *obj){
   fprintf( fp, "%s\n", zName((dzSys*)obj) );
 }
-static void _dzSysTypeFPrint(FILE *fp, int i, void *obj){
+static void _dzSysTypeFPrintZTK(FILE *fp, int i, void *obj){
   fprintf( fp, "%s\n", ((dzSys*)obj)->com ? ((dzSys*)obj)->com->typestr : "unknown" );
 }
 
 static ZTKPrp __ztk_prp_dzsys[] = {
-  { "name", 1, _dzSysNameFromZTK, _dzSysNameFPrint },
-  { "type", 1, _dzSysTypeFromZTK, _dzSysTypeFPrint },
+  { "name", 1, _dzSysNameFromZTK, _dzSysNameFPrintZTK },
+  { "type", 1, _dzSysTypeFromZTK, _dzSysTypeFPrintZTK },
 };
 
 void *dzSysFromZTK(dzSys *sys, ZTK *ztk)
@@ -148,27 +93,21 @@ void *dzSysFromZTK(dzSys *sys, ZTK *ztk)
   char *name;
   if( !ZTKEncodeKey( sys, NULL, ztk, __ztk_prp_dzsys ) ) return NULL;
   name = zNamePtr(sys);
-  if( !sys->com || !sys->com->fromZTK( sys, ztk ) ) return NULL;
+  if( !sys->com || !sys->com->_fromZTK( sys, ztk ) ) return NULL;
   zNameSet( sys, name );
   return sys;
 }
 
-void dzSysFPrint(FILE *fp, dzSys *sys)
+void dzSysFPrintZTK(FILE *fp, dzSys *sys)
 {
   ZTKPrpKeyFPrint( fp, sys, __ztk_prp_dzsys );
   if( sys->com )
-    sys->com->fprint( fp, sys );
+    sys->com->_fprintZTK( fp, sys );
 }
 
 /* ********************************************************** */
 /* \class dzSysArray
  * ********************************************************** */
-
-static bool _dzSysFAlloc(FILE *fp, dzSysArray *arr);
-
-static bool __dzSysArrayConnectFScan(FILE *fp, void *instance, char *buf, bool *success);
-
-static bool _dzSysArrayConnectFScan(FILE *fp, dzSysArray *arr);
 
 /* allocate an array of systems. */
 dzSysArray *dzSysArrayAlloc(dzSysArray *arr, int size)
@@ -217,99 +156,6 @@ void dzSysArrayUpdate(dzSysArray *arr, double dt)
 /* scan connectivity information of systems from a file. */
 typedef enum{ DZ_SYS_CONNECT_OUT, DZ_SYS_CONNECT_IN } _dzSysConnectState;
 
-typedef struct{
-  dzSysArray *arr;
-  _dzSysConnectState state;
-  dzSys *sys_out, *sys_in;
-  int port_out, port_in;
-} _dzSysConnectParam;
-
-bool __dzSysArrayConnectFScan(FILE *fp, void *instance, char *buf, bool *success)
-{
-  _dzSysConnectParam *prm;
-
-  prm = instance;
-  switch( prm->state ){
-  case DZ_SYS_CONNECT_OUT:
-    if( !( prm->sys_out = dzSysArrayNameFind( prm->arr, buf ) ) ){
-      *success = false;
-      return false;
-    }
-    prm->port_out = zFInt( fp );
-    prm->state = DZ_SYS_CONNECT_IN;
-    break;
-  case DZ_SYS_CONNECT_IN:
-    if( !( prm->sys_in = dzSysArrayNameFind( prm->arr, buf ) ) ){
-      *success = false;
-      return false;
-    }
-    prm->port_in = zFInt( fp );
-    if( !dzSysConnect( prm->sys_out, prm->port_out, prm->sys_in, prm->port_in ) ){
-      *success = false;
-      return false;
-    }
-    prm->state = DZ_SYS_CONNECT_OUT;
-    break;
-  default:
-    ZRUNWARN( DZ_WARN_SYS_ALREADYCONNECTED, buf );
-    return false;
-  }
-  return true;
-}
-
-bool _dzSysArrayConnectFScan(FILE *fp, dzSysArray *arr)
-{
-  _dzSysConnectParam prm;
-
-  prm.arr = arr;
-  prm.state = DZ_SYS_CONNECT_OUT;
-  return zFieldFScan( fp, __dzSysArrayConnectFScan, &prm );
-}
-
-/* scan an array of systems from a file. */
-typedef struct{
-  dzSysArray *arr;
-  int count;
-} _dzSysArrayParam;
-
-bool _dzSysArrayFScan(FILE *fp, void *instance, char *buf, bool *success)
-{
-  _dzSysArrayParam *prm;
-
-  prm = instance;
-  if( strcmp( buf, ZTK_TAG_DZSYS ) == 0 ){
-    if( !dzSysFScan( fp, zArrayElemNC(prm->arr,prm->count++) ) ){
-      *success = false;
-      return false;
-    }
-  } else
-  if( strcmp( buf, ZTK_TAG_DZSYS_CONNECT ) == 0 ){
-    if( !_dzSysArrayConnectFScan( fp, prm->arr ) )
-      *success = false;
-  } else
-    return false;
-  return true;
-}
-
-/* (static)
- * count subsystems to be allocated in a system chain. */
-bool _dzSysFAlloc(FILE *fp, dzSysArray *arr)
-{
-  return dzSysArrayAlloc( arr, zFCountTag( fp, ZTK_TAG_DZSYS ) ) ? true : false;
-}
-
-bool dzSysArrayFScan(FILE *fp, dzSysArray *arr)
-{
-  _dzSysArrayParam prm;
-
-  zArrayInit( arr );
-  if( !_dzSysFAlloc( fp, arr ) ) return false;
-  rewind( fp );
-  prm.count = 0;
-  prm.arr = arr;
-  return zTagFScan( fp, _dzSysArrayFScan, &prm );
-}
-
 static void *_dzSysArraySysFromZTK(void *obj, int i, void *arg, ZTK *ztk){
   return dzSysFromZTK( zArrayElemNC((dzSysArray*)obj,i), ztk ) ? obj : NULL;
 }
@@ -338,14 +184,14 @@ static void *_dzSysArrayConnectFromZTK(void *obj, int i, void *arg, ZTK *ztk){
       state = DZ_SYS_CONNECT_OUT;
       break;
     default:
-      ZRUNWARN( "connection already determined, invalid token %s", ZTKVal(ztk) );
+      ZRUNWARN( DZ_WARN_SYS_ALREADYCONNECTED, ZTKVal(ztk) );
       return NULL;
     }
   } while( ZTKValPtr(ztk) );
   return obj;
 }
 
-static void _dzSysArrayConnectFPrint(FILE *fp, int i, void *obj){
+static void _dzSysArrayConnectFPrintZTK(FILE *fp, int i, void *obj){
   register int j, k;
   dzSys *sys;
   dzSysPort *sp;
@@ -361,7 +207,7 @@ static void _dzSysArrayConnectFPrint(FILE *fp, int i, void *obj){
 
 static ZTKPrp __ztk_prp_tag_dzsys[] = {
   { ZTK_TAG_DZSYS, -1, _dzSysArraySysFromZTK, NULL },
-  { ZTK_TAG_DZSYS_CONNECT, 1, _dzSysArrayConnectFromZTK, _dzSysArrayConnectFPrint },
+  { ZTK_TAG_DZSYS_CONNECT, 1, _dzSysArrayConnectFromZTK, _dzSysArrayConnectFPrintZTK },
 };
 
 bool dzSysRegZTK(ZTK *ztk)
@@ -371,7 +217,7 @@ bool dzSysRegZTK(ZTK *ztk)
 
   if( !ZTKDefRegPrp( ztk, ZTK_TAG_DZSYS, __ztk_prp_dzsys ) ) return false;
   for( i=0; _dz_sys_com[i]; i++ )
-    if( !_dz_sys_com[i]->regZTK( ztk ) ) return false;
+    if( !_dz_sys_com[i]->_regZTK( ztk ) ) return false;
   return ZTKDefRegTag( ztk, ZTK_TAG_DZSYS_CONNECT ) ? true : false;
 }
 
@@ -402,13 +248,13 @@ dzSysArray *dzSysArrayScanZTK(dzSysArray *sarray, char filename[])
 }
 
 /* print an array of systems to a file. */
-void dzSysArrayFPrint(FILE *fp, dzSysArray *arr)
+void dzSysArrayFPrintZTK(FILE *fp, dzSysArray *arr)
 {
   register int i;
 
   for( i=0; i<zArraySize(arr); i++ ){
     fprintf( fp, "[%s]\n", ZTK_TAG_DZSYS );
-    dzSysFPrint( fp, zArrayElemNC(arr,i) );
+    dzSysFPrintZTK( fp, zArrayElemNC(arr,i) );
     fprintf( fp, "\n" );
   }
   ZTKPrpTagFPrint( fp, arr, __ztk_prp_tag_dzsys );

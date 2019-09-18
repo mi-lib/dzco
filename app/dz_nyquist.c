@@ -99,12 +99,7 @@ int main(int argc, char *argv[])
 
   if( argc < 2 ) dz_nyq_usage( argv[0] );
   if( !dz_nyq_commandarg( argc, argv+1 ) ) return 1;
-  if( !( fp = fopen( opt[OPT_TFFILE].arg, "r" ) ) ){
-    ZOPENERROR( opt[OPT_TFFILE].arg );
-    return 1;
-  }
-  if( !dzTFFScan( fp, &tf ) ) return 1;
-  fclose( fp );
+  if( !dzTFScanZTK( &tf, opt[OPT_TFFILE].arg ) ) return 1;
   dz_nyq_parse_range( opt[OPT_RANGE].arg, &from, &to, &d );
 
   fp = fopen( opt[OPT_OUTPUTFILE].arg, "w" );

@@ -33,13 +33,12 @@ zArrayClass( dzSysPortArray, dzSysPort );
 
 typedef struct{
   const char *typestr;
-  void (*destroy)(struct _dzSys*);
-  void (*refresh)(struct _dzSys*);
-  zVec (*update)(struct _dzSys*, double);
-  struct _dzSys *(*fscan)(FILE *fp, struct _dzSys*);
-  bool (*regZTK)(ZTK*);
-  struct _dzSys *(*fromZTK)(struct _dzSys*, ZTK*);
-  void (*fprint)(FILE *fp, struct _dzSys*);
+  void (* _destroy)(struct _dzSys*);
+  void (* _refresh)(struct _dzSys*);
+  zVec (* _update)(struct _dzSys*, double);
+  bool (* _regZTK)(ZTK*);
+  struct _dzSys *(* _fromZTK)(struct _dzSys*, ZTK*);
+  void (* _fprintZTK)(FILE *fp, struct _dzSys*);
 } dzSysCom;
 
 typedef struct _dzSys{
@@ -93,9 +92,9 @@ typedef struct _dzSys{
  *
  * dzSysDestroy() and dzSysRefresh() return no value.
  */
-#define dzSysDestroy(s)  (s)->com->destroy( s )
-#define dzSysRefresh(s)  (s)->com->refresh( s )
-#define dzSysUpdate(s,h) (s)->com->update( s, h )
+#define dzSysDestroy(s)  (s)->com->_destroy( s )
+#define dzSysRefresh(s)  (s)->com->_refresh( s )
+#define dzSysUpdate(s,h) (s)->com->_update( s, h )
 
 /*! \brief connect dynamical systems.
  *
@@ -119,18 +118,17 @@ __EXPORT bool dzSysConnect(dzSys *s1, int p1, dzSys *s2, int p2);
 __EXPORT void dzSysChain(int n, ...);
 
 /* default destroying method */
-__EXPORT void dzSysDestroyDefault(dzSys *sys);
+__EXPORT void dzSysDefaultDestroy(dzSys *sys);
 
 /* default refreshing method */
-__EXPORT void dzSysRefreshDefault(dzSys *sys);
+__EXPORT void dzSysDefaultRefresh(dzSys *sys);
 
 #define ZTK_TAG_DZSYS "sys"
 #define ZTK_TAG_DZSYS_CONNECT "connect"
 
 __EXPORT void *dzSysFromZTK(dzSys *sys, ZTK *ztk);
 
-__EXPORT dzSys *dzSysFScan(FILE *fp, dzSys *sys);
-__EXPORT void dzSysFPrint(FILE *fp, dzSys *sys);
+__EXPORT void dzSysFPrintZTK(FILE *fp, dzSys *sys);
 
 /* ********************************************************** */
 /* \class dzSysArray
@@ -154,8 +152,7 @@ __EXPORT bool dzSysRegZTK(ZTK *ztk);
 __EXPORT dzSysArray *dzSysArrayFromZTK(dzSysArray *sarray, ZTK *ztk);
 __EXPORT dzSysArray *dzSysArrayScanZTK(dzSysArray *sarray, char filename[]);
 
-__EXPORT bool dzSysArrayFScan(FILE *fp, dzSysArray *sys);
-__EXPORT void dzSysArrayFPrint(FILE *fp, dzSysArray *sys);
+__EXPORT void dzSysArrayFPrintZTK(FILE *fp, dzSysArray *sys);
 
 __END_DECLS
 
@@ -170,7 +167,7 @@ __END_DECLS
 #include <dzco/dz_sys_filt_maf.h> /* moving-average filter */
 #include <dzco/dz_sys_filt_bw.h>  /* Butterworth filter */
 
-#include <dzco/dz_sys_gen.h> /* function generators */
+#include <dzco/dz_sys_fg.h> /* function generators */
 
 __BEGIN_DECLS
 

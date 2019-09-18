@@ -5,7 +5,7 @@ int main(int argc, char *argv[])
   dzSysArray arr;
 
   dzSysArrayScanZTK( &arr, argc > 1 ? argv[1] : "scan_test.ztk" );
-  dzSysArrayFPrint( stdout, &arr );
+  dzSysArrayFPrintZTK( stdout, &arr );
   dzSysArrayDestroy( &arr );
   return 0;
 }

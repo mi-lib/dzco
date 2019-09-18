@@ -20,10 +20,9 @@ int main(int argc, char *argv[])
 {
   dzSys qpd, intg1, intg2;
 
-  /* QPD */
-  dzSysCreateQPD( &qpd, 10.0, 12.0, 0.01 );
-  dzSysCreateI( &intg1, 1.0, 0 );
-  dzSysCreateI( &intg2, 1.0, 0 );
+  dzSysQPDCreate( &qpd, 10.0, 12.0, 0.01 );
+  dzSysICreate( &intg1, 1.0, 0 );
+  dzSysICreate( &intg2, 1.0, 0 );
   dzSysConnect( &qpd, 0, &intg1, 0 );
   dzSysConnect( &intg1, 0, &intg2, 0 );
   dzSysConnect( &intg2, 0, &qpd, 0 );

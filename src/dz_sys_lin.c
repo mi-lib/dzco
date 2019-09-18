@@ -10,65 +10,55 @@
 /* general linear system
  * ********************************************************** */
 
-void dzSysDestroyLin(dzSys *sys)
+static void _dzSysLinDestroy(dzSys *sys)
 {
   dzLinDestroy( sys->prp );
   zFree( sys->prp );
 }
 
-void dzSysRefreshLin(dzSys *sys)
+static void _dzSysLinRefresh(dzSys *sys)
 {
   zVecZero( ((dzLin *)sys->prp)->x );
 }
 
-zVec dzSysUpdateLin(dzSys *sys, double dt)
+static zVec _dzSysLinUpdate(dzSys *sys, double dt)
 {
   dzLinStateUpdate( sys->prp, dzSysInputVal(sys,0), dt );
   dzSysOutputVal(sys,0) = dzLinOutput( sys->prp, dzSysInputVal(sys,0) );
   return dzSysOutput(sys);
 }
 
-dzSys *dzSysFScanLin(FILE *fp, dzSys *sys)
+static void _dzSysLinFPrintZTK(FILE *fp, dzSys *sys)
 {
-  dzLin *lin;
-
-  if( !( lin = zAlloc( dzLin, 1 ) ) ) return NULL;
-  dzLinFScan( fp, lin );
-  return dzSysCreateLin( sys, lin );
+  dzLinFPrintZTK( fp, sys->prp );
 }
 
-void dzSysFPrintLin(FILE *fp, dzSys *sys)
-{
-  dzLinFPrint( fp, sys->prp );
-}
-
-static bool _dzSysRegZTKLin(ZTK *ztk)
+static bool _dzSysLinRegZTK(ZTK *ztk)
 {
   return dzLinRegZTK( ztk, ZTK_TAG_DZSYS );
 }
 
-static dzSys *_dzSysFromZTKLin(dzSys *sys, ZTK *ztk)
+static dzSys *_dzSysLinFromZTK(dzSys *sys, ZTK *ztk)
 {
   dzLin *lin;
 
   if( !( lin = zAlloc( dzLin, 1 ) ) ) return NULL;
   if( !dzLinFromZTK( lin, ztk ) ) return NULL;
-  return dzSysCreateLin( sys, lin );
+  return dzSysLinCreate( sys, lin );
 }
 
 dzSysCom dz_sys_lin_com = {
   typestr: "lin",
-  destroy: dzSysDestroyLin,
-  refresh: dzSysRefreshLin,
-  update: dzSysUpdateLin,
-  fscan: dzSysFScanLin,
-  regZTK: _dzSysRegZTKLin,
-  fromZTK: _dzSysFromZTKLin,
-  fprint: dzSysFPrintLin,
+  _destroy: _dzSysLinDestroy,
+  _refresh: _dzSysLinRefresh,
+  _update: _dzSysLinUpdate,
+  _regZTK: _dzSysLinRegZTK,
+  _fromZTK: _dzSysLinFromZTK,
+  _fprintZTK: _dzSysLinFPrintZTK,
 };
 
 /* create a linear system. */
-dzSys *dzSysCreateLin(dzSys *sys, dzLin *lin)
+dzSys *dzSysLinCreate(dzSys *sys, dzLin *lin)
 {
   dzSysInit( sys );
   dzSysAllocInput( sys, 1 );

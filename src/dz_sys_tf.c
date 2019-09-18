@@ -41,7 +41,7 @@ static dzSysTFPrm *_dzSysTFPrmAlloc(int n)
   return prm;
 }
 
-void dzSysDestroyTF(dzSys *sys)
+static void _dzSysTFDestroy(dzSys *sys)
 {
   zArrayFree( dzSysInput(sys) );
   zVecFree( dzSysOutput(sys) );
@@ -50,12 +50,12 @@ void dzSysDestroyTF(dzSys *sys)
   dzSysInit( sys );
 }
 
-void dzSysRefreshTF(dzSys *sys)
+static void _dzSysTFRefresh(dzSys *sys)
 {
   memset( ((dzSysTFPrm*)sys->prp)->z, 0, sizeof(double)*((dzSysTFPrm*)sys->prp)->n );
 }
 
-zVec dzSysUpdateTF(dzSys *sys, double dt)
+static zVec _dzSysTFUpdate(dzSys *sys, double dt)
 {
   register int i;
   dzSysTFPrm *prm;
@@ -71,48 +71,38 @@ zVec dzSysUpdateTF(dzSys *sys, double dt)
   return dzSysOutput(sys);
 }
 
-dzSys *dzSysFScanTF(FILE *fp, dzSys *sys)
+static void dzSysTFFPrintZTK(FILE *fp, dzSys *sys)
 {
-  dzTF *tf;
-
-  if( !( tf = zAlloc( dzTF, 1 ) ) ) return NULL;
-  if( !dzTFFScan( fp, tf ) ) return NULL;
-  return dzSysCreateTF( sys, tf );
+  dzTFFPrintZTK( fp, ((dzSysTFPrm*)sys->prp)->tf );
 }
 
-void dzSysFPrintTF(FILE *fp, dzSys *sys)
-{
-  dzTFFPrint( fp, ((dzSysTFPrm*)sys->prp)->tf );
-}
-
-static bool _dzSysRegZTKTF(ZTK *ztk)
+static bool _dzSysTFRegZTK(ZTK *ztk)
 {
   return dzTFRegZTK( ztk, ZTK_TAG_DZSYS );
 }
 
-static dzSys *_dzSysFromZTKTF(dzSys *sys, ZTK *ztk)
+static dzSys *_dzSysTFFromZTK(dzSys *sys, ZTK *ztk)
 {
   dzTF *tf;
 
   if( !( tf = zAlloc( dzTF, 1 ) ) ) return NULL;
   if( !dzTFFromZTK( tf, ztk ) ) return NULL;
-  return dzSysCreateTF( sys, tf );
+  return dzSysTFCreate( sys, tf );
 }
 
 dzSysCom dz_sys_tf_com = {
   typestr: "tf",
-  destroy: dzSysDestroyTF,
-  refresh: dzSysRefreshTF,
-  update: dzSysUpdateTF,
-  fscan: dzSysFScanTF,
-  regZTK: _dzSysRegZTKTF,
-  fromZTK: _dzSysFromZTKTF,
-  fprint: dzSysFPrintTF,
+  _destroy: _dzSysTFDestroy,
+  _refresh: _dzSysTFRefresh,
+  _update: _dzSysTFUpdate,
+  _regZTK: _dzSysTFRegZTK,
+  _fromZTK: _dzSysTFFromZTK,
+  _fprintZTK: dzSysTFFPrintZTK,
 };
 
 /* create a transfer function from a polynomial rational expression
  * as an infinite impulse response system. */
-dzSys *dzSysCreateTF(dzSys *sys, dzTF *tf)
+dzSys *dzSysTFCreate(dzSys *sys, dzTF *tf)
 {
   dzLin lin;
   dzSysTFPrm *prm;

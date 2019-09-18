@@ -28,7 +28,7 @@ int main(int argc, char *argv[])
   register int i;
 
   zRandInitMT( NULL );
-  dzSysCreateMAF( &maf, FF );
+  dzSysMAFCreate( &maf, FF );
 /*
   dzSysMAFSetCF( &maf, CF );
 */

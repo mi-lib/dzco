@@ -106,12 +106,12 @@ __EXPORT zComplex *dzTFFreqRes(dzTF *tf, double frq, zComplex *res);
 __EXPORT bool dzTFRegZTK(ZTK *ztk, char *tag);
 __EXPORT dzTF *dzTFFromZTK(dzTF *tf, ZTK *ztk);
 
-/*! \brief scan and print a polynomial transfer function from file.
- */
-__EXPORT dzTF *dzTFFScan(FILE *fp, dzTF *tf);
-#define dzTFScan(tf)  dzTFFScan( stdin, tf )
-__EXPORT void dzTFFPrint(FILE *fp, dzTF *tf);
-#define dzTFPrint(tf) dzTFFPrint( stdout, tf )
+/*! \brief scan a ZTK file and create a transfer function. */
+__EXPORT dzTF *dzTFScanZTK(dzTF *tf, char filename[]);
+
+__EXPORT void dzTFFPrintZTK(FILE *fp, dzTF *tf);
+#define dzTFPrintZTK(tf) dzTFFPrint( stdout, tf )
+
 __EXPORT void dzTFFExpr(FILE *fp, dzTF *tf);
 #define dzTFExpr(tf) dzTFFExpr( stdout, tf )
 

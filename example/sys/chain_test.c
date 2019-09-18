@@ -5,9 +5,9 @@ int main(void)
   double i;
   dzSys c1, c2, c3;
 
-  dzSysCreateP( &c1, 2 );
-  dzSysCreateP( &c2, 3 );
-  dzSysCreateP( &c3, 2 );
+  dzSysPCreate( &c1, 2 );
+  dzSysPCreate( &c2, 3 );
+  dzSysPCreate( &c3, 2 );
   dzSysInputPtr(&c1,0) = &i;
   dzSysChain( 3, &c1, &c2, &c3 );
   for( i=-2; i<=2; i+=0.01 ){

@@ -116,7 +116,7 @@ static double _dzBWUpdate(_dzBW *bw, double input, double dt)
 }
 
 /* destroy a Butterworth filter. */
-void dzSysDestroyBW(dzSys *sys)
+void dzSysBWDestroy(dzSys *sys)
 {
   zArrayFree( dzSysInput(sys) );
   zVecFree( dzSysOutput(sys) );
@@ -129,7 +129,7 @@ void dzSysDestroyBW(dzSys *sys)
 }
 
 /* refresh the internal state of a Butterworth filter. */
-void dzSysRefreshBW(dzSys *sys)
+void dzSysBWRefresh(dzSys *sys)
 {
   _dzBW *bw;
   register int i;
@@ -142,7 +142,7 @@ void dzSysRefreshBW(dzSys *sys)
 }
 
 /* update a Butterworth filter. */
-zVec dzSysUpdateBW(dzSys *sys, double dt)
+zVec dzSysBWUpdate(dzSys *sys, double dt)
 {
   dzSysOutputVal(sys,0) = _dzBWUpdate( sys->prp, dzSysInputVal(sys,0), dt );
   return dzSysOutput(sys);
@@ -153,79 +153,56 @@ typedef struct{
   int dim;
 } _dzBWParam;
 
-static bool _dzSysFScanBW(FILE *fp, void *prm, char *buf, bool *success);
-
-bool _dzSysFScanBW(FILE *fp, void *prm, char *buf, bool *success)
-{
-  if( strcmp( buf, "cf" ) == 0 ){
-    ((_dzBWParam *)prm)->cf = zFDouble( fp );
-  } else
-  if( strcmp( buf, "dim" ) == 0 ){
-    ((_dzBWParam *)prm)->dim = zFInt( fp );
-  } else
-    return false;
-  return true;
-}
-
-dzSys *dzSysFScanBW(FILE *fp, dzSys *sys)
-{
-  _dzBWParam prm = { 1.0, 1 };
-
-  zFieldFScan( fp, _dzSysFScanBW, &prm );
-  return dzSysCreateBW( sys, prm.cf, prm.dim );
-}
-
-static void *_dzSysFromZTKBWCF(void *val, int i, void *arg, ZTK *ztk){
+static void *_dzSysBWCFFromZTK(void *val, int i, void *arg, ZTK *ztk){
   ((_dzBWParam*)val)->cf = ZTKDouble(ztk);
   return val;
 }
-static void *_dzSysFromZTKBWDim(void *val, int i, void *arg, ZTK *ztk){
+static void *_dzSysBWDimFromZTK(void *val, int i, void *arg, ZTK *ztk){
   ((_dzBWParam*)val)->dim = ZTKDouble(ztk);
   return val;
 }
 
-static void _dzSysFPrintBWCF(FILE *fp, int i, void *prp){
+static void _dzSysBWCFFPrintZTK(FILE *fp, int i, void *prp){
   fprintf( fp, "%.10g\n", ((_dzBW*)((dzSys*)prp)->prp)->cf );
 }
-static void _dzSysFPrintBWDim(FILE *fp, int i, void *prp){
+static void _dzSysBWDimFPrintZTK(FILE *fp, int i, void *prp){
   fprintf( fp, "%d\n", ((_dzBW*)((dzSys*)prp)->prp)->dim );
 }
 
 static ZTKPrp __ztk_prp_dzsys_bw[] = {
-  { "cf", 1, _dzSysFromZTKBWCF, _dzSysFPrintBWCF },
-  { "dim", 1, _dzSysFromZTKBWDim, _dzSysFPrintBWDim },
+  { "cf", 1, _dzSysBWCFFromZTK, _dzSysBWCFFPrintZTK },
+  { "dim", 1, _dzSysBWDimFromZTK, _dzSysBWDimFPrintZTK },
 };
 
-static bool _dzSysRegZTKBW(ZTK *ztk)
+static bool _dzSysBWRegZTK(ZTK *ztk)
 {
   return ZTKDefRegPrp( ztk, ZTK_TAG_DZSYS, __ztk_prp_dzsys_bw ) ? true : false;
 }
 
-static dzSys *_dzSysFromZTKBW(dzSys *sys, ZTK *ztk)
+static dzSys *_dzSysBWFromZTK(dzSys *sys, ZTK *ztk)
 {
   _dzBWParam prm = { 1.0, 1 };
   if( !ZTKEncodeKey( &prm, NULL, ztk, __ztk_prp_dzsys_bw ) ) return NULL;
-  return dzSysCreateBW( sys, prm.cf, prm.dim );
+  return dzSysBWCreate( sys, prm.cf, prm.dim );
 }
 
-static void _dzSysFPrintBW(FILE *fp, dzSys *sys)
+static void _dzSysBWFPrintZTK(FILE *fp, dzSys *sys)
 {
   ZTKPrpKeyFPrint( fp, sys, __ztk_prp_dzsys_bw );
 }
 
 dzSysCom dz_sys_bw_com = {
   typestr: "butterworth",
-  destroy: dzSysDestroyBW,
-  refresh: dzSysRefreshBW,
-  update: dzSysUpdateBW,
-  fscan: dzSysFScanBW,
-  regZTK: _dzSysRegZTKBW,
-  fromZTK: _dzSysFromZTKBW,
-  fprint: _dzSysFPrintBW,
+  _destroy: dzSysBWDestroy,
+  _refresh: dzSysBWRefresh,
+  _update: dzSysBWUpdate,
+  _regZTK: _dzSysBWRegZTK,
+  _fromZTK: _dzSysBWFromZTK,
+  _fprintZTK: _dzSysBWFPrintZTK,
 };
 
 /* create a Butterworth filter. */
-dzSys *dzSysCreateBW(dzSys *sys, double cf, uint dim)
+dzSys *dzSysBWCreate(dzSys *sys, double cf, uint dim)
 {
   dzSysInit( sys );
   sys->com = &dz_sys_bw_com;

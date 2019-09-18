@@ -15,7 +15,7 @@ OBJ=dz_tf.o dz_lin.o\
 	dz_sys_misc.o dz_sys_pid.o dz_sys_lag.o\
 	dz_sys_lin.o dz_sys_tf.o\
 	dz_sys_filt_maf.o dz_sys_filt_bw.o\
-	dz_sys_gen.o\
+	dz_sys_fg.o\
 	dz_ident_lag.o
 DLIB=libdzco.so
 

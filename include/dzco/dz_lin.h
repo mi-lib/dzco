@@ -249,14 +249,7 @@ __EXPORT dzLin *dzTF2LinObsCanon(dzTF *tf, dzLin *lin);
 
 __EXPORT bool dzLinRegZTK(ZTK *ztk, char *tag);
 __EXPORT dzLin *dzLinFromZTK(dzLin *lin, ZTK *ztk);
-__EXPORT void dzLinFPrint(FILE *fp, dzLin *lin);
-
-/*! \brief scan and print a linear system.
- */
-__EXPORT dzLin *dzLinFScan(FILE *fp, dzLin *lin);
-#define dzLinScan(l)   dzLinFScan( stdin, (l) )
-__EXPORT void dzLinFPrint(FILE *fp, dzLin *lin);
-#define dzLinPrint(l)  dzLinFPrint( stdout, (l) )
+__EXPORT void dzLinFPrintZTK(FILE *fp, dzLin *lin);
 
 __END_DECLS
 

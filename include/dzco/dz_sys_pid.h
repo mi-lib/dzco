@@ -19,15 +19,15 @@ __BEGIN_DECLS
 
 /*! \brief create proportional amplifier.
  *
- * dzSysCreateP() creates a proportional amplifier \a sys.
+ * dzSysPCreate() creates a proportional amplifier \a sys.
  * \a gain is the proportional gain.
  *
  * \return
- * dzSysCreateP() returns the null pointer if it fails to allocate
+ * dzSysPCreate() returns the null pointer if it fails to allocate
  * the internal working memory. Otherwise, a pointer \a sys is
  * returned.
  */
-__EXPORT dzSys *dzSysCreateP(dzSys *sys, double gain);
+__EXPORT dzSys *dzSysPCreate(dzSys *sys, double gain);
 
 __EXPORT void dzSysPSetGain(dzSys *sys, double gain);
 
@@ -41,15 +41,15 @@ extern dzSysCom dz_sys_p_com;
 
 /*! \brief create an integrator.
  *
- * dzSysCreateI() creates an integrator \a sys.
+ * dzSysICreate() creates an integrator \a sys.
  * \a dt is the sampling time for descrete integration.
  * \a gain is the integral gain.
  * \return
- * dzSysCreateI() returns the null pointer if \a dt is an invalid
+ * dzSysICreate() returns the null pointer if \a dt is an invalid
  * value - too short or negative, or if it fails to allocate the
  * internal working memory. Otherwise, a pointer \a sys is returned.
  */
-__EXPORT dzSys *dzSysCreateI(dzSys *sys, double gain, double fgt);
+__EXPORT dzSys *dzSysICreate(dzSys *sys, double gain, double fgt);
 
 __EXPORT void dzSysISetGain(dzSys *sys, double gain);
 __EXPORT void dzSysISetFgt(dzSys *sys, double fgt);
@@ -64,7 +64,7 @@ extern dzSysCom dz_sys_i_com;
 
 /*! \brief create a differentiator.
  *
- * dzSysCreateD() creates a differentiator \a sys.
+ * dzSysDCreate() creates a differentiator \a sys.
  * \a dt is the sampling time for descrete differentiation.
  * \a gain is the differential gain.
  * \a t is the time constant to filter the signal. A smaller
@@ -73,12 +73,12 @@ extern dzSysCom dz_sys_i_com;
  * smallest amount for \a t is \a dt. A smaller \a t than \a dt,
  * 0 for example, is automatically replaced for \a dt.
  * \return
- * dzSysCreateD() returns the null pointer if \a dt is an invalid
+ * dzSysDCreate() returns the null pointer if \a dt is an invalid
  * value - too short or negative, or if it fails to allocate
  * the internal working memory. Otherwise, a pointer \a sys is
  * returned.
  */
-__EXPORT dzSys *dzSysCreateD(dzSys *sys, double gain, double tc);
+__EXPORT dzSys *dzSysDCreate(dzSys *sys, double gain, double tc);
 
 __EXPORT void dzSysDSetGain(dzSys *sys, double gain);
 __EXPORT void dzSysDSetTC(dzSys *sys, double t);
@@ -93,17 +93,17 @@ extern dzSysCom dz_sys_d_com;
 
 /*! \brief create PID controller.
  *
- * dzSysCreatePID() creates a PID controller \a sys.
+ * dzSysPIDCreate() creates a PID controller \a sys.
  * \a dt is the sampling time for descrete control.
  * \a p is the proportional gain.
  * \a i is the integral gain.
  * \a d is the differential gain.
  * \return
- * dzSysCreatePID() returns the null pointer if \a dt is a too
+ * dzSysPIDCreate() returns the null pointer if \a dt is a too
  * short or negative value, or if it fails to allocate the
  * internal work space. Otherwise, a pointer \a sys is returned.
  */
-__EXPORT dzSys *dzSysCreatePID(dzSys *sys, double kp, double ki, double kd, double tc, double fgt);
+__EXPORT dzSys *dzSysPIDCreate(dzSys *sys, double kp, double ki, double kd, double tc, double fgt);
 
 __EXPORT void dzSysPIDSetPGain(dzSys *sys, double kp);
 __EXPORT void dzSysPIDSetIGain(dzSys *sys, double ki);
@@ -114,23 +114,23 @@ __EXPORT void dzSysPIDSetFgt(dzSys *sys, double fgt);
 extern dzSysCom dz_sys_pid_com;
 
 /* ********************************************************** */
-/* QPD(Quadratic Proportional and Differential) controller
+/* QPD (Quadratic Proportional and Differential) controller
  * ********************************************************** */
 
 /* value map: [kq1=2kp(1-eps)][kq2=(3-2eps)/2(1-eps)][goal][init][dgain][prev] */
 
 /*! \brief create QPD controller.
  *
- * dzSysCreateQPD() creates a QPD controller \a sys.
+ * dzSysQPDCreate() creates a QPD controller \a sys.
  * \a dt is the sampling time for descrete control.
  * \a p is the quadratic proportional gain.
  * \a d is the differential gain.
  * \return
- * dzSysCreateQPD() returns the null pointer if \a dt is a too
+ * dzSysQPDCreate() returns the null pointer if \a dt is a too
  * short or negative value, or if it fails to allocate the internal
  * work space. Otherwise, a pointer \a sys is returned.
  */
-__EXPORT dzSys *dzSysCreateQPD(dzSys *sys, double kp, double kd, double eps);
+__EXPORT dzSys *dzSysQPDCreate(dzSys *sys, double kp, double kd, double eps);
 
 __EXPORT void dzSysQPDSetGoal(dzSys *sys, double goal);
 

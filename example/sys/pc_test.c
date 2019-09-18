@@ -15,12 +15,12 @@ dzSys sys1[6], sys2[6], sys3[6], sys4[6], sol1, sol3, sol4;
  */
 void create(dzSys sys[], double *ref)
 {
-  dzSysCreateP( &sys[0], 1.0 );
-  dzSysCreateSubtr( &sys[1], 2 );
-  dzSysCreateP( &sys[2], 1.0 );
-  dzSysCreateFOL( &sys[3], 0.1, 2.5 );
-  dzSysCreateFOL( &sys[4], 0.5, 2.0 );
-  dzSysCreateI( &sys[5], 1.0, 0 );
+  dzSysPCreate( &sys[0], 1.0 );
+  dzSysSubtrCreate( &sys[1], 2 );
+  dzSysPCreate( &sys[2], 1.0 );
+  dzSysFOLCreate( &sys[3], 0.1, 2.5 );
+  dzSysFOLCreate( &sys[4], 0.5, 2.0 );
+  dzSysICreate( &sys[5], 1.0, 0 );
 
   dzSysInputPtr(&sys[0],0) = ref;
   dzSysConnect( &sys[0], 0, &sys[1], 0 );
@@ -61,23 +61,23 @@ int main(void)
   create( sys2, &ref );
   create( sys3, &ref );
   create( sys4, &ref );
-  dzSysCreateSOL( &sol1, 1.0/2.89, 0, 0.175, 1.0 );
+  dzSysSOLCreate( &sol1, 1.0/2.89, 0, 0.175, 1.0 );
   dzSysInputPtr(&sol1,0) = &ref;
   /* gain compensater */
   dzSysDestroy( &sys2[2] );
-  dzSysCreateP( &sys2[2], 0.282 );
+  dzSysPCreate( &sys2[2], 0.282 );
   dzSysConnect( &sys2[1], 0, &sys2[2], 0 );
   /* phase-lag compensater */
   dzSysDestroy( &sys3[2] );
-  dzSysCreatePC( &sys3[2], 37.47, 8.33, 1.0 );
+  dzSysPCCreate( &sys3[2], 37.47, 8.33, 1.0 );
   dzSysConnect( &sys3[1], 0, &sys3[2], 0 );
-  dzSysCreateSOL( &sol3, 1.0/1.53, 0, 0.5, 1.0 );
+  dzSysSOLCreate( &sol3, 1.0/1.53, 0, 0.5, 1.0 );
   dzSysInputPtr(&sol3,0) = &ref;
   /* phase-lead compensater */
   dzSysDestroy( &sys4[2] );
-  dzSysCreatePC( &sys4[2], 0.055, 0.5, 1.0 );
+  dzSysPCCreate( &sys4[2], 0.055, 0.5, 1.0 );
   dzSysConnect( &sys4[1], 0, &sys4[2], 0 );
-  dzSysCreateSOL( &sol4, 1.0/5.68, 0, 0.5, 1.0 );
+  dzSysSOLCreate( &sol4, 1.0/5.68, 0, 0.5, 1.0 );
   dzSysInputPtr(&sol4,0) = &ref;
 
   for( i=0; i<=STEP; i++ ){

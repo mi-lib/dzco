@@ -1,24 +1,24 @@
-#include <dzco/dz_pex.h>
+#include <dzco/dz_tf.h>
 
 int main(int argc, char *argv[])
 {
-  dzPex g;
+  dzTF g;
   double frq;
   zComplex c;
   FILE *fp;
 
   fp = fopen( "bode", "w" );
 
-  dzPexAlloc( &g, 1, 1 );
-  dzPexSetNumList( &g, 1.0, 1.0 );
-  dzPexSetDenList( &g, 1.0, 1.2 );
+  dzTFAlloc( &g, 1, 1 );
+  dzTFSetNumList( &g, 1.0, 1.0 );
+  dzTFSetDenList( &g, 1.0, 1.2 );
 
   for( frq=0.001; frq<10000; frq*=1.2 ){
-    dzPexFreqRes( &g, frq, &c );
+    dzTFFreqRes( &g, frq, &c );
     fprintf( fp, "%f %f %f\n", frq,
       log(zComplexAbs(&c)), zRad2Deg(zComplexArg(&c)) );
   }
-  dzPexDestroy( &g );
+  dzTFDestroy( &g );
   fclose( fp );
   return 0;
 }

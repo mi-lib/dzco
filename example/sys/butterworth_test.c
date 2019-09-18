@@ -15,9 +15,9 @@ int main(void)
 
   /* first-order ... forth-order butterworth filters */
   for( j=0; j<N; j++ ){
-    dzSysCreateBW( &bwf[j], FREQ_HIGH, j+1 );
+    dzSysBWCreate( &bwf[j], FREQ_HIGH, j+1 );
     dzSysInputPtr(&bwf[j],0) = &val;
-    dzSysCreateMAF( &maf[j], 1.0 ); /* 1.0 = dummy forgetting factor */
+    dzSysMAFCreate( &maf[j], 1.0 ); /* 1.0 = dummy forgetting factor */
     dzSysMAFSetCF( &maf[j], FREQ_HIGH, DT );
     if( j == 0 )
       dzSysInputPtr(&maf[j],0) = &val;

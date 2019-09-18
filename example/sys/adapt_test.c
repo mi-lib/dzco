@@ -8,8 +8,8 @@ int main(int argc, char *argv[])
   dzSys adapt1, adapt2;
   double ref;
 
-  dzSysCreateAdapt( &adapt1, 0.5, 0 );
-  dzSysCreateAdapt( &adapt2, 0.5, 0 );
+  dzSysAdaptCreate( &adapt1, 0.5, 0 );
+  dzSysAdaptCreate( &adapt2, 0.5, 0 );
   dzSysInputPtr(&adapt1,0) = &ref;
   dzSysInputPtr(&adapt2,0) = &ref;
 

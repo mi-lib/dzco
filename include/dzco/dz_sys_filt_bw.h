@@ -18,14 +18,14 @@ __BEGIN_DECLS
 
 /*! \brief create a Butterworth filter.
  *
- * dzSysCreateBW() creates a Butterworth filter \a sys
+ * dzSysBWCreate() creates a Butterworth filter \a sys
  * with the cut-off frequency \a cf and the dimension \a dim.
  * \a dt is the sampling time.
  * \retval
- * dzBWCreate() returns a pointer \a sys if succeeding.
+ * dzSysBWCreate() returns a pointer \a sys if succeeding.
  * Or, it returns the null pointer when failing by any reasons.
  */
-__EXPORT dzSys *dzSysCreateBW(dzSys *sys, double cf, uint dim);
+__EXPORT dzSys *dzSysBWCreate(dzSys *sys, double cf, uint dim);
 
 extern dzSysCom dz_sys_bw_com;
 

@@ -10,76 +10,56 @@
 /* proportional amplifier
  * ********************************************************** */
 
-static bool _dzSysFScanP(FILE *fp, void *gain, char *buf, bool *success);
-
 #define __dz_sys_p_gain(s) ( *(double *)(s)->prp )
 
-zVec dzSysUpdateP(dzSys *sys, double dt)
+static zVec _dzSysPUpdate(dzSys *sys, double dt)
 {
   dzSysOutputVal(sys,0) = __dz_sys_p_gain(sys) * dzSysInputVal(sys,0);
   return dzSysOutput(sys);
 }
 
-bool _dzSysFScanP(FILE *fp, void *gain, char *buf, bool *success)
-{
-  if( strcmp( buf, "gain" ) == 0 ){
-    *(double *)gain = zFDouble( fp );
-    return true;
-  }
-  return false;
-}
-
-dzSys *dzSysFScanP(FILE *fp, dzSys *sys)
-{
-  double gain = 0;
-
-  zFieldFScan( fp, _dzSysFScanP, &gain );
-  return dzSysCreateP( sys, gain );
-}
-
-static void *_dzSysFromZTKPGain(void *val, int i, void *arg, ZTK *ztk){
+static void *_dzSysPGainFromZTK(void *val, int i, void *arg, ZTK *ztk){
   *((double*)val) = ZTKDouble(ztk);
   return val;
 }
 
-static void _dzSysFPrintPGain(FILE *fp, int i, void *prp){
+static void _dzSysPGainFPrintZTK(FILE *fp, int i, void *prp){
   fprintf( fp, "%.10g\n", __dz_sys_p_gain((dzSys*)prp) );
 }
 
 static ZTKPrp __ztk_prp_dzsys_p[] = {
-  { "gain", 1, _dzSysFromZTKPGain, _dzSysFPrintPGain },
+  { "gain", 1, _dzSysPGainFromZTK, _dzSysPGainFPrintZTK },
 };
 
-static bool _dzSysRegZTKP(ZTK *ztk)
+static bool _dzSysPRegZTK(ZTK *ztk)
 {
   return ZTKDefRegPrp( ztk, ZTK_TAG_DZSYS, __ztk_prp_dzsys_p ) ? true : false;
 }
 
-static dzSys *_dzSysFromZTKP(dzSys *sys, ZTK *ztk)
+static dzSys *_dzSysPFromZTK(dzSys *sys, ZTK *ztk)
 {
   double gain = 0;
   if( !ZTKEncodeKey( &gain, NULL, ztk, __ztk_prp_dzsys_p ) ) return NULL;
-  return dzSysCreateP( sys, gain );
+  return dzSysPCreate( sys, gain );
 }
 
-static void _dzSysFPrintP(FILE *fp, dzSys *sys)
+static void _dzSysPFPrintZTK(FILE *fp, dzSys *sys)
 {
   ZTKPrpKeyFPrint( fp, sys, __ztk_prp_dzsys_p );
 }
 
 dzSysCom dz_sys_p_com = {
   typestr: "amplifier",
-  destroy: dzSysDestroyDefault,
-  refresh: dzSysRefreshDefault,
-  update: dzSysUpdateP,
-  fscan: dzSysFScanP,
-  regZTK: _dzSysRegZTKP,
-  fromZTK: _dzSysFromZTKP,
-  fprint: _dzSysFPrintP,
+  _destroy: dzSysDefaultDestroy,
+  _refresh: dzSysDefaultRefresh,
+  _update: _dzSysPUpdate,
+  _regZTK: _dzSysPRegZTK,
+  _fromZTK: _dzSysPFromZTK,
+  _fprintZTK: _dzSysPFPrintZTK,
 };
 
 /* create a proportional amplifier. */
-dzSys *dzSysCreateP(dzSys *sys, double gain)
+dzSys *dzSysPCreate(dzSys *sys, double gain)
 {
   dzSysInit( sys );
   sys->com = &dz_sys_p_com;
@@ -104,14 +84,12 @@ void dzSysPSetGain(dzSys *sys, double gain)
 #define __dz_sys_i_gain(s) ( ((double *)(s)->prp)[1] )
 #define __dz_sys_i_fgt(s)  ( ((double *)(s)->prp)[2] )
 
-static bool _dzSysFScanI(FILE *fp, void *val, char *buf, bool *success);
-
-void dzSysRefreshI(dzSys *sys)
+static void _dzSysIRefresh(dzSys *sys)
 {
   dzSysOutputVal(sys,0) = __dz_sys_i_prev(sys) = 0;
 }
 
-zVec dzSysUpdateI(dzSys *sys, double dt)
+static zVec _dzSysIUpdate(dzSys *sys, double dt)
 {
   dzSysOutputVal(sys,0) = ( 1 - __dz_sys_i_fgt(sys) ) * dzSysOutputVal(sys,0)
     + __dz_sys_i_gain(sys) * __dz_sys_i_prev(sys) * dt;
@@ -119,77 +97,56 @@ zVec dzSysUpdateI(dzSys *sys, double dt)
   return dzSysOutput(sys);
 }
 
-bool _dzSysFScanI(FILE *fp, void *val, char *buf, bool *success)
-{
-  if( strcmp( buf, "gain" ) == 0 ){
-    ((double *)val)[0] = zFDouble( fp );
-  } else
-  if( strcmp( buf, "fgt" ) == 0 ){
-    ((double *)val)[1] = zFDouble( fp );
-  } else
-    return false;
-  return true;
-}
-
-dzSys *dzSysFScanI(FILE *fp, dzSys *sys)
-{
-  double val[] = { 0.0, 0.0 };
-
-  zFieldFScan( fp, _dzSysFScanI, val );
-  return dzSysCreateI( sys, val[0], val[1] );
-}
-
-static void *_dzSysFromZTKIGain(void *val, int i, void *arg, ZTK *ztk){
+static void *_dzSysIGainFromZTK(void *val, int i, void *arg, ZTK *ztk){
   ((double*)val)[0] = ZTKDouble(ztk);
   return val;
 }
-static void *_dzSysFromZTKIFgt(void *val, int i, void *arg, ZTK *ztk){
+static void *_dzSysIFgtFromZTK(void *val, int i, void *arg, ZTK *ztk){
   ((double*)val)[1] = ZTKDouble(ztk);
   return val;
 }
 
-static void _dzSysFPrintIGain(FILE *fp, int i, void *prp){
+static void _dzSysIGainFPrintZTK(FILE *fp, int i, void *prp){
   fprintf( fp, "%.10g\n", __dz_sys_i_gain((dzSys*)prp) );
 }
-static void _dzSysFPrintIFgt(FILE *fp, int i, void *prp){
+static void _dzSysIFgtFPrintZTK(FILE *fp, int i, void *prp){
   fprintf( fp, "%.10g\n", __dz_sys_i_fgt((dzSys*)prp) );
 }
 
 static ZTKPrp __ztk_prp_dzsys_i[] = {
-  { "gain", 1, _dzSysFromZTKIGain, _dzSysFPrintIGain },
-  { "fgt", 1, _dzSysFromZTKIFgt, _dzSysFPrintIFgt },
+  { "gain", 1, _dzSysIGainFromZTK, _dzSysIGainFPrintZTK },
+  { "fgt", 1, _dzSysIFgtFromZTK, _dzSysIFgtFPrintZTK },
 };
 
-static bool _dzSysRegZTKI(ZTK *ztk)
+static bool _dzSysIRegZTK(ZTK *ztk)
 {
   return ZTKDefRegPrp( ztk, ZTK_TAG_DZSYS, __ztk_prp_dzsys_i ) ? true : false;
 }
 
-static dzSys *_dzSysFromZTKI(dzSys *sys, ZTK *ztk)
+static dzSys *_dzSysIFromZTK(dzSys *sys, ZTK *ztk)
 {
   double val[] = { 0.0, 0.0 };
   if( !ZTKEncodeKey( val, NULL, ztk, __ztk_prp_dzsys_i ) ) return NULL;
-  return dzSysCreateI( sys, val[0], val[1] );
+  return dzSysICreate( sys, val[0], val[1] );
 }
 
-static void _dzSysFPrintI(FILE *fp, dzSys *sys)
+static void _dzSysIFPrintZTK(FILE *fp, dzSys *sys)
 {
   ZTKPrpKeyFPrint( fp, sys, __ztk_prp_dzsys_i );
 }
 
 dzSysCom dz_sys_i_com = {
   typestr: "integrator",
-  destroy: dzSysDestroyDefault,
-  refresh: dzSysRefreshI,
-  update: dzSysUpdateI,
-  fscan: dzSysFScanI,
-  regZTK: _dzSysRegZTKI,
-  fromZTK: _dzSysFromZTKI,
-  fprint: _dzSysFPrintI,
+  _destroy: dzSysDefaultDestroy,
+  _refresh: _dzSysIRefresh,
+  _update: _dzSysIUpdate,
+  _regZTK: _dzSysIRegZTK,
+  _fromZTK: _dzSysIFromZTK,
+  _fprintZTK: _dzSysIFPrintZTK,
 };
 
 /* create an integrator. */
-dzSys *dzSysCreateI(dzSys *sys, double gain, double fgt)
+dzSys *dzSysICreate(dzSys *sys, double gain, double fgt)
 {
   dzSysInit( sys );
   sys->com = &dz_sys_i_com;
@@ -227,14 +184,12 @@ void dzSysISetFgt(dzSys *sys, double fgt)
 #define __dz_sys_d_gain(s) ( ((double*)(s)->prp)[1] )
 #define __dz_sys_d_tc(s)   ( ((double*)(s)->prp)[2] )
 
-static bool _dzSysFScanD(FILE *fp, void *val, char *buf, bool *success);
-
-void dzSysRefreshD(dzSys *sys)
+static void _dzSysDRefresh(dzSys *sys)
 {
   dzSysOutputVal(sys,0) = __dz_sys_d_prev(sys) = 0;
 }
 
-zVec dzSysUpdateD(dzSys *sys, double dt)
+static zVec _dzSysDUpdate(dzSys *sys, double dt)
 {
   double r;
 
@@ -246,77 +201,56 @@ zVec dzSysUpdateD(dzSys *sys, double dt)
   return dzSysOutput(sys);
 }
 
-bool _dzSysFScanD(FILE *fp, void *val, char *buf, bool *success)
-{
-  if( strcmp( buf, "gain" ) == 0 ){
-    ((double *)val)[0] = zFDouble( fp );
-  } else
-  if( strcmp( buf, "tc" ) == 0 ){
-    ((double *)val)[1] = zFDouble( fp );
-  } else
-    return false;
-  return true;
-}
-
-dzSys *dzSysFScanD(FILE *fp, dzSys *sys)
-{
-  double val[] = { 0.0, 0.0 };
-
-  zFieldFScan( fp, _dzSysFScanD, val );
-  return dzSysCreateD( sys, val[0], val[1] );
-}
-
-static void *_dzSysFromZTKDGain(void *val, int i, void *arg, ZTK *ztk){
+static void *_dzSysDGainFromZTK(void *val, int i, void *arg, ZTK *ztk){
   ((double*)val)[0] = ZTKDouble(ztk);
   return val;
 }
-static void *_dzSysFromZTKDTc(void *val, int i, void *arg, ZTK *ztk){
+static void *_dzSysDTcFromZTK(void *val, int i, void *arg, ZTK *ztk){
   ((double*)val)[1] = ZTKDouble(ztk);
   return val;
 }
 
-static void _dzSysFPrintDGain(FILE *fp, int i, void *prp){
+static void _dzSysDGainFPrintZTK(FILE *fp, int i, void *prp){
   fprintf( fp, "%.10g\n", __dz_sys_d_gain((dzSys*)prp) );
 }
-static void _dzSysFPrintDTc(FILE *fp, int i, void *prp){
+static void _dzSysDTcFPrintZTK(FILE *fp, int i, void *prp){
   fprintf( fp, "%.10g\n", __dz_sys_d_tc((dzSys*)prp) );
 }
 
 static ZTKPrp __ztk_prp_dzsys_d[] = {
-  { "gain", 1, _dzSysFromZTKDGain, _dzSysFPrintDGain },
-  { "tc", 1, _dzSysFromZTKDTc, _dzSysFPrintDTc },
+  { "gain", 1, _dzSysDGainFromZTK, _dzSysDGainFPrintZTK },
+  { "tc", 1, _dzSysDTcFromZTK, _dzSysDTcFPrintZTK },
 };
 
-static bool _dzSysRegZTKD(ZTK *ztk)
+static bool _dzSysDRegZTK(ZTK *ztk)
 {
   return ZTKDefRegPrp( ztk, ZTK_TAG_DZSYS, __ztk_prp_dzsys_d ) ? true : false;
 }
 
-static dzSys *_dzSysFromZTKD(dzSys *sys, ZTK *ztk)
+static dzSys *_dzSysDFromZTK(dzSys *sys, ZTK *ztk)
 {
   double val[] = { 0.0, 0.0 };
   if( !ZTKEncodeKey( val, NULL, ztk, __ztk_prp_dzsys_d ) ) return NULL;
-  return dzSysCreateD( sys, val[0], val[1] );
+  return dzSysDCreate( sys, val[0], val[1] );
 }
 
-static void _dzSysFPrintD(FILE *fp, dzSys *sys)
+static void _dzSysDFPrintZTK(FILE *fp, dzSys *sys)
 {
   ZTKPrpKeyFPrint( fp, sys, __ztk_prp_dzsys_d );
 }
 
 dzSysCom dz_sys_d_com = {
   typestr: "differentiator",
-  destroy: dzSysDestroyDefault,
-  refresh: dzSysRefreshD,
-  update: dzSysUpdateD,
-  fscan: dzSysFScanD,
-  regZTK: _dzSysRegZTKD,
-  fromZTK: _dzSysFromZTKD,
-  fprint: _dzSysFPrintD,
+  _destroy: dzSysDefaultDestroy,
+  _refresh: _dzSysDRefresh,
+  _update: _dzSysDUpdate,
+  _regZTK: _dzSysDRegZTK,
+  _fromZTK: _dzSysDFromZTK,
+  _fprintZTK: _dzSysDFPrintZTK,
 };
 
 /* create a differentiator. */
-dzSys *dzSysCreateD(dzSys *sys, double gain, double tc)
+dzSys *dzSysDCreate(dzSys *sys, double gain, double tc)
 {
   dzSysInit( sys );
   sys->com = &dz_sys_d_com;
@@ -352,14 +286,12 @@ void dzSysDSetTC(dzSys *sys, double t)
 #define __dz_sys_pid_dgain(s)   ( ((double*)(s)->prp)[5] )
 #define __dz_sys_pid_tc(s)      ( ((double*)(s)->prp)[6] )
 
-static bool _dzSysFScanPID(FILE *fp, void *val, char *buf, bool *success);
-
-void dzSysRefreshPID(dzSys *sys)
+static void _dzSysPIDRefresh(dzSys *sys)
 {
   dzSysOutputVal(sys,0) = __dz_sys_pid_intg(sys) = __dz_sys_pid_prev(sys) = 0;
 }
 
-zVec dzSysUpdatePID(dzSys *sys, double dt)
+static zVec _dzSysPIDUpdate(dzSys *sys, double dt)
 {
   __dz_sys_pid_intg(sys) = ( 1 - __dz_sys_pid_fgt(sys) ) * __dz_sys_pid_intg(sys)
     + __dz_sys_pid_igain(sys) * __dz_sys_pid_prev(sys) * dt;
@@ -373,110 +305,80 @@ zVec dzSysUpdatePID(dzSys *sys, double dt)
   return dzSysOutput(sys);
 }
 
-bool _dzSysFScanPID(FILE *fp, void *val, char *buf, bool *success)
-{
-  if( strcmp( buf, "pgain" ) == 0 ){
-    ((double *)val)[0] = zFDouble( fp );
-  } else
-  if( strcmp( buf, "igain" ) == 0 ){
-    ((double *)val)[1] = zFDouble( fp );
-  } else
-  if( strcmp( buf, "dgain" ) == 0 ){
-    ((double *)val)[2] = zFDouble( fp );
-  } else
-  if( strcmp( buf, "tc" ) == 0 ){
-    ((double *)val)[3] = zFDouble( fp );
-  } else
-  if( strcmp( buf, "fgt" ) == 0 ){
-    ((double *)val)[4] = zFDouble( fp );
-  } else
-    return false;
-  return true;
-}
-
-dzSys *dzSysFScanPID(FILE *fp, dzSys *sys)
-{
-  double val[] = { 0.0, 0.0, 0.0, 0.0, 0.0 };
-
-  zFieldFScan( fp, _dzSysFScanPID, val );
-  return dzSysCreatePID( sys, val[0], val[1], val[2], val[3], val[4] );
-}
-
-static void *_dzSysFromZTKPIDPGain(void *val, int i, void *arg, ZTK *ztk){
+static void *_dzSysPIDPGainFromZTK(void *val, int i, void *arg, ZTK *ztk){
   ((double*)val)[0] = ZTKDouble(ztk);
   return val;
 }
-static void *_dzSysFromZTKPIDIGain(void *val, int i, void *arg, ZTK *ztk){
+static void *_dzSysPIDIGainFromZTK(void *val, int i, void *arg, ZTK *ztk){
   ((double*)val)[1] = ZTKDouble(ztk);
   return val;
 }
-static void *_dzSysFromZTKPIDDGain(void *val, int i, void *arg, ZTK *ztk){
+static void *_dzSysPIDDGainFromZTK(void *val, int i, void *arg, ZTK *ztk){
   ((double*)val)[2] = ZTKDouble(ztk);
   return val;
 }
-static void *_dzSysFromZTKPIDTc(void *val, int i, void *arg, ZTK *ztk){
+static void *_dzSysPIDTcFromZTK(void *val, int i, void *arg, ZTK *ztk){
   ((double*)val)[3] = ZTKDouble(ztk);
   return val;
 }
-static void *_dzSysFromZTKPIDFgt(void *val, int i, void *arg, ZTK *ztk){
+static void *_dzSysPIDFgtFromZTK(void *val, int i, void *arg, ZTK *ztk){
   ((double*)val)[4] = ZTKDouble(ztk);
   return val;
 }
 
-static void _dzSysFPrintPIDPGain(FILE *fp, int i, void *prp){
+static void _dzSysPIDPGainFPrintZTK(FILE *fp, int i, void *prp){
   fprintf( fp, "%.10g\n", __dz_sys_pid_pgain((dzSys*)prp) );
 }
-static void _dzSysFPrintPIDIGain(FILE *fp, int i, void *prp){
+static void _dzSysPIDIGainFPrintZTK(FILE *fp, int i, void *prp){
   fprintf( fp, "%.10g\n", __dz_sys_pid_igain((dzSys*)prp) );
 }
-static void _dzSysFPrintPIDDGain(FILE *fp, int i, void *prp){
+static void _dzSysPIDDGainFPrintZTK(FILE *fp, int i, void *prp){
   fprintf( fp, "%.10g\n", __dz_sys_pid_dgain((dzSys*)prp) );
 }
-static void _dzSysFPrintPIDTc(FILE *fp, int i, void *prp){
+static void _dzSysPIDTcFPrintZTK(FILE *fp, int i, void *prp){
   fprintf( fp, "%.10g\n", __dz_sys_pid_tc((dzSys*)prp) );
 }
-static void _dzSysFPrintPIDFgt(FILE *fp, int i, void *prp){
+static void _dzSysPIDFgtFPrintZTK(FILE *fp, int i, void *prp){
   fprintf( fp, "%.10g\n", __dz_sys_pid_fgt((dzSys*)prp) );
 }
 
 static ZTKPrp __ztk_prp_dzsys_pid[] = {
-  { "pgain", 1, _dzSysFromZTKPIDPGain, _dzSysFPrintPIDPGain },
-  { "igain", 1, _dzSysFromZTKPIDIGain, _dzSysFPrintPIDIGain },
-  { "dgain", 1, _dzSysFromZTKPIDDGain, _dzSysFPrintPIDDGain },
-  { "tc", 1, _dzSysFromZTKPIDTc, _dzSysFPrintPIDTc },
-  { "fgt", 1, _dzSysFromZTKPIDFgt, _dzSysFPrintPIDFgt },
+  { "pgain", 1, _dzSysPIDPGainFromZTK, _dzSysPIDPGainFPrintZTK },
+  { "igain", 1, _dzSysPIDIGainFromZTK, _dzSysPIDIGainFPrintZTK },
+  { "dgain", 1, _dzSysPIDDGainFromZTK, _dzSysPIDDGainFPrintZTK },
+  { "tc", 1, _dzSysPIDTcFromZTK, _dzSysPIDTcFPrintZTK },
+  { "fgt", 1, _dzSysPIDFgtFromZTK, _dzSysPIDFgtFPrintZTK },
 };
 
-static bool _dzSysRegZTKPID(ZTK *ztk)
+static bool _dzSysPIDRegZTK(ZTK *ztk)
 {
   return ZTKDefRegPrp( ztk, ZTK_TAG_DZSYS, __ztk_prp_dzsys_pid ) ? true : false;
 }
 
-static dzSys *_dzSysFromZTKPID(dzSys *sys, ZTK *ztk)
+static dzSys *_dzSysPIDFromZTK(dzSys *sys, ZTK *ztk)
 {
   double val[] = { 0.0, 0.0, 0.0, 0.0, 0.0 };
   if( !ZTKEncodeKey( val, NULL, ztk, __ztk_prp_dzsys_pid ) ) return NULL;
-  return dzSysCreatePID( sys, val[0], val[1], val[2], val[3], val[4] );
+  return dzSysPIDCreate( sys, val[0], val[1], val[2], val[3], val[4] );
 }
 
-static void _dzSysFPrintPID(FILE *fp, dzSys *sys)
+static void _dzSysPIDFPrintZTK(FILE *fp, dzSys *sys)
 {
   ZTKPrpKeyFPrint( fp, sys, __ztk_prp_dzsys_pid );
 }
 
 dzSysCom dz_sys_pid_com = {
   typestr: "PID",
-  destroy: dzSysDestroyDefault,
-  refresh: dzSysRefreshPID,
-  update: dzSysUpdatePID,
-  fscan: dzSysFScanPID,
-  regZTK: _dzSysRegZTKPID,
-  fromZTK: _dzSysFromZTKPID,
-  fprint: _dzSysFPrintPID,
+  _destroy: dzSysDefaultDestroy,
+  _refresh: _dzSysPIDRefresh,
+  _update: _dzSysPIDUpdate,
+  _regZTK: _dzSysPIDRegZTK,
+  _fromZTK: _dzSysPIDFromZTK,
+  _fprintZTK: _dzSysPIDFPrintZTK,
 };
 
 /* create a PID controller. */
-dzSys *dzSysCreatePID(dzSys *sys, double kp, double ki, double kd, double tc, double fgt)
+dzSys *dzSysPIDCreate(dzSys *sys, double kp, double ki, double kd, double tc, double fgt)
 {
   dzSysInit( sys );
   sys->com = &dz_sys_pid_com;
@@ -523,7 +425,7 @@ void dzSysPIDSetFgt(dzSys *sys, double fgt)
 }
 
 /* ********************************************************** */
-/* QPD(Quadratic Proportional and Differential) controller
+/* QPD (Quadratic Proportional and Differential) controller
  * ********************************************************** */
 
 #define __dz_sys_qpd_kq1(s)    ((double *)(s)->prp)[0]
@@ -535,20 +437,18 @@ void dzSysPIDSetFgt(dzSys *sys, double fgt)
 #define __dz_sys_qpd_eps(s)    ((double *)(s)->prp)[6]
 #define __dz_sys_qpd_prev(s)   ((double *)(s)->prp)[7]
 
-static bool _dzSysFScanQPD(FILE *fp, void *val, char *buf, bool *success);
-
 void dzSysQPDSetGoal(dzSys *sys, double goal)
 {
   __dz_sys_qpd_goal(sys) = goal;
   __dz_sys_qpd_init(sys) = goal - dzSysInputVal(sys,0);
 }
 
-void dzSysRefreshQPD(dzSys *sys)
+static void _dzSysQPDRefresh(dzSys *sys)
 {
   __dz_sys_qpd_prev(sys) = dzSysInputVal(sys,0);
 }
 
-zVec dzSysUpdateQPD(dzSys *sys, double dt)
+static zVec _dzSysQPDUpdate(dzSys *sys, double dt)
 {
   double r;
 
@@ -564,88 +464,64 @@ zVec dzSysUpdateQPD(dzSys *sys, double dt)
   return dzSysOutput(sys);
 }
 
-bool _dzSysFScanQPD(FILE *fp, void *val, char *buf, bool *success)
-{
-  if( strcmp( buf, "pgain" ) == 0 ){
-    ((double *)val)[0] = zFDouble( fp );
-  } else
-  if( strcmp( buf, "dgain" ) == 0 ){
-    ((double *)val)[1] = zFDouble( fp );
-  } else
-  if( strcmp( buf, "eps" ) == 0 ){
-    ((double *)val)[2] = zFDouble( fp );
-  } else
-    return false;
-  return true;
-}
-
-dzSys *dzSysFScanQPD(FILE *fp, dzSys *sys)
-{
-  double val[] = { 0.0, 0.0, 1.0e-3 };
-
-  zFieldFScan( fp, _dzSysFScanQPD, val );
-  return dzSysCreateQPD( sys, val[0], val[1], val[2] );
-}
-
-static void *_dzSysFromZTKQPDPGain(void *val, int i, void *arg, ZTK *ztk){
+static void *_dzSysQPDPGainFromZTK(void *val, int i, void *arg, ZTK *ztk){
   ((double*)val)[0] = ZTKDouble(ztk);
   return val;
 }
-static void *_dzSysFromZTKQPDDGain(void *val, int i, void *arg, ZTK *ztk){
+static void *_dzSysQPDDGainFromZTK(void *val, int i, void *arg, ZTK *ztk){
   ((double*)val)[1] = ZTKDouble(ztk);
   return val;
 }
-static void *_dzSysFromZTKQPDEps(void *val, int i, void *arg, ZTK *ztk){
+static void *_dzSysQPDEpsFromZTK(void *val, int i, void *arg, ZTK *ztk){
   ((double*)val)[2] = ZTKDouble(ztk);
   return val;
 }
 
-static void _dzSysFPrintQPDPGain(FILE *fp, int i, void *prp){
+static void _dzSysQPDPGainFPrintZTK(FILE *fp, int i, void *prp){
   fprintf( fp, "%.10g\n", __dz_sys_qpd_pgain((dzSys*)prp) );
 }
-static void _dzSysFPrintQPDDGain(FILE *fp, int i, void *prp){
+static void _dzSysQPDDGainFPrintZTK(FILE *fp, int i, void *prp){
   fprintf( fp, "%.10g\n", __dz_sys_qpd_dgain((dzSys*)prp) );
 }
-static void _dzSysFPrintQPDEps(FILE *fp, int i, void *prp){
+static void _dzSysQPDEpsFPrintZTK(FILE *fp, int i, void *prp){
   fprintf( fp, "%.10g\n", __dz_sys_qpd_eps((dzSys*)prp) );
 }
 
 static ZTKPrp __ztk_prp_dzsys_qpd[] = {
-  { "pgain", 1, _dzSysFromZTKQPDPGain, _dzSysFPrintQPDPGain },
-  { "dgain", 1, _dzSysFromZTKQPDDGain, _dzSysFPrintQPDDGain },
-  { "eps", 1, _dzSysFromZTKQPDEps, _dzSysFPrintQPDEps },
+  { "pgain", 1, _dzSysQPDPGainFromZTK, _dzSysQPDPGainFPrintZTK },
+  { "dgain", 1, _dzSysQPDDGainFromZTK, _dzSysQPDDGainFPrintZTK },
+  { "eps", 1, _dzSysQPDEpsFromZTK, _dzSysQPDEpsFPrintZTK },
 };
 
-static bool _dzSysRegZTKQPD(ZTK *ztk)
+static bool _dzSysQPDRegZTK(ZTK *ztk)
 {
   return ZTKDefRegPrp( ztk, ZTK_TAG_DZSYS, __ztk_prp_dzsys_qpd ) ? true : false;
 }
 
-static dzSys *_dzSysFromZTKQPD(dzSys *sys, ZTK *ztk)
+static dzSys *_dzSysQPDFromZTK(dzSys *sys, ZTK *ztk)
 {
   double val[] = { 0.0, 0.0, 1.0e-3 };
   if( !ZTKEncodeKey( val, NULL, ztk, __ztk_prp_dzsys_qpd ) ) return NULL;
-  return dzSysCreateQPD( sys, val[0], val[1], val[2] );
+  return dzSysQPDCreate( sys, val[0], val[1], val[2] );
 }
 
-static void _dzSysFPrintQPD(FILE *fp, dzSys *sys)
+static void _dzSysQPDFPrintZTK(FILE *fp, dzSys *sys)
 {
   ZTKPrpKeyFPrint( fp, sys, __ztk_prp_dzsys_qpd );
 }
 
 dzSysCom dz_sys_qpd_com = {
   typestr: "QPD",
-  destroy: dzSysDestroyDefault,
-  refresh: dzSysRefreshQPD,
-  update: dzSysUpdateQPD,
-  fscan: dzSysFScanQPD,
-  regZTK: _dzSysRegZTKQPD,
-  fromZTK: _dzSysFromZTKQPD,
-  fprint: _dzSysFPrintQPD,
+  _destroy: dzSysDefaultDestroy,
+  _refresh: _dzSysQPDRefresh,
+  _update: _dzSysQPDUpdate,
+  _regZTK: _dzSysQPDRegZTK,
+  _fromZTK: _dzSysQPDFromZTK,
+  _fprintZTK: _dzSysQPDFPrintZTK,
 };
 
 /* create a QPD controller. */
-dzSys *dzSysCreateQPD(dzSys *sys, double kp, double kd, double eps)
+dzSys *dzSysQPDCreate(dzSys *sys, double kp, double kd, double eps)
 {
   dzSysInit( sys );
   sys->com = &dz_sys_qpd_com;

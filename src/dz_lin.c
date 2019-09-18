@@ -19,8 +19,6 @@ static bool _dzLinCheckSize(dzLin *lin);
 static zVec __dz_lin_state_dif(double t, zVec x, void *sys, zVec dx);
 static bool _dzLinCOMatPrep(dzLin *c, zMat m, uint size, zVec *v);
 
-static bool _dzLinFScan(FILE *fp, void *instance, char *buf, bool *success);
-
 /* initialize a linear system. */
 dzLin *dzLinInit(dzLin *lin)
 {
@@ -543,78 +541,38 @@ dzLin *dzTF2LinObsCanon(dzTF *tf, dzLin *lin){
   return _dzTF2LinCanon( tf, lin, _dzTF2LinObsCanon_tf );
 }
 
-/* scan a linear system from a file. */
-bool _dzLinFScan(FILE *fp, void *instance, char *buf, bool *success)
-{
-  if( strcmp( buf, "a" ) == 0 ){
-    ((dzLin *)instance)->a = zMatFScan( fp );
-  } else
-  if( strcmp( buf, "b" ) == 0 ){
-    ((dzLin *)instance)->b = zVecFScan( fp );
-  } else
-  if( strcmp( buf, "c" ) == 0 ){
-    ((dzLin *)instance)->c = zVecFScan( fp );
-  } else
-  if( strcmp( buf, "d" ) == 0 ){
-    ((dzLin *)instance)->d = zFDouble( fp );
-  } else
-    return false;
-  return true;
-}
-
-/* scan a linear system from a file. */
-dzLin *dzLinFScan(FILE *fp, dzLin *lin)
-{
-  dzLinInit( lin );
-  zFieldFScan( fp, _dzLinFScan, lin );
-  if( !lin->a || !lin->b || !lin->c ){
-    _dzLinDestroy( lin );
-    return NULL;
-  }
-  if( !_dzLinCheckSize( lin ) ){
-    ZRUNERROR( DZ_ERR_LIN_SIZMIS );
-    return NULL;
-  }
-  if( !( lin->x = zVecAlloc( zVecSize(lin->c) ) ) ||
-      !_dzLinAllocODE( lin ) ){
-    _dzLinDestroy( lin );
-    return NULL;
-  }
-  return lin;
-}
-
-static void *_dzLinFromZTKA(void *obj, int i, void *arg, ZTK *ztk){
+static void *_dzLinAFromZTK(void *obj, int i, void *arg, ZTK *ztk){
   return ( ((dzLin*)obj)->a = zMatFromZTK( ztk ) ) ? obj : NULL;
 }
-static void *_dzLinFromZTKB(void *obj, int i, void *arg, ZTK *ztk){
+static void *_dzLinBFromZTK(void *obj, int i, void *arg, ZTK *ztk){
   return ( ((dzLin*)obj)->b = zVecFromZTK( ztk ) ) ? obj : NULL;
 }
-static void *_dzLinFromZTKC(void *obj, int i, void *arg, ZTK *ztk){
+static void *_dzLinCFromZTK(void *obj, int i, void *arg, ZTK *ztk){
   return ( ((dzLin*)obj)->c = zVecFromZTK( ztk ) ) ? obj : NULL;
 }
-static void *_dzLinFromZTKD(void *obj, int i, void *arg, ZTK *ztk){
+static void *_dzLinDFromZTK(void *obj, int i, void *arg, ZTK *ztk){
   ((dzLin*)obj)->d = ZTKDouble(ztk);
   return obj;
 }
 
-static void _dzLinFPrintA(FILE *fp, int i, void *prp){
+static void _dzLinAFPrintZTK(FILE *fp, int i, void *prp){
   zMatFPrint( fp, ((dzLin*)prp)->a );
 }
-static void _dzLinFPrintB(FILE *fp, int i, void *prp){
+static void _dzLinBFPrintZTK(FILE *fp, int i, void *prp){
   zVecFPrint( fp, ((dzLin*)prp)->b );
 }
-static void _dzLinFPrintC(FILE *fp, int i, void *prp){
+static void _dzLinCFPrintZTK(FILE *fp, int i, void *prp){
   zVecFPrint( fp, ((dzLin*)prp)->c );
 }
-static void _dzLinFPrintD(FILE *fp, int i, void *prp){
+static void _dzLinDFPrintZTK(FILE *fp, int i, void *prp){
   fprintf( fp, "%.10g\n", ((dzLin*)prp)->d );
 }
 
 static ZTKPrp __ztk_prp_dzlin[] = {
-  { "a", 1, _dzLinFromZTKA, _dzLinFPrintA },
-  { "b", 1, _dzLinFromZTKB, _dzLinFPrintB },
-  { "c", 1, _dzLinFromZTKC, _dzLinFPrintC },
-  { "d", 1, _dzLinFromZTKD, _dzLinFPrintD },
+  { "a", 1, _dzLinAFromZTK, _dzLinAFPrintZTK },
+  { "b", 1, _dzLinBFromZTK, _dzLinBFPrintZTK },
+  { "c", 1, _dzLinCFromZTK, _dzLinCFPrintZTK },
+  { "d", 1, _dzLinDFromZTK, _dzLinDFPrintZTK },
 };
 
 bool dzLinRegZTK(ZTK *ztk, char *tag)
@@ -642,7 +600,7 @@ dzLin *dzLinFromZTK(dzLin *lin, ZTK *ztk)
   return lin;
 }
 
-void dzLinFPrint(FILE *fp, dzLin *lin)
+void dzLinFPrintZTK(FILE *fp, dzLin *lin)
 {
   ZTKPrpKeyFPrint( fp, lin, __ztk_prp_dzlin );
 }

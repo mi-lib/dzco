@@ -17,7 +17,7 @@ int main(int argc, char *argv[])
   dzSys fol;
   double ref;
 
-  dzSysCreateFOL( &fol, 0.5, 1.0 );
+  dzSysFOLCreate( &fol, 0.5, 1.0 );
   dzSysInputPtr(&fol,0) = &ref;
 
   ref = 1.0;

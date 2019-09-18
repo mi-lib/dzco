@@ -8,11 +8,11 @@ int main(void)
   dzSys step, ramp, sine, wn, adder;
   register int i;
 
-  dzSysCreateStep( &step, 1.0, 0.6, 2.0 );
-  dzSysCreateRamp( &ramp, 1.0, 0.6, 2.0 );
-  dzSysCreateSine( &sine, 1.0, 0.0, 2.0 );
-  dzSysCreateWhitenoise( &wn, 0.2, 0.5, 2.0 );
-  dzSysCreateAdder( &adder, 4 );
+  dzSysStepCreate( &step, 1.0, 0.6, 2.0 );
+  dzSysRampCreate( &ramp, 1.0, 0.6, 2.0 );
+  dzSysSineCreate( &sine, 1.0, 0.0, 2.0 );
+  dzSysWhitenoiseCreate( &wn, 0.2, 0.5, 2.0 );
+  dzSysAdderCreate( &adder, 4 );
   dzSysConnect( &step, 0, &adder, 0 );
   dzSysConnect( &ramp, 0, &adder, 1 );
   dzSysConnect( &sine, 0, &adder, 2 );

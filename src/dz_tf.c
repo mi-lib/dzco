@@ -6,8 +6,6 @@
 
 #include <dzco/dz_tf.h>
 
-static bool _dzTFFScan(FILE *fp, void *instance, char *buf, bool *success);
-
 /* allocate memory of a polynomial rational transfer function. */
 bool dzTFAlloc(dzTF *tf, int nsize, int dsize)
 {
@@ -120,50 +118,23 @@ zComplex *dzTFFreqRes(dzTF *tf, double frq, zComplex *res)
   return zComplexCDiv( &n, &d, res );
 }
 
-/* (static)
- * scan a polynomial transfer function from a file. */
-bool _dzTFFScan(FILE *fp, void *instance, char *buf, bool *success)
-{
-  if( strcmp( buf, "num" ) == 0 ){
-    dzTFNum((dzTF *)instance) = zPexFScan( fp );
-  } else
-  if( strcmp( buf, "den" ) == 0 ){
-    dzTFDen((dzTF *)instance) = zPexFScan( fp );
-  } else
-    return false;
-  return true;
-}
-
-/* scan a polynomial transfer function from a file. */
-dzTF *dzTFFScan(FILE *fp, dzTF *tf)
-{
-  dzTFSetNum( tf, NULL );
-  dzTFSetDen( tf, NULL );
-  zFieldFScan( fp, _dzTFFScan, tf );
-  if( !dzTFNum(tf) || !dzTFDen(tf) ){
-    dzTFDestroy( tf );
-    return NULL;
-  }
-  return tf;
-}
-
-static void *_dzTFFromZTKNum(void *obj, int i, void *arg, ZTK *ztk){
+static void *_dzTFNumFromZTK(void *obj, int i, void *arg, ZTK *ztk){
   return ( ((dzTF*)obj)->num = zPexFromZTK( ztk ) ) ? obj : NULL;
 }
-static void *_dzTFFromZTKDen(void *obj, int i, void *arg, ZTK *ztk){
+static void *_dzTFDenFromZTK(void *obj, int i, void *arg, ZTK *ztk){
   return ( ((dzTF*)obj)->den = zPexFromZTK( ztk ) ) ? obj : NULL;
 }
 
-static void _dzTFFPrintNum(FILE *fp, int i, void *prp){
+static void _dzTFNumFPrintZTK(FILE *fp, int i, void *prp){
   zPexFPrint( fp, ((dzTF*)prp)->num );
 }
-static void _dzTFFPrintDen(FILE *fp, int i, void *prp){
+static void _dzTFDenFPrintZTK(FILE *fp, int i, void *prp){
   zPexFPrint( fp, ((dzTF*)prp)->den );
 }
 
 static ZTKPrp __ztk_prp_dztf[] = {
-  { "num", 1, _dzTFFromZTKNum, _dzTFFPrintNum },
-  { "den", 1, _dzTFFromZTKDen, _dzTFFPrintDen },
+  { "num", 1, _dzTFNumFromZTK, _dzTFNumFPrintZTK },
+  { "den", 1, _dzTFDenFromZTK, _dzTFDenFPrintZTK },
 };
 
 bool dzTFRegZTK(ZTK *ztk, char *tag)
@@ -183,12 +154,25 @@ dzTF *dzTFFromZTK(dzTF *tf, ZTK *ztk)
   return tf;
 }
 
-void dzTFFPrint(FILE *fp, dzTF *tf)
+/* scan a ZTK file and create a transfer function. */
+dzTF *dzTFScanZTK(dzTF *tf, char filename[])
+{
+  ZTK ztk;
+
+  ZTKInit( &ztk );
+  if( !dzTFRegZTK( &ztk, "" ) ) return NULL;
+  if( ZTKParse( &ztk, filename ) )
+    tf = dzTFFromZTK( tf, &ztk );
+  ZTKDestroy( &ztk );
+  return tf;
+}
+
+void dzTFFPrintZTK(FILE *fp, dzTF *tf)
 {
   ZTKPrpKeyFPrint( fp, tf, __ztk_prp_dztf );
 }
 
-/* print a polynomial transfer function in a fancy style to a file. */
+/* print a transfer function in a fancy style to a file. */
 void dzTFFExpr(FILE *fp, dzTF *tf)
 {
   zPexFExpr( fp, dzTFNum(tf), 's' );
