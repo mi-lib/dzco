@@ -1,3 +1,4 @@
+2019. 9.19. Reflected renaming of dzSys*Create. [test]
 2019. 9.19. Added dzTFWriteZTK. [dz_tf]
 2019. 9.19. Renamed dzTFScanZTK to dzTFReadZTK. [dz_tf, app]
 2019. 9.19. Added dzSysArrayWriteZTK. [dz_sys]

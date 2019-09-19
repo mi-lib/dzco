@@ -13,13 +13,13 @@ bool assert_pid(void)
   bool result = true;
 
   zRandInit();
-  dzSysCreateP( &psys, 4 );
+  dzSysPCreate( &psys, 4 );
   dzSysInputPtr(&psys,0) = &u;
-  dzSysCreateI( &isys, 3, 0 );
+  dzSysICreate( &isys, 3, 0 );
   dzSysInputPtr(&isys,0) = &u;
-  dzSysCreateD( &dsys, 2, 0.0 );
+  dzSysDCreate( &dsys, 2, 0.0 );
   dzSysInputPtr(&dsys,0) = &u;
-  dzSysCreatePID( &pidsys, 4, 3, 2, 0.0, 0.0 );
+  dzSysPIDCreate( &pidsys, 4, 3, 2, 0.0, 0.0 );
   dzSysInputPtr(&pidsys,0) = &u;
   for( i=0; i<=STEP; i++ ){
     u = zRandF(-10,10);
@@ -38,6 +38,6 @@ bool assert_pid(void)
 
 int main(void)
 {
-  zAssert( dzSysCreatePID, assert_pid() );
+  zAssert( dzSysPIDCreate, assert_pid() );
   return EXIT_SUCCESS;
 }

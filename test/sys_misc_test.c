@@ -49,22 +49,22 @@ int main(void)
 
   zRandInit();
 
-  dzSysCreateAdder( &adder, 3 );
+  dzSysAdderCreate( &adder, 3 );
   dzSysInputPtr(&adder,0) = &v1;
   dzSysInputPtr(&adder,1) = &v2;
   dzSysInputPtr(&adder,2) = &v3;
 
-  dzSysCreateSubtr( &subtr, 3 );
+  dzSysSubtrCreate( &subtr, 3 );
   dzSysInputPtr(&subtr,0) = &v1;
   dzSysInputPtr(&subtr,1) = &v2;
   dzSysInputPtr(&subtr,2) = &v3;
 
-  dzSysCreateLimit( &limiter, 1, -1 );
+  dzSysLimitCreate( &limiter, 1, -1 );
   dzSysInputPtr(&limiter,0) = &v1;
 
-  zAssert( dzSysCreateAdder, assert_adder( &adder, &v1, &v2, &v3 ) );
-  zAssert( dzSysCreateSubtr, assert_subtr( &subtr, &v1, &v2, &v3 ) );
-  zAssert( dzSysCreateLimit, assert_limiter( &limiter, &v1 ) );
+  zAssert( dzSysAdderCreate, assert_adder( &adder, &v1, &v2, &v3 ) );
+  zAssert( dzSysSubtrCreate, assert_subtr( &subtr, &v1, &v2, &v3 ) );
+  zAssert( dzSysLimitCreate, assert_limiter( &limiter, &v1 ) );
 
   dzSysDestroy( &adder );
   dzSysDestroy( &subtr );
