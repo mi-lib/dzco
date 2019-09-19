@@ -39,7 +39,7 @@ static bool _dzSysPRegZTK(ZTK *ztk)
 static dzSys *_dzSysPFromZTK(dzSys *sys, ZTK *ztk)
 {
   double gain = 0;
-  if( !ZTKEncodeKey( &gain, NULL, ztk, __ztk_prp_dzsys_p ) ) return NULL;
+  if( !ZTKEvalKey( &gain, NULL, ztk, __ztk_prp_dzsys_p ) ) return NULL;
   return dzSysPCreate( sys, gain );
 }
 
@@ -126,7 +126,7 @@ static bool _dzSysIRegZTK(ZTK *ztk)
 static dzSys *_dzSysIFromZTK(dzSys *sys, ZTK *ztk)
 {
   double val[] = { 0.0, 0.0 };
-  if( !ZTKEncodeKey( val, NULL, ztk, __ztk_prp_dzsys_i ) ) return NULL;
+  if( !ZTKEvalKey( val, NULL, ztk, __ztk_prp_dzsys_i ) ) return NULL;
   return dzSysICreate( sys, val[0], val[1] );
 }
 
@@ -230,7 +230,7 @@ static bool _dzSysDRegZTK(ZTK *ztk)
 static dzSys *_dzSysDFromZTK(dzSys *sys, ZTK *ztk)
 {
   double val[] = { 0.0, 0.0 };
-  if( !ZTKEncodeKey( val, NULL, ztk, __ztk_prp_dzsys_d ) ) return NULL;
+  if( !ZTKEvalKey( val, NULL, ztk, __ztk_prp_dzsys_d ) ) return NULL;
   return dzSysDCreate( sys, val[0], val[1] );
 }
 
@@ -358,7 +358,7 @@ static bool _dzSysPIDRegZTK(ZTK *ztk)
 static dzSys *_dzSysPIDFromZTK(dzSys *sys, ZTK *ztk)
 {
   double val[] = { 0.0, 0.0, 0.0, 0.0, 0.0 };
-  if( !ZTKEncodeKey( val, NULL, ztk, __ztk_prp_dzsys_pid ) ) return NULL;
+  if( !ZTKEvalKey( val, NULL, ztk, __ztk_prp_dzsys_pid ) ) return NULL;
   return dzSysPIDCreate( sys, val[0], val[1], val[2], val[3], val[4] );
 }
 
@@ -501,7 +501,7 @@ static bool _dzSysQPDRegZTK(ZTK *ztk)
 static dzSys *_dzSysQPDFromZTK(dzSys *sys, ZTK *ztk)
 {
   double val[] = { 0.0, 0.0, 1.0e-3 };
-  if( !ZTKEncodeKey( val, NULL, ztk, __ztk_prp_dzsys_qpd ) ) return NULL;
+  if( !ZTKEvalKey( val, NULL, ztk, __ztk_prp_dzsys_qpd ) ) return NULL;
   return dzSysQPDCreate( sys, val[0], val[1], val[2] );
 }
 

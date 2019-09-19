@@ -583,7 +583,7 @@ bool dzLinRegZTK(ZTK *ztk, char *tag)
 dzLin *dzLinFromZTK(dzLin *lin, ZTK *ztk)
 {
   dzLinInit( lin );
-  if( !ZTKEncodeKey( lin, NULL, ztk, __ztk_prp_dzlin ) ) return NULL;
+  if( !ZTKEvalKey( lin, NULL, ztk, __ztk_prp_dzlin ) ) return NULL;
   if( !lin->a || !lin->b || !lin->c ){
     _dzLinDestroy( lin );
     return NULL;

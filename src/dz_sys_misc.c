@@ -46,7 +46,7 @@ static zVec _dzSysAdderUpdate(dzSys *sys, double dt)
 static dzSys *_dzSysAdderFromZTK(dzSys *sys, ZTK *ztk)
 {
   int n;
-  if( !ZTKEncodeKey( &n, NULL, ztk, __ztk_prp_dzsys_mi ) ) return NULL;
+  if( !ZTKEvalKey( &n, NULL, ztk, __ztk_prp_dzsys_mi ) ) return NULL;
   return dzSysAdderCreate( sys, n );
 }
 
@@ -87,7 +87,7 @@ static zVec _dzSysSubtrUpdate(dzSys *sys, double dt)
 static dzSys *_dzSysSubtrFromZTK(dzSys *sys, ZTK *ztk)
 {
   int n;
-  if( !ZTKEncodeKey( &n, NULL, ztk, __ztk_prp_dzsys_mi ) ) return NULL;
+  if( !ZTKEvalKey( &n, NULL, ztk, __ztk_prp_dzsys_mi ) ) return NULL;
   return dzSysSubtrCreate( sys, n );
 }
 
@@ -154,7 +154,7 @@ static bool _dzSysLimitRegZTK(ZTK *ztk)
 static dzSys *_dzSysLimitFromZTK(dzSys *sys, ZTK *ztk)
 {
   double val[2];
-  if( !ZTKEncodeKey( val, NULL, ztk, __ztk_prp_dzsys_limit ) ) return NULL;
+  if( !ZTKEvalKey( val, NULL, ztk, __ztk_prp_dzsys_limit ) ) return NULL;
   return dzSysLimitCreate( sys, val[0], val[1] );
 }
 

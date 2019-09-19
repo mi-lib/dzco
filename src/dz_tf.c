@@ -146,7 +146,7 @@ dzTF *dzTFFromZTK(dzTF *tf, ZTK *ztk)
 {
   dzTFSetNum( tf, NULL );
   dzTFSetDen( tf, NULL );
-  if( !ZTKEncodeKey( tf, NULL, ztk, __ztk_prp_dztf ) ) return NULL;
+  if( !ZTKEvalKey( tf, NULL, ztk, __ztk_prp_dztf ) ) return NULL;
   if( !dzTFNum(tf) || !dzTFDen(tf) ){
     dzTFDestroy( tf );
     return NULL;
@@ -154,8 +154,13 @@ dzTF *dzTFFromZTK(dzTF *tf, ZTK *ztk)
   return tf;
 }
 
-/* scan a ZTK file and create a transfer function. */
-dzTF *dzTFScanZTK(dzTF *tf, char filename[])
+void dzTFFPrintZTK(FILE *fp, dzTF *tf)
+{
+  ZTKPrpKeyFPrint( fp, tf, __ztk_prp_dztf );
+}
+
+/* read a transfer function from a ZTK file. */
+dzTF *dzTFReadZTK(dzTF *tf, char filename[])
 {
   ZTK ztk;
 
@@ -167,9 +172,15 @@ dzTF *dzTFScanZTK(dzTF *tf, char filename[])
   return tf;
 }
 
-void dzTFFPrintZTK(FILE *fp, dzTF *tf)
+/* write a transfer function to a ZTK file. */
+bool dzTFWriteZTK(dzTF *tf, char filename[])
 {
-  ZTKPrpKeyFPrint( fp, tf, __ztk_prp_dztf );
+  FILE *fp;
+
+  if( !( fp = zOpenZTKFile( filename, "w" ) ) ) return false;
+  dzTFFPrintZTK( fp, tf );
+  fclose(fp);
+  return true;
 }
 
 /* print a transfer function in a fancy style to a file. */

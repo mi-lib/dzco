@@ -57,7 +57,7 @@ static bool _dzSysFOLRegZTK(ZTK *ztk)
 static dzSys *_dzSysFOLFromZTK(dzSys *sys, ZTK *ztk)
 {
   double val[] = { 1.0, 0.0 };
-  if( !ZTKEncodeKey( val, NULL, ztk, __ztk_prp_dzsys_fol ) ) return NULL;
+  if( !ZTKEvalKey( val, NULL, ztk, __ztk_prp_dzsys_fol ) ) return NULL;
   return dzSysFOLCreate( sys, val[0], val[1] );
 }
 
@@ -180,7 +180,7 @@ static bool _dzSysSOLRegZTK(ZTK *ztk)
 static dzSys *_dzSysSOLFromZTK(dzSys *sys, ZTK *ztk)
 {
   double val[] = { 1.0, 0.0, 1.0, 0.0 };
-  if( !ZTKEncodeKey( val, NULL, ztk, __ztk_prp_dzsys_sol ) ) return NULL;
+  if( !ZTKEvalKey( val, NULL, ztk, __ztk_prp_dzsys_sol ) ) return NULL;
   return dzSysSOLCreate( sys, val[0], val[1], val[2], val[3] );
 }
 
@@ -286,7 +286,7 @@ static bool _dzSysPCRegZTK(ZTK *ztk)
 static dzSys *_dzSysPCFromZTK(dzSys *sys, ZTK *ztk)
 {
   double val[] = { 1.0, 0.0, 0.0 };
-  if( !ZTKEncodeKey( val, NULL, ztk, __ztk_prp_dzsys_pc ) ) return NULL;
+  if( !ZTKEvalKey( val, NULL, ztk, __ztk_prp_dzsys_pc ) ) return NULL;
   return dzSysPCCreate( sys, val[0], val[1], val[2] );
 }
 
@@ -381,7 +381,7 @@ static bool _dzSysAdaptRegZTK(ZTK *ztk)
 static dzSys *_dzSysAdaptFromZTK(dzSys *sys, ZTK *ztk)
 {
   double val[] = { 1.0, 0.0 };
-  if( !ZTKEncodeKey( val, NULL, ztk, __ztk_prp_dzsys_adapt ) ) return NULL;
+  if( !ZTKEvalKey( val, NULL, ztk, __ztk_prp_dzsys_adapt ) ) return NULL;
   return dzSysAdaptCreate( sys, val[0], val[1] );
 }
 

@@ -91,7 +91,7 @@ static ZTKPrp __ztk_prp_dzsys[] = {
 void *dzSysFromZTK(dzSys *sys, ZTK *ztk)
 {
   char *name;
-  if( !ZTKEncodeKey( sys, NULL, ztk, __ztk_prp_dzsys ) ) return NULL;
+  if( !ZTKEvalKey( sys, NULL, ztk, __ztk_prp_dzsys ) ) return NULL;
   name = zNamePtr(sys);
   if( !sys->com || !sys->com->_fromZTK( sys, ztk ) ) return NULL;
   zNameSet( sys, name );
@@ -230,11 +230,24 @@ dzSysArray *dzSysArrayFromZTK(dzSysArray *sarray, ZTK *ztk)
     return NULL;
   }
   if( !dzSysArrayAlloc( sarray, num_sys ) ) return NULL;
-  ZTKEncodeTag( sarray, NULL, ztk, __ztk_prp_tag_dzsys );
+  ZTKEvalTag( sarray, NULL, ztk, __ztk_prp_tag_dzsys );
   return sarray;
 }
 
-dzSysArray *dzSysArrayScanZTK(dzSysArray *sarray, char filename[])
+/* print an array of systems to the current position of a ZTK file. */
+void dzSysArrayFPrintZTK(FILE *fp, dzSysArray *arr)
+{
+  register int i;
+
+  for( i=0; i<zArraySize(arr); i++ ){
+    fprintf( fp, "[%s]\n", ZTK_TAG_DZSYS );
+    dzSysFPrintZTK( fp, zArrayElemNC(arr,i) );
+    fprintf( fp, "\n" );
+  }
+  ZTKPrpTagFPrint( fp, arr, __ztk_prp_tag_dzsys );
+}
+
+dzSysArray *dzSysArrayReadZTK(dzSysArray *sarray, char filename[])
 {
   ZTK ztk;
 
@@ -247,15 +260,13 @@ dzSysArray *dzSysArrayScanZTK(dzSysArray *sarray, char filename[])
   return sarray;
 }
 
-/* print an array of systems to a file. */
-void dzSysArrayFPrintZTK(FILE *fp, dzSysArray *arr)
+/* write an array of systems to a file in ZTK format. */
+bool dzSysArrayWriteZTK(dzSysArray *sarray, char filename[])
 {
-  register int i;
+  FILE *fp;
 
-  for( i=0; i<zArraySize(arr); i++ ){
-    fprintf( fp, "[%s]\n", ZTK_TAG_DZSYS );
-    dzSysFPrintZTK( fp, zArrayElemNC(arr,i) );
-    fprintf( fp, "\n" );
-  }
-  ZTKPrpTagFPrint( fp, arr, __ztk_prp_tag_dzsys );
+  if( !( fp = zOpenZTKFile( filename, "w" ) ) ) return false;
+  dzSysArrayFPrintZTK( fp, sarray );
+  fclose(fp);
+  return true;
 }

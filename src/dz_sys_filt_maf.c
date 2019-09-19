@@ -54,7 +54,7 @@ static bool _dzSysMAFRegZTK(ZTK *ztk)
 static dzSys *_dzSysMAFFromZTK(dzSys *sys, ZTK *ztk)
 {
   double ff = 0;
-  if( !ZTKEncodeKey( &ff, NULL, ztk, __ztk_prp_dzsys_maf ) ) return NULL;
+  if( !ZTKEvalKey( &ff, NULL, ztk, __ztk_prp_dzsys_maf ) ) return NULL;
   return dzSysMAFCreate( sys, ff );
 }
 

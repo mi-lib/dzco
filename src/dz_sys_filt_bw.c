@@ -182,7 +182,7 @@ static bool _dzSysBWRegZTK(ZTK *ztk)
 static dzSys *_dzSysBWFromZTK(dzSys *sys, ZTK *ztk)
 {
   _dzBWParam prm = { 1.0, 1 };
-  if( !ZTKEncodeKey( &prm, NULL, ztk, __ztk_prp_dzsys_bw ) ) return NULL;
+  if( !ZTKEvalKey( &prm, NULL, ztk, __ztk_prp_dzsys_bw ) ) return NULL;
   return dzSysBWCreate( sys, prm.cf, prm.dim );
 }
 

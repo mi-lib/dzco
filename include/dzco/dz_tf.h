@@ -105,12 +105,12 @@ __EXPORT zComplex *dzTFFreqRes(dzTF *tf, double frq, zComplex *res);
 
 __EXPORT bool dzTFRegZTK(ZTK *ztk, char *tag);
 __EXPORT dzTF *dzTFFromZTK(dzTF *tf, ZTK *ztk);
-
-/*! \brief scan a ZTK file and create a transfer function. */
-__EXPORT dzTF *dzTFScanZTK(dzTF *tf, char filename[]);
-
 __EXPORT void dzTFFPrintZTK(FILE *fp, dzTF *tf);
-#define dzTFPrintZTK(tf) dzTFFPrint( stdout, tf )
+
+/*! \brief read a transfer function from a ZTK file. */
+__EXPORT dzTF *dzTFReadZTK(dzTF *tf, char filename[]);
+/*! \brief write a transfer function to a ZTK file. */
+__EXPORT bool dzTFWriteZTK(dzTF *tf, char filename[]);
 
 __EXPORT void dzTFFExpr(FILE *fp, dzTF *tf);
 #define dzTFExpr(tf) dzTFFExpr( stdout, tf )

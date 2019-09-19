@@ -84,7 +84,7 @@ int main(int argc, char *argv[])
 
   if( argc < 2 ) dz_sim_usage( argv[0] );
   if( !dz_sim_commandarg( argc, argv+1 ) ) return 1;
-  if( !dzSysArrayScanZTK( &arr, opt[OPT_SYSFILE].arg ) ) return 1;
+  if( !dzSysArrayReadZTK( &arr, opt[OPT_SYSFILE].arg ) ) return 1;
 
   fp = fopen( opt[OPT_OUTPUTFILE].arg, "w" );
   dz_sim_output( fp, &arr );

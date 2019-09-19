@@ -150,9 +150,12 @@ __EXPORT void dzSysArrayUpdate(dzSysArray *arr, double dt);
 
 __EXPORT bool dzSysRegZTK(ZTK *ztk);
 __EXPORT dzSysArray *dzSysArrayFromZTK(dzSysArray *sarray, ZTK *ztk);
-__EXPORT dzSysArray *dzSysArrayScanZTK(dzSysArray *sarray, char filename[]);
-
+/*! \brief print an array of systems to the current position of a ZTK file. */
 __EXPORT void dzSysArrayFPrintZTK(FILE *fp, dzSysArray *sys);
+
+__EXPORT dzSysArray *dzSysArrayReadZTK(dzSysArray *sarray, char filename[]);
+/*! \brief write an array of systems to a file in ZTK format. */
+__EXPORT bool dzSysArrayWriteZTK(dzSysArray *sarray, char filename[]);
 
 __END_DECLS
 

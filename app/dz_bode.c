@@ -97,7 +97,7 @@ int main(int argc, char *argv[])
 
   if( argc < 2 ) dz_bode_usage( argv[0] );
   if( !dz_bode_commandarg( argc, argv+1 ) ) return 1;
-  if( !dzTFScanZTK( &tf, opt[OPT_TFFILE].arg ) ) return 1;
+  if( !dzTFReadZTK( &tf, opt[OPT_TFFILE].arg ) ) return 1;
   dz_bode_parse_range( opt[OPT_RANGE].arg, &from, &to, &d );
 
   fp = fopen( opt[OPT_OUTPUTFILE].arg, "w" );
