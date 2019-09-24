@@ -91,17 +91,17 @@ __EXPORT bool dzTFIsStable(dzTF *tf);
 
 /*! \brief frequency response of transfer function.
  *
- * dzTFFreqRes() calculates the frequency response of the transfer
- * function \a tf. \a frq is the frequency checked. The result is
+ * dzTFFreqRes() calculates the frequency response of a transfer
+ * function \a tf. \a af is an angular frequency. The result is
  * put into \a res.
  *
- * Suppose the transfer function is G(s), and the result is G(jw).
+ * Suppose the transfer function is G(s), and the result is G(j \a af).
  * \return
  * dzTFFreqRes() returns a pointer to \a res.
  * \notes
  * dzTFFreqRes() is not available in kernel space.
  */
-__EXPORT zComplex *dzTFFreqRes(dzTF *tf, double frq, zComplex *res);
+__EXPORT zComplex *dzTFFreqRes(dzTF *tf, double af, zComplex *res);
 
 __EXPORT bool dzTFRegZTK(ZTK *ztk, char *tag);
 __EXPORT dzTF *dzTFFromZTK(dzTF *tf, ZTK *ztk);
@@ -116,5 +116,7 @@ __EXPORT void dzTFFExpr(FILE *fp, dzTF *tf);
 #define dzTFExpr(tf) dzTFFExpr( stdout, tf )
 
 __END_DECLS
+
+#include <dzco/dz_tf_ident_fr.h> /* identification from frequency response */
 
 #endif /* __DZ_TF_H__ */

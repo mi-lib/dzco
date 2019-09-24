@@ -108,13 +108,13 @@ bool dzTFIsStable(dzTF *tf)
 }
 
 /* frequency response of a transfer function. */
-zComplex *dzTFFreqRes(dzTF *tf, double frq, zComplex *res)
+zComplex *dzTFFreqRes(dzTF *tf, double af, zComplex *res)
 {
-  zComplex n, d, f;
+  zComplex n, d, caf;
 
-  zComplexCreate( &f, 0, frq );
-  zPexCVal( dzTFNum(tf), &f, &n );
-  zPexCVal( dzTFDen(tf), &f, &d );
+  zComplexCreate( &caf, 0, af );
+  zPexCVal( dzTFNum(tf), &caf, &n );
+  zPexCVal( dzTFDen(tf), &caf, &d );
   return zComplexCDiv( &n, &d, res );
 }
 

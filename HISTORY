@@ -1,3 +1,6 @@
+2019. 9.24. Added dz_frconv. [app]
+2019. 9.24. Added dz_fr2tf. [app]
+2019. 9.24. Added dz_tf_ident_fr. [dz_tf, dz_tf_ident_fr]
 2019. 9.19. Reflected renaming of dzSys*Create. [test]
 2019. 9.19. Added dzTFWriteZTK. [dz_tf]
 2019. 9.19. Renamed dzTFScanZTK to dzTFReadZTK. [dz_tf, app]
