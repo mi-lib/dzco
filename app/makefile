@@ -15,7 +15,7 @@ INSTALL=install -m 755
 
 CONFIGGEN=zeda-config-gen
 CONFIG=dzco-config
-TARGET=$(CONFIG) dz_bode dz_nyquist dz_frconv dz_fr2tf dz_sim
+TARGET=$(CONFIG) dz_bode dz_nyquist dz_frconv dz_fr2tf dz_tf2zeropole dz_sim
 
 #####################################################################
 all: $(TARGET)
