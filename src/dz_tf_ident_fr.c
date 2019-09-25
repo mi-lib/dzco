@@ -259,12 +259,12 @@ static void _dzFreqResIdentDataLSMCreate(dzFreqResIdentData *fri)
       zVecElemNC(fri->xr,j) = zVecArrayElem(&fri->ps_re,k,j) * zVecElemNC(fri->mag,k);
       zVecElemNC(fri->xi,j) = zVecArrayElem(&fri->ps_im,k,j) * zVecElemNC(fri->mag,k);
     }
-    for( j=1; j<=fri->nd; j++ ){
-      zVecElemNC(fri->xr,fri->nn+j) = -zVecArrayElem(&fri->fr_re,k,j) * zVecElemNC(fri->mag,k);
-      zVecElemNC(fri->xi,fri->nn+j) = -zVecArrayElem(&fri->fr_im,k,j) * zVecElemNC(fri->mag,k);
+    for( j=0; j<fri->nd; j++ ){
+      zVecElemNC(fri->xr,fri->nn+j+1) = -zVecArrayElem(&fri->fr_re,k,j) * zVecElemNC(fri->mag,k);
+      zVecElemNC(fri->xi,fri->nn+j+1) = -zVecArrayElem(&fri->fr_im,k,j) * zVecElemNC(fri->mag,k);
     }
-    fri->gr = zVecArrayElem(&fri->fr_re,k,0) * zVecElemNC(fri->mag,k);
-    fri->gi = zVecArrayElem(&fri->fr_im,k,0) * zVecElemNC(fri->mag,k);
+    fri->gr = zVecArrayElem(&fri->fr_re,k,fri->nd) * zVecElemNC(fri->mag,k);
+    fri->gi = zVecArrayElem(&fri->fr_im,k,fri->nd) * zVecElemNC(fri->mag,k);
     zMatAddDyadNC( fri->q, fri->xr, fri->xr );
     zMatAddDyadNC( fri->q, fri->xi, fri->xi );
     zVecCatDRC( fri->p, fri->gr, fri->xr );
@@ -278,12 +278,13 @@ static void _dzFreqResIdentDataUpdateMag(dzFreqResIdentData *fri)
   double rr, ri;
 
   for( k=0; k<fri->ns; k++ ){
-    rr = zVecArrayElem(&fri->ps_re,k,0);
-    ri = zVecArrayElem(&fri->ps_im,k,0);
-    for( j=1; j<=fri->nd; j++ ){
-      rr += zVecArrayElem(&fri->ps_re,k,j)*zVecElemNC(fri->phi,fri->nn+j);
-      ri += zVecArrayElem(&fri->ps_im,k,j)*zVecElemNC(fri->phi,fri->nn+j);
+    rr = ri = 0;
+    for( j=0; j<fri->nd; j++ ){
+      rr += zVecArrayElem(&fri->ps_re,k,j)*zVecElemNC(fri->phi,fri->nn+j+1);
+      ri += zVecArrayElem(&fri->ps_im,k,j)*zVecElemNC(fri->phi,fri->nn+j+1);
     }
+    rr += zVecArrayElem(&fri->ps_re,k,fri->nd);
+    ri += zVecArrayElem(&fri->ps_im,k,fri->nd);
     zVecElemNC(fri->mag,k) = 1.0 / ( rr*rr + ri*ri );
   }
 }
@@ -319,9 +320,9 @@ dzTF *dzTFIdentFromFreqRes(dzTF *tf, dzFreqResList *list, int nn, int nd, int it
   if( !dzTFAlloc( tf, nn, nd ) ) return NULL;
   for( i=0; i<=fri.nn; i++ )
     zPexSetCoeff( dzTFNum(tf), i, zVecElemNC(fri.phi,i) );
-  zPexSetCoeff( dzTFDen(tf), 0, 1.0 );
-  for( i=1; i<=fri.nd; i++ )
-    zPexSetCoeff( dzTFDen(tf), i, zVecElemNC(fri.phi,fri.nn+i) );
+  for( i=0; i<fri.nd; i++ )
+    zPexSetCoeff( dzTFDen(tf), i, zVecElemNC(fri.phi,fri.nn+i+1) );
+  zPexSetCoeff( dzTFDen(tf), fri.nd, 1.0 );
   _dzFreqResIdentDataFree( &fri );
   return tf;
 }

@@ -14,7 +14,7 @@ zOption opt[] = {
   { "i", "input", "<data file>", "input frequency response file", NULL, false },
   { "o", "output", "<TF file>", "output transfer function file", "tf", false },
   { "r", "range", "<string>", "range for identification in logarism scale", "10:1000", false },
-  { "", "iter", "<number>", "maximum iteration number", "0", false },
+  { "", "iter", "<number>", "maximum iteration number", "2", false },
   { "n", "dn", "<number>", "dimension of numerator", "2", false },
   { "d", "dd", "<number>", "dimension of denominator", "2", false },
   { "h", "help", NULL, "show this message", NULL, false },
