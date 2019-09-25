@@ -1,3 +1,5 @@
+2019. 9.25. Added dzTFZeroPole and dzTFZeroPoleReIm. [dz_tf]
+2019. 9.25. Modified dzTFCreateZeroPole to accept co-conjugate complex zeros and poles. [dz_tf]
 2019. 9.24. Added dz_frconv. [app]
 2019. 9.24. Added dz_fr2tf. [app]
 2019. 9.24. Added dz_tf_ident_fr. [dz_tf, dz_tf_ident_fr]

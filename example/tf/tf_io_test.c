@@ -4,7 +4,7 @@ int main(int argc, char *argv[])
 {
   dzTF tf;
 
-  dzTFScanZTK( &tf, "tf_test.ztk" );
+  dzTFReadZTK( &tf, "tf_test.ztk" );
   dzTFFPrintZTK( stdout, &tf );
   dzTFExpr( &tf );
   dzTFDestroy( &tf );

@@ -20,10 +20,10 @@ bool dzTFAlloc(dzTF *tf, int nsize, int dsize)
 }
 
 /* create a polynomial rational transfer function from zeros and poles. */
-bool dzTFCreateZeroPole(dzTF *tf, zVec zero, zVec pole)
+bool dzTFCreateZeroPole(dzTF *tf, zCVec zero, zCVec pole)
 {
-  dzTFSetNum( tf, zPexExp( zero ) );
-  dzTFSetDen( tf, zPexExp( pole ) );
+  dzTFSetNum( tf, zPexCExp( zero ) );
+  dzTFSetDen( tf, zPexCExp( pole ) );
   if( !dzTFNum(tf) || !dzTFDen(tf) ){
     ZRUNERROR( DZ_ERR_TF_UNABLE_CREATE );
     dzTFDestroy( tf );
@@ -105,6 +105,30 @@ bool dzTFIsStable(dzTF *tf)
   zVecFree( v[1] );
   zVecFree( v[2] );
   return result;
+}
+
+/* abstract zeros and poles of a transfer function. */
+bool dzTFZeroPole(dzTF *tf, zCVec *zero, zCVec *pole)
+{
+  *zero = zCVecAlloc( dzTFNumDim(tf) );
+  *pole = zCVecAlloc( dzTFDenDim(tf) );
+  if( !*zero || !*pole ){
+    zCVecFree( *zero );
+    zCVecFree( *pole );
+    return false;
+  }
+  return zPexDKA( dzTFNum(tf), *zero, ZM_PEX_EQ_TOL, 0 ) &&
+         zPexDKA( dzTFDen(tf), *pole, ZM_PEX_EQ_TOL, 0 ) ? true : false;
+}
+
+/* abstract zeros and poles of a transfer function into real and imaginary values. */
+bool dzTFZeroPoleReIm(dzTF *tf, zVec *zero1, zCVec *zero2, zVec *pole1, zCVec *pole2)
+{
+  zCVec zero, pole;
+
+  if( !dzTFZeroPole( tf, &zero, &pole ) ) return false;
+  return zCVecToReIm( zero, zero1, zero2 ) &&
+         zCVecToReIm( pole, pole1, pole2 ) ? true : false;
 }
 
 /* frequency response of a transfer function. */

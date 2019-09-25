@@ -42,8 +42,8 @@ typedef struct{
  * the dimention of denominator.
  *
  * dzTFCreateZeroPole() creates the general polynomial transfer
- * function \a tf from zeros and poles. \a zero is for zeros, and
- * \a pole is for poles.
+ * function \a tf from complex zeros and poles. \a zero is for zeros,
+ * and \a pole is for poles.
  *
  * dzTFDestroy() destroys the instance of transfer function \a tf,
  * freeing inner vectors of \a tf.
@@ -54,7 +54,7 @@ typedef struct{
  * dzTFDestroy() returns no value.
  */
 __EXPORT bool dzTFAlloc(dzTF *tf, int nsize, int dsize);
-__EXPORT bool dzTFCreateZeroPole(dzTF *tf, zVec zero, zVec pole);
+__EXPORT bool dzTFCreateZeroPole(dzTF *tf, zCVec zero, zCVec pole);
 __EXPORT void dzTFDestroy(dzTF *tf);
 
 /*! \brief set coefficients of numerator and denominator of
@@ -88,6 +88,31 @@ __EXPORT void dzTFSetDenList(dzTF *tf, ...);
  * dzTFIsStable() is not available in kernel space.
  */
 __EXPORT bool dzTFIsStable(dzTF *tf);
+
+/*! \brief abstract zeros and poles of a transfer function.
+ *
+ * dzTFZeroPole() abstracts zeros and poles of a transfer function
+ * \a tf, and puts them into newly allocated complex vectors.
+ * The addresses of those vectors are stored in \a zero and \a pole,
+ * respectively.
+ * \return
+ * dzTFZeroPole() returns the true value if succeedings. Otherwise,
+ * the false value is returned.
+ */
+__EXPORT bool dzTFZeroPole(dzTF *tf, zCVec *zero, zCVec *pole);
+
+/*! \brief abstract zeros and poles of a transfer function into real and imaginary values.
+ *
+ * dzTFZeroPoleReIm() abstracts zeros and poles of a transfer function
+ * \a tf, and puts them into newly allocated real and complex vectors.
+ * The addresses of those vectors are stored in \a zero1, \a zero2,
+ * \a pole1 and \a pole2, respectively, where \a zero1 and \a pole1
+ * are for real values and \a zero2 and \a pole2 for imaginary values.
+ * \return
+ * dzTFZeroPoleReIm() returns the true value if succeedings. Otherwise,
+ * the false value is returned.
+ */
+__EXPORT bool dzTFZeroPoleReIm(dzTF *tf, zVec *zero1, zCVec *zero2, zVec *pole1, zCVec *pole2);
 
 /*! \brief frequency response of transfer function.
  *
