@@ -35,6 +35,9 @@ typedef struct{
 #define dzTFSetNumElem(tf,i,e) zPexSetCoeff( dzTFNum(tf), i, e )
 #define dzTFSetDenElem(tf,i,e) zPexSetCoeff( dzTFDen(tf), i, e )
 
+/*! \brief initialize a polynomial rational transfer function. */
+#define dzTFInit(tf)           ( dzTFNum(tf) = dzTFDen(tf) = NULL )
+
 /*! \brief allocate and destroy a polynomial rational transfer function.
  *
  * dzTFAlloc() creates the general polynomial transfer function
@@ -77,6 +80,16 @@ __EXPORT void dzTFDestroy(dzTF *tf);
 __EXPORT void dzTFSetNumList(dzTF *tf, ...);
 __EXPORT void dzTFSetDenList(dzTF *tf, ...);
 
+/*! \brief connect a transfer function.
+ *
+ * dzTFConnect() connects a transfer function \a tfc to \a tf.
+ * \a tf is directly updated.
+ * \return
+ * dzTFConnect() returns a pointer \a tf, or the null pointer if
+ * it fails to allocate memory for the new transfer function.
+ */
+__EXPORT dzTF *dzTFConnect(dzTF *tf, dzTF *tfc);
+
 /*! \brief check if polynomial system is stable.
  *
  * dzTFIsStable() checks if the polynomial system \a tf is stable
@@ -114,20 +127,6 @@ __EXPORT bool dzTFZeroPole(dzTF *tf, zCVec *zero, zCVec *pole);
  */
 __EXPORT bool dzTFZeroPoleReIm(dzTF *tf, zVec *zero1, zCVec *zero2, zVec *pole1, zCVec *pole2);
 
-/*! \brief frequency response of transfer function.
- *
- * dzTFFreqRes() calculates the frequency response of a transfer
- * function \a tf. \a af is an angular frequency. The result is
- * put into \a res.
- *
- * Suppose the transfer function is G(s), and the result is G(j \a af).
- * \return
- * dzTFFreqRes() returns a pointer to \a res.
- * \notes
- * dzTFFreqRes() is not available in kernel space.
- */
-__EXPORT zComplex *dzTFFreqRes(dzTF *tf, double af, zComplex *res);
-
 __EXPORT bool dzTFRegZTK(ZTK *ztk, char *tag);
 __EXPORT dzTF *dzTFFromZTK(dzTF *tf, ZTK *ztk);
 __EXPORT void dzTFFPrintZTK(FILE *fp, dzTF *tf);
@@ -142,6 +141,6 @@ __EXPORT void dzTFFExpr(FILE *fp, dzTF *tf);
 
 __END_DECLS
 
-#include <dzco/dz_tf_ident_fr.h> /* identification from frequency response */
+#include <dzco/dz_tf_fr.h> /* frequency response */
 
 #endif /* __DZ_TF_H__ */

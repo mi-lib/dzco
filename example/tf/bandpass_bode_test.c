@@ -8,7 +8,7 @@ int main(int argc, char *argv[])
 {
   dzTF lp, hp;
   double frq;
-  zComplex c;
+  dzFreqRes fr;
   FILE *fp[2];
 
   fp[0] = fopen( "lp_bode", "w" );
@@ -36,12 +36,10 @@ int main(int argc, char *argv[])
 #endif
 
   for( frq=0.001; frq<10000; frq*=1.2 ){
-    dzTFFreqRes( &lp, frq, &c );
-    fprintf( fp[0], "%f %f %f\n", frq,
-      log(zComplexAbs(&c)), zRad2Deg(zComplexArg(&c)) );
-    dzTFFreqRes( &hp, frq, &c );
-    fprintf( fp[1], "%f %f %f\n", frq,
-      log(zComplexAbs(&c)), zRad2Deg(zComplexArg(&c)) );
+    dzFreqResFromTF( &fr, &lp, frq );
+    fprintf( fp[0], "%f %f %f\n", frq, fr.g, fr.p );
+    dzFreqResFromTF( &fr, &hp, frq );
+    fprintf( fp[1], "%f %f %f\n", frq, fr.g, fr.p );
   }
   dzTFDestroy( &lp );
   dzTFDestroy( &hp );

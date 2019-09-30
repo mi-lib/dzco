@@ -59,6 +59,36 @@ void dzTFSetDenList(dzTF *tf, ...)
   va_end( args );
 }
 
+/* connect a transfer function. */
+dzTF *dzTFConnect(dzTF *tf, dzTF *tfc)
+{
+  zPex pex;
+
+  /* replace numerator */
+  if( dzTFNum(tf) ){
+    pex = zPexMul( dzTFNum(tf), dzTFNum(tfc) );
+    zPexFree( dzTFNum(tf) );
+  } else{
+    pex = zPexClone( dzTFNum(tfc) );
+  }
+  dzTFNum(tf) = pex;
+  /* replace denominator */
+  if( dzTFDen(tf) ){
+    pex = zPexMul( dzTFDen(tf), dzTFDen(tfc) );
+    zPexFree( dzTFDen(tf) );
+  } else{
+    pex = zPexClone( dzTFDen(tfc) );
+  }
+  dzTFDen(tf) = pex;
+
+  if( !dzTFNum(tf) || !dzTFDen(tf) ){
+    ZRUNERROR( DZ_ERR_TF_UNABLE_CREATE );
+    dzTFDestroy( tf );
+    return NULL;
+  }
+  return tf;
+}
+
 /* check if a polynomial rational transfer function is stable. */
 static int __next(int i);
 int __next(int i){ return i==2 ? 0 : i+1; }
@@ -127,19 +157,8 @@ bool dzTFZeroPoleReIm(dzTF *tf, zVec *zero1, zCVec *zero2, zVec *pole1, zCVec *p
   zCVec zero, pole;
 
   if( !dzTFZeroPole( tf, &zero, &pole ) ) return false;
-  return zCVecToReIm( zero, zero1, zero2 ) &&
-         zCVecToReIm( pole, pole1, pole2 ) ? true : false;
-}
-
-/* frequency response of a transfer function. */
-zComplex *dzTFFreqRes(dzTF *tf, double af, zComplex *res)
-{
-  zComplex n, d, caf;
-
-  zComplexCreate( &caf, 0, af );
-  zPexCVal( dzTFNum(tf), &caf, &n );
-  zPexCVal( dzTFDen(tf), &caf, &d );
-  return zComplexCDiv( &n, &d, res );
+  return zCVecToReIm( zero, zero1, zero2, ZM_PEX_EQ_TOL ) &&
+         zCVecToReIm( pole, pole1, pole2, ZM_PEX_EQ_TOL ) ? true : false;
 }
 
 static void *_dzTFNumFromZTK(void *obj, int i, void *arg, ZTK *ztk){

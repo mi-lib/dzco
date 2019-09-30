@@ -17,48 +17,86 @@ zComplex *dzFreqResToComplex(dzFreqRes *fr, zComplex *c, double *af)
   return c;
 }
 
-dzFreqRes *dzFreqResFromComplex(dzFreqRes *fr, zComplex *c, double *af)
+dzFreqRes *dzFreqResFromComplex(dzFreqRes *fr, zComplex *c, double af)
 {
-  fr->f = *af / zPIx2;
+  fr->f = af / zPIx2;
   fr->g = 20 * log10( zComplexAbs(c) );
   fr->p = zRad2Deg( zComplexArg(c) );
   return fr;
 }
 
-dzFreqRes *dzFreqResConnectTF(dzFreqRes *frin, dzTF *tf, dzFreqRes *frout)
+static dzFreqRes *_dzFreqResMul(dzFreqRes *fr1, dzFreqRes *fr2, dzFreqRes *fr)
 {
-  zComplex gin, cg, gout;
-  double af;
+  if( !zIsEqual( fr1->f, fr2->f, zTOL ) )
+    ZRUNWARN( DZ_WARN_TF_FR_NOTCORRESPOND, fr1->f, fr2->f );
+  fr->f = fr1->f;
+  fr->g = fr1->g + fr2->g;
+  fr->p = fr1->p + fr2->p;
+  return fr;
+}
 
-  dzFreqResToComplex( frin, &gin, &af );
-  dzTFFreqRes( tf, af, &cg );
-  zComplexCMul( &cg, &gin, &gout );
-  dzFreqResFromComplex( frout, &gout, &af );
-  return frout;
+static dzFreqRes *_dzFreqResDiv(dzFreqRes *fr1, dzFreqRes *fr2, dzFreqRes *fr)
+{
+  if( !zIsEqual( fr1->f, fr2->f, zTOL ) )
+    ZRUNWARN( DZ_WARN_TF_FR_NOTCORRESPOND, fr1->f, fr2->f );
+  fr->f = fr1->f;
+  fr->g = fr1->g - fr2->g;
+  fr->p = fr1->p - fr2->p;
+  return fr;
 }
 
 dzFreqRes *dzFreqRes2Closed(dzFreqRes *frin, dzFreqRes *frout)
 {
-  zComplex gin, gin1, gout;
+  dzFreqRes fr_d;
+  zComplex gin, gin_d;
   double af;
 
   dzFreqResToComplex( frin, &gin, &af );
-  zComplexCreate( &gin1, 1+gin.re, gin.im );
-  zComplexCDiv( &gin, &gin1, &gout );
-  dzFreqResFromComplex( frout, &gout, &af );
-  return frout;
+  zComplexCreate( &gin_d, 1+gin.re, gin.im );
+  dzFreqResFromComplex( &fr_d, &gin_d, af );
+  return _dzFreqResDiv( frin, &fr_d, frout );
 }
 
 dzFreqRes *dzFreqRes2Open(dzFreqRes *frin, dzFreqRes *frout)
 {
-  zComplex gin, gin1, gout;
+  dzFreqRes fr_d;
+  zComplex gin, gin_d;
   double af;
 
   dzFreqResToComplex( frin, &gin, &af );
-  zComplexCreate( &gin1, 1-gin.re, -gin.im );
-  zComplexCDiv( &gin, &gin1, &gout );
-  dzFreqResFromComplex( frout, &gout, &af );
-  return frout;
+  zComplexCreate( &gin_d, 1-gin.re, -gin.im );
+  dzFreqResFromComplex( &fr_d, &gin_d, af );
+  return _dzFreqResDiv( frin, &fr_d, frout );
+}
+
+/* frequency response of a transfer function. */
+dzFreqRes *dzFreqResFromTF(dzFreqRes *fr, dzTF *tf, double af)
+{
+  dzFreqRes fr_n, fr_d;
+  zComplex n, d, caf;
+
+  zComplexCreate( &caf, 0, af );
+  zPexCVal( dzTFNum(tf), &caf, &n );
+  dzFreqResFromComplex( &fr_n, &n, af );
+  zPexCVal( dzTFDen(tf), &caf, &d );
+  dzFreqResFromComplex( &fr_d, &d, af );
+  return _dzFreqResDiv( &fr_n, &fr_d, fr );
+}
+
+zComplex *dzTFToComplex(dzTF *tf, double af, zComplex *c)
+{
+  dzFreqRes fr;
+
+  dzFreqResFromTF( &fr, tf, af );
+  return dzFreqResToComplex( &fr, c, &af );
+}
+
+static dzFreqRes *_dzFreqResConnectTF(dzFreqRes *frin, dzTF *tf, dzFreqRes *frout)
+{
+  dzFreqRes fr;
+
+  dzFreqResFromTF( &fr, tf, zPIx2 * frin->f );
+  return _dzFreqResMul( frin, &fr, frout );
 }
 
 /* ********************************************************** */
@@ -87,7 +125,7 @@ int dzFreqResList2Open(dzFreqResList *inlist, dzFreqResList *outlist)
 
 int dzFreqResListConnectTF(dzFreqResList *inlist, dzTF *tf, dzFreqResList *outlist)
 {
-  DZ_FREQRESLIST_CONV( dzFreqResConnectTF( &cpin->data, tf, &cpout->data ) );
+  DZ_FREQRESLIST_CONV( _dzFreqResConnectTF( &cpin->data, tf, &cpout->data ) );
 }
 
 int dzFreqResListFScan(FILE *fp, dzFreqResList *list, double fmin, double fmax)
@@ -146,7 +184,9 @@ int dzFreqResListPrintFile(dzFreqResList *list, char filename[], double fmin, do
   return count;
 }
 
-/* identification of a transfer function from frequency response */
+/* ********************************************************** */
+/* identification of a transfer function from frequency response
+ * ********************************************************** */
 
 typedef struct{
   int ns; /* number of samples */

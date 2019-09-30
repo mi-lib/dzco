@@ -17,12 +17,11 @@ bool dz_bode_parse_range(char *str, double *from, double *to, double *d)
 void dz_bode_output(FILE *fp, dzTF *tf, double from, double to, double d)
 {
   double frq;
-  zComplex c;
+  dzFreqRes fr;
 
   for( frq=from; frq<to; frq*=d ){
-    dzTFFreqRes( tf, 2*zPI*frq, &c );
-    fprintf( fp, "%f %f %f\n", frq,
-      20*log10(zComplexAbs(&c)), zRad2Deg(zComplexArg(&c)) );
+    dzFreqResFromTF( &fr, tf, 2*zPI*frq );
+    fprintf( fp, "%f %f %f\n", frq, fr.g, fr.p );
   }
 }
 

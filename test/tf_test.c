@@ -1,14 +1,38 @@
 #include <dzco/dz_tf.h>
 
+bool is_equal(double v1, double v2)
+{
+  bool ret;
+  ret = ( zIsTol(v1,ZM_PEX_EQ_TOL) && zIsTol(v2,ZM_PEX_EQ_TOL) ) ||
+        zIsTol( v1/v2 - 1.0, ZM_PEX_EQ_TOL ) ? true : false;
+  return ret;
+}
+
+bool complex_is_equal(zComplex *c1, zComplex *c2)
+{
+  return is_equal( c1->re, c2->re ) && is_equal( c1->im, c2->im ) ? true : false;
+}
+
+bool cval_set_is_included(zCVec v, zComplex *val)
+{
+  register int i;
+  bool ret = false;
+
+  for( i=0; i<zCVecSizeNC(v); i++ ){
+    if( complex_is_equal( val, zCVecElemNC(v,i) ) ) ret = true;
+  }
+  return ret;
+}
+
 bool cval_set_equal(zCVec v1, zCVec v2)
 {
   register int i;
   bool ret = true;
 
   for( i=0; i<zCVecSizeNC(v2); i++ )
-    if( !zCVecValIsIncluded( v1, zCVecElemNC(v2,i) ) ) ret = false;
+    if( !cval_set_is_included( v1, zCVecElemNC(v2,i) ) ) ret = false;
   for( i=0; i<zCVecSizeNC(v1); i++ )
-    if( !zCVecValIsIncluded( v2, zCVecElemNC(v1,i) ) ) ret = false;
+    if( !cval_set_is_included( v2, zCVecElemNC(v1,i) ) ) ret = false;
   return ret;
 }
 

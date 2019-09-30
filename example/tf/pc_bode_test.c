@@ -4,7 +4,7 @@ int main(int argc, char *argv[])
 {
   dzTF g;
   double frq;
-  zComplex c;
+  dzFreqRes fr;
   FILE *fp;
 
   fp = fopen( "bode", "w" );
@@ -14,9 +14,8 @@ int main(int argc, char *argv[])
   dzTFSetDenList( &g, 1.0, 1.2 );
 
   for( frq=0.001; frq<10000; frq*=1.2 ){
-    dzTFFreqRes( &g, frq, &c );
-    fprintf( fp, "%f %f %f\n", frq,
-      log(zComplexAbs(&c)), zRad2Deg(zComplexArg(&c)) );
+    dzFreqResFromTF( &fr, &g, frq );
+    fprintf( fp, "%f %f %f\n", frq, fr.g, fr.p );
   }
   dzTFDestroy( &g );
   fclose( fp );

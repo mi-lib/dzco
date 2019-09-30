@@ -20,11 +20,11 @@ void dz_nyq_output(FILE *fp, dzTF *tf, double from, double to, double d)
   zComplex c;
 
   for( frq=to; frq>from; frq/=d ){
-    dzTFFreqRes( tf, -2*zPI*frq, &c );
+    dzTFToComplex( tf, -2*zPI*frq, &c );
     fprintf( fp, "%f %f\n", c.re, c.im );
   }
   for( frq=from; frq<to; frq*=d ){
-    dzTFFreqRes( tf, 2*zPI*frq, &c );
+    dzTFToComplex( tf, 2*zPI*frq, &c );
     fprintf( fp, "%f %f\n", c.re, c.im );
   }
 }

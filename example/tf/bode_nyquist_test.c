@@ -20,9 +20,9 @@ int main(int argc, char *argv[])
 
   for( i=-N; i<=N; i++ ){
     frq = FREQ_MAX * i / N;
-    dzTFFreqRes( &g, frq, &c );
+    dzTFToComplex( &g, frq, &c );
     fprintf( fp[0], "%f %f %f\n", frq,
-      log(zComplexAbs(&c)), zRad2Deg(zComplexArg(&c)) );
+      20*log10(zComplexAbs(&c)), zRad2Deg(zComplexArg(&c)) );
     fprintf( fp[1], "%f %f\n", c.re, c.im );
   }
   dzTFDestroy( &g );
