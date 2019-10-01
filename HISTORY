@@ -1,3 +1,4 @@
+2019.10. 1. Enabled make uninstall. [makefile]
 2019. 9.30. Reflected new specification of zIsEqual in dzTFZeroPoleReIm, _dzFreqResMul and _dzFreqResDiv. [dz_tf, dz_tf_fr]
 2019. 9.30. Added dzTFConnect. [dz_tf]
 2019. 9.30. Added dzTFInit. [dz_tf]
