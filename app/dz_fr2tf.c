@@ -27,10 +27,9 @@ void dz_fr2tf_usage(char *arg)
   eprintf( "<options>\n" );
   zOptionHelp( opt );
   eprintf( "string format:\n" );
-  eprintf( "f1:f2:s\n" );
-  eprintf( " f1 ... lowest frequency 10^?\n" );
-  eprintf( " f2 ... highest frequency 10^?\n" );
-  eprintf( " s  ... logalism step\n\n" );
+  eprintf( "f1:f2\n" );
+  eprintf( " f1 ... lowest frequency [Hz]\n" );
+  eprintf( " f2 ... highest frequency [Hz]\n" );
   exit( 0 );
 }
 
@@ -74,7 +73,7 @@ int main(int argc, char *argv[])
   if( dzFreqResListScanFile( &freq_res_list, opt[OPT_FRFILE].arg, fmin, fmax ) == 0 )
     return EXIT_FAILURE;
   dzTFIdentFromFreqRes( &tf, &freq_res_list, atoi(opt[OPT_DIM_NUM].arg), atoi(opt[OPT_DIM_DEN].arg), atoi(opt[OPT_ITER].arg) );
-  dzTFFPrintZTK( stdout, &tf );
+  dzTFWriteZTK( &tf, opt[OPT_TFFILE].arg );
   dzTFDestroy( &tf );
   dzFreqResListDestroy( &freq_res_list );
   return EXIT_SUCCESS;

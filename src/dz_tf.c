@@ -80,7 +80,6 @@ dzTF *dzTFConnect(dzTF *tf, dzTF *tfc)
     pex = zPexClone( dzTFDen(tfc) );
   }
   dzTFDen(tf) = pex;
-
   if( !dzTFNum(tf) || !dzTFDen(tf) ){
     ZRUNERROR( DZ_ERR_TF_UNABLE_CREATE );
     dzTFDestroy( tf );
