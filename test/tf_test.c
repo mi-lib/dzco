@@ -45,7 +45,6 @@ void assert_zeropole(void)
   zCVec zero_est, pole_est;
   dzTF tf;
 
-  zRandInit();
   zero_src = zCVecAlloc( NUM_ZEROS );
   pole_src = zCVecAlloc( NUM_POLES );
 
@@ -71,8 +70,28 @@ void assert_zeropole(void)
   zCVecFree( pole_est );
 }
 
+void assert_connect(void)
+{
+  dzTF tf1, tf2, tf;
+
+  dzTFAlloc( &tf1, 2, 3 );
+  dzTFAlloc( &tf2, 2, 3 );
+  dzTFSetNumList( &tf1, zRandF(-10,10), zRandF(-10,10), zRandF(-10,10) );
+  dzTFSetDenList( &tf1, zRandF(-10,10), zRandF(-10,10), zRandF(-10,10), zRandF(-10,10) );
+  dzTFSetNumList( &tf2, zRandF(-10,10), zRandF(-10,10), zRandF(-10,10) );
+  dzTFSetDenList( &tf2, zRandF(-10,10), zRandF(-10,10), zRandF(-10,10), zRandF(-10,10) );
+  dzTFNum(&tf) = zPexMul( dzTFNum(&tf1), dzTFNum(&tf2) );
+  dzTFDen(&tf) = zPexMul( dzTFDen(&tf1), dzTFDen(&tf2) );
+  dzTFConnect( &tf1, &tf2 );
+  zAssert( dzTFConnect,
+    zPexIsEqual(dzTFNum(&tf),dzTFNum(&tf1),zTOL) &&
+    zPexIsEqual(dzTFDen(&tf),dzTFDen(&tf1),zTOL) );
+}
+
 int main(int argc, char *argv[])
 {
+  zRandInit();
   assert_zeropole();
+  assert_connect();
   return 0;
 }

@@ -1,3 +1,6 @@
+2019.10. 5. Modified dzTFFExpr. [dz_tf]
+2019.10. 4. Added _dzTFZeroFromZTK, _dzTFPoleFromZTK and _dzTFGainFromZTK in order to directly read zeros and poles from a ZTK file. [dz_tf]
+2019.10. 3. Added _dzTFConnectPex and modified dzTFConnect. [dz_tf]
 2019.10. 2. Debugged dz_fr2tf. [app]
 2019.10. 1. Enabled make uninstall. [makefile]
 2019. 9.30. Reflected new specification of zIsEqual in dzTFZeroPoleReIm, _dzFreqResMul and _dzFreqResDiv. [dz_tf, dz_tf_fr]

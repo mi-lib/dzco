@@ -59,27 +59,26 @@ void dzTFSetDenList(dzTF *tf, ...)
   va_end( args );
 }
 
-/* connect a transfer function. */
-dzTF *dzTFConnect(dzTF *tf, dzTF *tfc)
+static zPex _dzTFConnectPex(zPex *tfpex, zPex ctfpex)
 {
   zPex pex;
 
+  if( *tfpex ){
+    pex = zPexMul( *tfpex, ctfpex );
+    zPexFree( *tfpex );
+  } else{
+    pex = zPexClone( ctfpex );
+  }
+  return ( *tfpex = pex );
+}
+
+/* connect a transfer function. */
+dzTF *dzTFConnect(dzTF *tf, dzTF *ctf)
+{
   /* replace numerator */
-  if( dzTFNum(tf) ){
-    pex = zPexMul( dzTFNum(tf), dzTFNum(tfc) );
-    zPexFree( dzTFNum(tf) );
-  } else{
-    pex = zPexClone( dzTFNum(tfc) );
-  }
-  dzTFNum(tf) = pex;
+  _dzTFConnectPex( &dzTFNum(tf), dzTFNum(ctf) );
   /* replace denominator */
-  if( dzTFDen(tf) ){
-    pex = zPexMul( dzTFDen(tf), dzTFDen(tfc) );
-    zPexFree( dzTFDen(tf) );
-  } else{
-    pex = zPexClone( dzTFDen(tfc) );
-  }
-  dzTFDen(tf) = pex;
+  if( !_dzTFConnectPex( &dzTFDen(tf), dzTFDen(ctf) ) ) return NULL;
   if( !dzTFNum(tf) || !dzTFDen(tf) ){
     ZRUNERROR( DZ_ERR_TF_UNABLE_CREATE );
     dzTFDestroy( tf );
@@ -160,11 +159,44 @@ bool dzTFZeroPoleReIm(dzTF *tf, zVec *zero1, zCVec *zero2, zVec *pole1, zCVec *p
          zCVecToReIm( pole, pole1, pole2, ZM_PEX_EQ_TOL ) ? true : false;
 }
 
+static bool _dzTFFactorFromZTK(zPex *pex, ZTK *ztk){
+  zCVec factor;
+  zPex newpex;
+  register int i;
+  bool ret = true;
+
+  if( !( factor = zCVecAlloc( zListSize(&ztk->kf_cp->data.vallist) ) ) ) return false;
+  for( i=0; i<zCVecSizeNC(factor); i++, ZTKValNext(ztk) )
+    zComplexFromZTK( zCVecElemNC(factor,i), ztk );
+  if( !( newpex = zPexCExp( factor ) ) )
+    ret = false;
+  else
+    _dzTFConnectPex( pex, newpex );
+  zPexFree( newpex );
+  zCVecFree( factor );
+  return ret;
+}
+
 static void *_dzTFNumFromZTK(void *obj, int i, void *arg, ZTK *ztk){
   return ( ((dzTF*)obj)->num = zPexFromZTK( ztk ) ) ? obj : NULL;
 }
 static void *_dzTFDenFromZTK(void *obj, int i, void *arg, ZTK *ztk){
   return ( ((dzTF*)obj)->den = zPexFromZTK( ztk ) ) ? obj : NULL;
+}
+static void *_dzTFZeroFromZTK(void *obj, int i, void *arg, ZTK *ztk){
+  return _dzTFFactorFromZTK( &dzTFNum((dzTF*)obj), ztk ) ? obj : NULL;
+}
+static void *_dzTFPoleFromZTK(void *obj, int i, void *arg, ZTK *ztk){
+  return _dzTFFactorFromZTK( &dzTFDen((dzTF*)obj), ztk ) ? obj : NULL;
+}
+static void *_dzTFGainFromZTK(void *obj, int i, void *arg, ZTK *ztk){
+  if( dzTFNum((dzTF*)obj) )
+    zVecMulDRC( dzTFNum((dzTF*)obj), ZTKDouble(ztk) );
+  else{
+    if( dzTFSetNum( (dzTF*)obj, zPexAlloc( 0 ) ) )
+      dzTFSetNumElem( (dzTF*)obj, 0, ZTKDouble(ztk) );
+  }
+  return NULL;
 }
 
 static void _dzTFNumFPrintZTK(FILE *fp, int i, void *prp){
@@ -177,6 +209,9 @@ static void _dzTFDenFPrintZTK(FILE *fp, int i, void *prp){
 static ZTKPrp __ztk_prp_dztf[] = {
   { "num", 1, _dzTFNumFromZTK, _dzTFNumFPrintZTK },
   { "den", 1, _dzTFDenFromZTK, _dzTFDenFPrintZTK },
+  { "zero", 1, _dzTFZeroFromZTK, NULL },
+  { "pole", 1, _dzTFPoleFromZTK, NULL },
+  { "gain", 1, _dzTFGainFromZTK, NULL },
 };
 
 bool dzTFRegZTK(ZTK *ztk, char *tag)
@@ -228,7 +263,14 @@ bool dzTFWriteZTK(dzTF *tf, char filename[])
 /* print a transfer function in a fancy style to a file. */
 void dzTFFExpr(FILE *fp, dzTF *tf)
 {
-  zPexFExpr( fp, dzTFNum(tf), 's' );
-  fprintf( fp, "------\n" );
-  zPexFExpr( fp, dzTFDen(tf), 's' );
+  char buf_num[BUFSIZ], buf_den[BUFSIZ];
+  register int i;
+
+  zPexSExpr( buf_num, BUFSIZ, dzTFNum(tf), 's' );
+  zPexSExpr( buf_den, BUFSIZ, dzTFDen(tf), 's' );
+  fprintf( fp, "%s\n", buf_num );
+  for( i=zMax(strlen(buf_num),strlen(buf_den)); i>0; i-- )
+    fputc( '-', fp );
+  fprintf( fp, "\n" );
+  fprintf( fp, "%s\n", buf_den );
 }

@@ -82,13 +82,13 @@ __EXPORT void dzTFSetDenList(dzTF *tf, ...);
 
 /*! \brief connect a transfer function.
  *
- * dzTFConnect() connects a transfer function \a tfc to \a tf.
+ * dzTFConnect() connects a transfer function \a ctf to \a tf.
  * \a tf is directly updated.
  * \return
  * dzTFConnect() returns a pointer \a tf, or the null pointer if
  * it fails to allocate memory for the new transfer function.
  */
-__EXPORT dzTF *dzTFConnect(dzTF *tf, dzTF *tfc);
+__EXPORT dzTF *dzTFConnect(dzTF *tf, dzTF *ctf);
 
 /*! \brief check if polynomial system is stable.
  *
