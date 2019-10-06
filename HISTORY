@@ -1,3 +1,4 @@
+2019.10. 7. Debugged _dzTFGainFromZTK. [dz_tf]
 2019.10. 5. Modified dzTFFExpr. [dz_tf]
 2019.10. 4. Added _dzTFZeroFromZTK, _dzTFPoleFromZTK and _dzTFGainFromZTK in order to directly read zeros and poles from a ZTK file. [dz_tf]
 2019.10. 3. Added _dzTFConnectPex and modified dzTFConnect. [dz_tf]

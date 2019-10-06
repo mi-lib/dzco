@@ -193,10 +193,10 @@ static void *_dzTFGainFromZTK(void *obj, int i, void *arg, ZTK *ztk){
   if( dzTFNum((dzTF*)obj) )
     zVecMulDRC( dzTFNum((dzTF*)obj), ZTKDouble(ztk) );
   else{
-    if( dzTFSetNum( (dzTF*)obj, zPexAlloc( 0 ) ) )
-      dzTFSetNumElem( (dzTF*)obj, 0, ZTKDouble(ztk) );
+    if( !dzTFSetNum( (dzTF*)obj, zPexAlloc( 0 ) ) ) return NULL;
+    dzTFSetNumElem( (dzTF*)obj, 0, ZTKDouble(ztk) );
   }
-  return NULL;
+  return obj;
 }
 
 static void _dzTFNumFPrintZTK(FILE *fp, int i, void *prp){
