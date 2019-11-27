@@ -1,3 +1,8 @@
+2019.11.27. Reimplemented dzFreqResFromTF. [dz_tf_fr]
+2019.11.27. Modified specification of dzTFZeroPole. [dz_tf]
+2019.11.27. Added zero and pole members to dzTF class and modified some related functions. [dz_tf]
+2019.11.27. Modified dzTFInit. [dz_tf]
+2019.11.27. Modified dzTFCreateZeroPole to accept gain. [dz_tf]
 2019.11.22. Rewrote README as a markdown file. [README]
 2019.10. 7. Debugged _dzTFGainFromZTK. [dz_tf]
 2019.10. 5. Modified dzTFFExpr. [dz_tf]

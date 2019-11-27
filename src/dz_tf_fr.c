@@ -72,15 +72,28 @@ dzFreqRes *dzFreqRes2Open(dzFreqRes *frin, dzFreqRes *frout)
 /* frequency response of a transfer function. */
 dzFreqRes *dzFreqResFromTF(dzFreqRes *fr, dzTF *tf, double af)
 {
-  dzFreqRes fr_n, fr_d;
-  zComplex n, d, caf;
+  zComplex c;
+  register int i;
 
-  zComplexCreate( &caf, 0, af );
-  zPexCVal( dzTFNum(tf), &caf, &n );
-  dzFreqResFromComplex( &fr_n, &n, af );
-  zPexCVal( dzTFDen(tf), &caf, &d );
-  dzFreqResFromComplex( &fr_d, &d, af );
-  return _dzFreqResDiv( &fr_n, &fr_d, fr );
+  fr->f = af / zPIx2;
+  fr->g = log10( dzTFNumElem(tf,dzTFNumDim(tf)) / dzTFDenElem(tf,dzTFDenDim(tf)) );
+  fr->p = 0;
+  if( !dzTFZero(tf) || !dzTFPole(tf) )
+    dzTFZeroPole( tf );
+  for( i=0; i<zCVecSizeNC(dzTFZero(tf)); i++ ){
+    zComplexRev( zCVecElemNC(dzTFZero(tf),i), &c );
+    c.im += af;
+    fr->g += log10( zComplexAbs(&c) );
+    fr->p += zRad2Deg( zComplexArg(&c) );
+  }
+  for( i=0; i<zCVecSizeNC(dzTFPole(tf)); i++ ){
+    zComplexRev( zCVecElemNC(dzTFPole(tf),i), &c );
+    c.im += af;
+    fr->g -= log10( zComplexAbs(&c) );
+    fr->p -= zRad2Deg( zComplexArg(&c) );
+  }
+  fr->g *= 20;
+  return fr;
 }
 
 zComplex *dzTFToComplex(dzTF *tf, double af, zComplex *c)

@@ -21,6 +21,10 @@ __BEGIN_DECLS
 typedef struct{
   zPex num; /*!< polynomial for numerator */
   zPex den; /*!< polynomial for denominator */
+  /*! \cond */
+  zCVec zero; /* zeros */
+  zCVec pole; /* poles */
+  /*! \endcond */
 } dzTF;
 
 #define dzTFNum(tf)            (tf)->num
@@ -35,8 +39,14 @@ typedef struct{
 #define dzTFSetNumElem(tf,i,e) zPexSetCoeff( dzTFNum(tf), i, e )
 #define dzTFSetDenElem(tf,i,e) zPexSetCoeff( dzTFDen(tf), i, e )
 
+#define dzTFZero(tf)           (tf)->zero
+#define dzTFPole(tf)           (tf)->pole
+
 /*! \brief initialize a polynomial rational transfer function. */
-#define dzTFInit(tf)           ( dzTFNum(tf) = dzTFDen(tf) = NULL )
+#define dzTFInit(tf) do{\
+  dzTFNum(tf) = dzTFDen(tf) = NULL;\
+  dzTFZero(tf) = dzTFPole(tf) = NULL;\
+} while(0)
 
 /*! \brief allocate and destroy a polynomial rational transfer function.
  *
@@ -46,7 +56,7 @@ typedef struct{
  *
  * dzTFCreateZeroPole() creates the general polynomial transfer
  * function \a tf from complex zeros and poles. \a zero is for zeros,
- * and \a pole is for poles.
+ * and \a pole is for poles. The numerator is multiplied by \a gain.
  *
  * dzTFDestroy() destroys the instance of transfer function \a tf,
  * freeing inner vectors of \a tf.
@@ -57,7 +67,7 @@ typedef struct{
  * dzTFDestroy() returns no value.
  */
 __EXPORT bool dzTFAlloc(dzTF *tf, int nsize, int dsize);
-__EXPORT bool dzTFCreateZeroPole(dzTF *tf, zCVec zero, zCVec pole);
+__EXPORT bool dzTFCreateZeroPole(dzTF *tf, zCVec zero, zCVec pole, double gain);
 __EXPORT void dzTFDestroy(dzTF *tf);
 
 /*! \brief set coefficients of numerator and denominator of
@@ -104,15 +114,14 @@ __EXPORT bool dzTFIsStable(dzTF *tf);
 
 /*! \brief abstract zeros and poles of a transfer function.
  *
- * dzTFZeroPole() abstracts zeros and poles of a transfer function
- * \a tf, and puts them into newly allocated complex vectors.
- * The addresses of those vectors are stored in \a zero and \a pole,
- * respectively.
+ * dzTFZeroPole() computes zeros and poles of a transfer function
+ * \a tf, and puts them into newly allocated complex vectors that
+ * are accessible from referring dzTFZero() and dzTFPole().
  * \return
  * dzTFZeroPole() returns the true value if succeedings. Otherwise,
  * the false value is returned.
  */
-__EXPORT bool dzTFZeroPole(dzTF *tf, zCVec *zero, zCVec *pole);
+__EXPORT bool dzTFZeroPole(dzTF *tf);
 
 /*! \brief abstract zeros and poles of a transfer function into real and imaginary values.
  *

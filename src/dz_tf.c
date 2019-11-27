@@ -9,6 +9,7 @@
 /* allocate memory of a polynomial rational transfer function. */
 bool dzTFAlloc(dzTF *tf, int nsize, int dsize)
 {
+  dzTFInit( tf );
   dzTFSetNum( tf, zPexAlloc( nsize ) );
   dzTFSetDen( tf, zPexAlloc( dsize ) );
   if( !dzTFNum(tf) || !dzTFDen(tf) ){
@@ -20,15 +21,19 @@ bool dzTFAlloc(dzTF *tf, int nsize, int dsize)
 }
 
 /* create a polynomial rational transfer function from zeros and poles. */
-bool dzTFCreateZeroPole(dzTF *tf, zCVec zero, zCVec pole)
+bool dzTFCreateZeroPole(dzTF *tf, zCVec zero, zCVec pole, double gain)
 {
+  dzTFInit( tf );
+  dzTFZero(tf) = zCVecClone( zero );
+  dzTFPole(tf) = zCVecClone( pole );
   dzTFSetNum( tf, zPexCExp( zero ) );
   dzTFSetDen( tf, zPexCExp( pole ) );
-  if( !dzTFNum(tf) || !dzTFDen(tf) ){
+  if( !dzTFNum(tf) || !dzTFDen(tf) || !dzTFZero(tf) || !dzTFPole(tf) ){
     ZRUNERROR( DZ_ERR_TF_UNABLE_CREATE );
     dzTFDestroy( tf );
     return false;
   }
+  zVecMulDRC( dzTFNum(tf), gain );
   return true;
 }
 
@@ -37,6 +42,8 @@ void dzTFDestroy(dzTF *tf)
 {
   zPexFree( dzTFNum(tf) );
   zPexFree( dzTFDen(tf) );
+  zCVecFree( dzTFZero(tf) );
+  zCVecFree( dzTFPole(tf) );
 }
 
 /* set coefficients of numerator of a transfer function. */
@@ -136,27 +143,27 @@ bool dzTFIsStable(dzTF *tf)
 }
 
 /* abstract zeros and poles of a transfer function. */
-bool dzTFZeroPole(dzTF *tf, zCVec *zero, zCVec *pole)
+bool dzTFZeroPole(dzTF *tf)
 {
-  *zero = zCVecAlloc( dzTFNumDim(tf) );
-  *pole = zCVecAlloc( dzTFDenDim(tf) );
-  if( !*zero || !*pole ){
-    zCVecFree( *zero );
-    zCVecFree( *pole );
+  if( dzTFZero(tf) ) zCVecFree( dzTFZero(tf) );
+  if( dzTFPole(tf) ) zCVecFree( dzTFPole(tf) );
+  dzTFZero(tf) = zCVecAlloc( dzTFNumDim(tf) );
+  dzTFPole(tf) = zCVecAlloc( dzTFDenDim(tf) );
+  if( !dzTFZero(tf) || !dzTFPole(tf) ){
+    zCVecFree( dzTFZero(tf) );
+    zCVecFree( dzTFPole(tf) );
     return false;
   }
-  return zPexDKA( dzTFNum(tf), *zero, ZM_PEX_EQ_TOL, 0 ) &&
-         zPexDKA( dzTFDen(tf), *pole, ZM_PEX_EQ_TOL, 0 ) ? true : false;
+  return zPexDKA( dzTFNum(tf), dzTFZero(tf), ZM_PEX_EQ_TOL, 0 ) &&
+         zPexDKA( dzTFDen(tf), dzTFPole(tf), ZM_PEX_EQ_TOL, 0 ) ? true : false;
 }
 
 /* abstract zeros and poles of a transfer function into real and imaginary values. */
 bool dzTFZeroPoleReIm(dzTF *tf, zVec *zero1, zCVec *zero2, zVec *pole1, zCVec *pole2)
 {
-  zCVec zero, pole;
-
-  if( !dzTFZeroPole( tf, &zero, &pole ) ) return false;
-  return zCVecToReIm( zero, zero1, zero2, ZM_PEX_EQ_TOL ) &&
-         zCVecToReIm( pole, pole1, pole2, ZM_PEX_EQ_TOL ) ? true : false;
+  if( !dzTFZeroPole( tf ) ) return false;
+  return zCVecToReIm( dzTFZero(tf), zero1, zero2, ZM_PEX_EQ_TOL ) &&
+         zCVecToReIm( dzTFPole(tf), pole1, pole2, ZM_PEX_EQ_TOL ) ? true : false;
 }
 
 static bool _dzTFFactorFromZTK(zPex *pex, ZTK *ztk){
@@ -221,6 +228,7 @@ bool dzTFRegZTK(ZTK *ztk, char *tag)
 
 dzTF *dzTFFromZTK(dzTF *tf, ZTK *ztk)
 {
+  dzTFInit( tf );
   dzTFSetNum( tf, NULL );
   dzTFSetDen( tf, NULL );
   if( !ZTKEvalKey( tf, NULL, ztk, __ztk_prp_dztf ) ) return NULL;

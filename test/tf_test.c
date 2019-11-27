@@ -42,7 +42,6 @@ bool cval_set_equal(zCVec v1, zCVec v2)
 void assert_zeropole(void)
 {
   zCVec zero_src, pole_src;
-  zCVec zero_est, pole_est;
   dzTF tf;
 
   zero_src = zCVecAlloc( NUM_ZEROS );
@@ -56,18 +55,16 @@ void assert_zeropole(void)
   zComplexCreate( zCVecElemNC(pole_src,3), zRandF(-10,0), zRandF(-10,10) );
   zComplexConj( zCVecElemNC(pole_src,3), zCVecElemNC(pole_src,4) );
 
-  dzTFCreateZeroPole( &tf, zero_src, pole_src );
-  dzTFZeroPole( &tf, &zero_est, &pole_est );
+  dzTFCreateZeroPole( &tf, zero_src, pole_src, zRandF(0.1,5) );
+  dzTFZeroPole( &tf );
 
   zAssert( dzTFCreateZeroPole + dzTFZeroPole,
-    cval_set_equal( zero_src, zero_est ) &&
-    cval_set_equal( pole_src, pole_est ) );
+    cval_set_equal( zero_src, dzTFZero(&tf) ) &&
+    cval_set_equal( pole_src, dzTFPole(&tf) ) );
 
   dzTFDestroy( &tf );
   zCVecFree( zero_src );
   zCVecFree( pole_src );
-  zCVecFree( zero_est );
-  zCVecFree( pole_est );
 }
 
 void assert_connect(void)
