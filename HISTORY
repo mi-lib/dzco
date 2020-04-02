@@ -1,3 +1,4 @@
+2020. 4. 3. Debugged dz_tf2zeropole conforming to new specification of dzTF. [app]
 2019.11.27. Reimplemented dzFreqResFromTF. [dz_tf_fr]
 2019.11.27. Modified specification of dzTFZeroPole. [dz_tf]
 2019.11.27. Added zero and pole members to dzTF class and modified some related functions. [dz_tf]

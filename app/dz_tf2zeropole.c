@@ -71,15 +71,12 @@ void dz_tf2zeropole_output(zCVec zero, zCVec pole)
 int main(int argc, char *argv[])
 {
   dzTF tf;
-  zCVec zero, pole;
 
   if( argc < 2 ) dz_tf2zeropole_usage( argv[0] );
   if( !dz_tf2zeropole_command_arg( argc, argv ) ) return EXIT_FAILURE;
   if( !dzTFReadZTK( &tf, opt[OPT_TFFILE].arg ) ) return EXIT_FAILURE;
-  if( !dzTFZeroPole( &tf, &zero, &pole ) ) return EXIT_FAILURE;
-  dz_tf2zeropole_output( zero, pole );
-  zCVecFree( zero );
-  zCVecFree( pole );
+  if( !dzTFZeroPole( &tf ) ) return EXIT_FAILURE;
+  dz_tf2zeropole_output( dzTFZero(&tf), dzTFPole(&tf) );
   dzTFDestroy( &tf );
   return EXIT_SUCCESS;
 }
