@@ -1,7 +1,7 @@
 include ../config
 
-INCLUDE=-I$(PREFIX)/include -I../include -I.
-LIB=-L$(PREFIX)/lib -L../lib
+INCLUDE=-I. -I../include -I$(PREFIX)/include
+LIB=-L../lib -L$(PREFIX)/lib
 BINDIR=$(PREFIX)/bin
 
 CC=gcc

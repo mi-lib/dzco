@@ -37,12 +37,12 @@ int main(int argc, char *argv[])
   dzSys fol, isys;
   double ref, k, tc;
 
-  dzSysCreateFOL( &fol, 0.5, 2.0 );
+  dzSysFOLCreate( &fol, 0.5, 2.0 );
   dzSysInputPtr(&fol,0) = &ref;
   ref = argc > 1 ? atof( argv[1] ) : 1;
   sample( &fol, 200 );
   dzIdentFOL( t, r, y, N, dzIdentTrig(r,N), &tc, &k );
-  dzSysCreateFOL( &isys, tc, k );
+  dzSysFOLCreate( &isys, tc, k );
   dzSysInputPtr(&isys,0) = &ref;
   dzSysRefresh( &fol );
   test( &fol, &isys );

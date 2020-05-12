@@ -37,11 +37,11 @@ int main(int argc, char *argv[])
   double ref = 1.0, k, tc, z;
 
   z = argc > 1 ? atof( argv[1] ) : 0.7;
-  dzSysCreateSOL( &sol, 0.5, 0.0, z, 2.0 );
+  dzSysSOLCreate( &sol, 0.5, 0.0, z, 2.0 );
   dzSysInputPtr(&sol,0) = &ref;
   sample( &sol, 200 );
   dzIdentSOL( t, r, y, N, dzIdentTrig(r,N), &tc, &z, &k );
-  dzSysCreateSOL( &isys, tc, 0.0, z, k );
+  dzSysSOLCreate( &isys, tc, 0.0, z, k );
   dzSysRefresh( &sol );
   dzSysInputPtr(&isys,0) = &ref;
   test( &sol, &isys );

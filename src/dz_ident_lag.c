@@ -75,8 +75,7 @@ static double _dzIdentFOLEval(zVec prm, void *priv)
 bool dzIdentFOL(double t[], double r[], double y[], int n, int trig, double *tc, double *gain)
 {
   struct _dzIdentFOL_t ws;
-  zVec prm;
-  zOptNM opt;
+  zVec prm, prm_min, prm_max;
 
   ws.t = t;
   ws.r = r;
@@ -89,12 +88,12 @@ bool dzIdentFOL(double t[], double r[], double y[], int n, int trig, double *tc,
     return false;
   }
 
-  zOptNMCreate( &opt, 2, _dzIdentFOLEval );
-  zOptNMSolve( &opt, prm, &ws, zTOL, 0, NULL );
+  prm_min = zVecCreateList( 2, 0, *gain > 0 ? 0 : *gain*2 );
+  prm_max = zVecCreateList( 2, *tc*2, *gain > 0 ? *gain*2 : 0 );
+  zOptSolveNM( _dzIdentFOLEval, &ws, prm_min, prm_max, 0, zTOL, prm, NULL );
   *tc   = zVecElem( prm, 0 );
   *gain = zVecElem( prm, 1 );
-  zVecFree( prm );
-  zOptNMDestroy( &opt );
+  zVecFreeAO( 3, prm, prm_min, prm_max );
   return true;
 }
 
@@ -191,8 +190,7 @@ static double _dzIdentSOLEval(zVec prm, void *priv)
 bool dzIdentSOL(double t[], double r[], double y[], int n, int trig, double *tc, double *z, double *gain)
 {
   struct _dzIdentSOL_t ws;
-  zVec prm;
-  zOptNM opt;
+  zVec prm, prm_min, prm_max;
 
   ws.t = t;
   ws.r = r;
@@ -205,12 +203,12 @@ bool dzIdentSOL(double t[], double r[], double y[], int n, int trig, double *tc,
   }
   ws.trig = trig;
 
-  zOptNMCreate( &opt, 3, _dzIdentSOLEval );
-  zOptNMSolve( &opt, prm, &ws, zTOL, 0, NULL );
+  prm_min = zVecCreateList( 3, 0, 0, *gain > 0 ? 0 : *gain*2 );
+  prm_max = zVecCreateList( 3, *tc*2, *z*2, *gain > 0 ? *gain*2 : 0 );
+  zOptSolveNM( _dzIdentSOLEval, &ws, prm_min, prm_max, 0, zTOL, prm, NULL );
   *tc   = zVecElem( prm, 0 );
   *z    = zVecElem( prm, 1 );
   *gain = zVecElem( prm, 2 );
-  zVecFree( prm );
-  zOptNMDestroy( &opt );
+  zVecFreeAO( 3, prm, prm_min, prm_max );
   return true;
 }
