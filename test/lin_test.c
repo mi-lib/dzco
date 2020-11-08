@@ -1,4 +1,4 @@
-#include <dzco/dz_lin.h>
+#include <dzco/dz_sys.h>
 
 void linsys_xfer(dzLin *lin, zMat a, zVec b, zVec c, zMat t)
 {
@@ -65,9 +65,54 @@ void assert_co(void)
   zMatFree( t );
 }
 
+#define N 100
+
+void assert_lqr(void)
+{
+  dzSys sys;
+  dzLin *lin;
+  double input;
+  zVec q, opt_gain;
+  double q2, r;
+  int i;
+  bool result = true;
+
+  zRandInit();
+  /* create a linear system */
+  lin = zAlloc( dzLin, 1 );
+  dzLinAlloc( lin, 2 );
+  zMatSetElem( lin->a, 0, 1, 1 ); /* transition matrix */
+  zVecSetElem( lin->b, 1, 1 ); /* input coefficient vector */
+  zVecSetElem( lin->c, 0, 1 ); /* output coefficient vector */
+  lin->d = 0; /* output transfer coefficient */
+  dzSysLinCreate( &sys, lin );
+  dzSysInputPtr(&sys,0) = &input;
+  q = zVecAlloc( 2 );
+  opt_gain = zVecAlloc( 2 );
+
+  for( i=0; i<N; i++ ){
+    q2 = zRandF( zTOL, 10 );
+    r = zRandF( zTOL, 10 );
+    zVecSetElemList( q, 1.0, q2 );
+    if( !dzLinLQR( sys.prp, q, r, opt_gain ) ) exit( 1 );
+    /* compare with analytical solution */
+    if( !zIsTiny( zVecElemNC(opt_gain,0) - 1.0/sqrt(r) ) ||
+        !zIsTiny( zVecElemNC(opt_gain,1) - sqrt(2*sqrt(r)+q2)/sqrt(r) ) ){
+      result = false;
+      break;
+    }
+  }
+  zAssert( dzLinLQR, result );
+
+  zVecFree( q );
+  zVecFree( opt_gain );
+  dzSysDestroy( &sys );
+}
+
 int main(void)
 {
   zRandInit();
   assert_co();
+  assert_lqr();
   return EXIT_SUCCESS;
 }

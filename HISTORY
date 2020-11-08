@@ -1,3 +1,4 @@
+2020.11. 8. Modified lqr_test in example and lin_test in test. [example, test]
 2020. 5.12. Reflect new specification of zOptSolveNM. [dz_ident_lag]
 2020. 4. 3. Debugged dz_tf2zeropole conforming to new specification of dzTF. [app]
 2019.11.27. Reimplemented dzFreqResFromTF. [dz_tf_fr]
