@@ -36,7 +36,6 @@ typedef struct{
   void (* _destroy)(struct _dzSys*);
   void (* _refresh)(struct _dzSys*);
   zVec (* _update)(struct _dzSys*, double);
-  bool (* _regZTK)(ZTK*);
   struct _dzSys *(* _fromZTK)(struct _dzSys*, ZTK*);
   void (* _fprintZTK)(FILE *fp, struct _dzSys*);
 } dzSysCom;
@@ -148,11 +147,12 @@ __EXPORT dzSys *dzSysArrayNameFind(dzSysArray *arr, const char *name);
 /*! \brief update all systems of an array. */
 __EXPORT void dzSysArrayUpdate(dzSysArray *arr, double dt);
 
-__EXPORT bool dzSysRegZTK(ZTK *ztk);
+/*! \brief read the current position of a ZTK file and create an array of systems. */
 __EXPORT dzSysArray *dzSysArrayFromZTK(dzSysArray *sarray, ZTK *ztk);
 /*! \brief print an array of systems to the current position of a ZTK file. */
 __EXPORT void dzSysArrayFPrintZTK(FILE *fp, dzSysArray *sys);
 
+/*! \brief read a ZTK file and create an array of systems. */
 __EXPORT dzSysArray *dzSysArrayReadZTK(dzSysArray *sarray, char filename[]);
 /*! \brief write an array of systems to a file in ZTK format. */
 __EXPORT bool dzSysArrayWriteZTK(dzSysArray *sarray, char filename[]);

@@ -174,11 +174,6 @@ static ZTKPrp __ztk_prp_dzsys_bw[] = {
   { "dim", 1, _dzSysBWDimFromZTK, _dzSysBWDimFPrintZTK },
 };
 
-static bool _dzSysBWRegZTK(ZTK *ztk)
-{
-  return ZTKDefRegPrp( ztk, ZTK_TAG_DZSYS, __ztk_prp_dzsys_bw ) ? true : false;
-}
-
 static dzSys *_dzSysBWFromZTK(dzSys *sys, ZTK *ztk)
 {
   _dzBWParam prm = { 1.0, 1 };
@@ -196,7 +191,6 @@ dzSysCom dz_sys_bw_com = {
   _destroy: dzSysBWDestroy,
   _refresh: dzSysBWRefresh,
   _update: dzSysBWUpdate,
-  _regZTK: _dzSysBWRegZTK,
   _fromZTK: _dzSysBWFromZTK,
   _fprintZTK: _dzSysBWFPrintZTK,
 };

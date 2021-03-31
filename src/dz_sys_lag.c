@@ -49,11 +49,6 @@ static ZTKPrp __ztk_prp_dzsys_fol[] = {
   { "gain", 1, _dzSysFOLGainFromZTK, _dzSysFOLGainFPrintZTK },
 };
 
-static bool _dzSysFOLRegZTK(ZTK *ztk)
-{
-  return ZTKDefRegPrp( ztk, ZTK_TAG_DZSYS, __ztk_prp_dzsys_fol ) ? true : false;
-}
-
 static dzSys *_dzSysFOLFromZTK(dzSys *sys, ZTK *ztk)
 {
   double val[] = { 1.0, 0.0 };
@@ -71,7 +66,6 @@ dzSysCom dz_sys_fol_com = {
   _destroy: dzSysDefaultDestroy,
   _refresh: _dzSysFOLRefresh,
   _update: _dzSysFOLUpdate,
-  _regZTK: _dzSysFOLRegZTK,
   _fromZTK: _dzSysFOLFromZTK,
   _fprintZTK: _dzSysFOLFPrintZTK,
 };
@@ -172,11 +166,6 @@ static ZTKPrp __ztk_prp_dzsys_sol[] = {
   { "gain", 1, _dzSysSOLGainFromZTK, _dzSysSOLGainFPrintZTK },
 };
 
-static bool _dzSysSOLRegZTK(ZTK *ztk)
-{
-  return ZTKDefRegPrp( ztk, ZTK_TAG_DZSYS, __ztk_prp_dzsys_sol ) ? true : false;
-}
-
 static dzSys *_dzSysSOLFromZTK(dzSys *sys, ZTK *ztk)
 {
   double val[] = { 1.0, 0.0, 1.0, 0.0 };
@@ -194,7 +183,6 @@ dzSysCom dz_sys_sol_com = {
   _destroy: dzSysDefaultDestroy,
   _refresh: _dzSysSOLRefresh,
   _update: _dzSysSOLUpdate,
-  _regZTK: _dzSysSOLRegZTK,
   _fromZTK: _dzSysSOLFromZTK,
   _fprintZTK: _dzSysSOLFPrintZTK,
 };
@@ -278,11 +266,6 @@ static ZTKPrp __ztk_prp_dzsys_pc[] = {
   { "gain", 1, _dzSysPCGainFromZTK, _dzSysPCGainFPrintZTK },
 };
 
-static bool _dzSysPCRegZTK(ZTK *ztk)
-{
-  return ZTKDefRegPrp( ztk, ZTK_TAG_DZSYS, __ztk_prp_dzsys_pc ) ? true : false;
-}
-
 static dzSys *_dzSysPCFromZTK(dzSys *sys, ZTK *ztk)
 {
   double val[] = { 1.0, 0.0, 0.0 };
@@ -300,7 +283,6 @@ dzSysCom dz_sys_pc_com = {
   _destroy: dzSysDefaultDestroy,
   _refresh: _dzSysPCRefresh,
   _update: _dzSysPCUpdate,
-  _regZTK: _dzSysPCRegZTK,
   _fromZTK: _dzSysPCFromZTK,
   _fprintZTK: _dzSysPCFPrintZTK,
 };
@@ -373,11 +355,6 @@ static ZTKPrp __ztk_prp_dzsys_adapt[] = {
   { "base", 1, _dzSysAdaptBaseFromZTK, _dzSysAdaptBaseFPrintZTK },
 };
 
-static bool _dzSysAdaptRegZTK(ZTK *ztk)
-{
-  return ZTKDefRegPrp( ztk, ZTK_TAG_DZSYS, __ztk_prp_dzsys_adapt ) ? true : false;
-}
-
 static dzSys *_dzSysAdaptFromZTK(dzSys *sys, ZTK *ztk)
 {
   double val[] = { 1.0, 0.0 };
@@ -395,7 +372,6 @@ dzSysCom dz_sys_adapt_com = {
   _destroy: dzSysDefaultDestroy,
   _refresh: _dzSysAdaptRefresh,
   _update: _dzSysAdaptUpdate,
-  _regZTK: _dzSysAdaptRegZTK,
   _fromZTK: _dzSysAdaptFromZTK,
   _fprintZTK: _dzSysAdaptFPrintZTK,
 };

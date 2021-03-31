@@ -3,7 +3,6 @@
 int main(int argc, char *argv[])
 {
   dzTF tf;
-  zCVec zero, pole;
 
   if( argc < 2 ){
     eprintf( "specify a transfer function file.\n" );
@@ -12,11 +11,9 @@ int main(int argc, char *argv[])
   dzTFReadZTK( &tf, argv[1] );
   printf( "polynomial rational transfer function\n" );
   dzTFExpr( &tf );
-  dzTFZeroPole( &tf, &zero, &pole );
-  printf( "zeros: " ); zCVecPrint( zero );
-  printf( "poles: " ); zCVecPrint( pole );
-  zCVecFree( zero );
-  zCVecFree( pole );
+  dzTFZeroPole( &tf );
+  printf( "zeros: " ); zCVecPrint( dzTFZero(&tf) );
+  printf( "poles: " ); zCVecPrint( dzTFPole(&tf) );
   dzTFDestroy( &tf );
   return 0;
 }

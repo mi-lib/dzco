@@ -46,11 +46,6 @@ static ZTKPrp __ztk_prp_dzsys_maf[] = {
   { "ff", 1, _dzSysMAFFFFromZTK, _dzSysMAFFFFPrintZTK },
 };
 
-static bool _dzSysMAFRegZTK(ZTK *ztk)
-{
-  return ZTKDefRegPrp( ztk, ZTK_TAG_DZSYS, __ztk_prp_dzsys_maf ) ? true : false;
-}
-
 static dzSys *_dzSysMAFFromZTK(dzSys *sys, ZTK *ztk)
 {
   double ff = 0;
@@ -68,7 +63,6 @@ dzSysCom dz_sys_maf_com = {
   _destroy: dzSysDefaultDestroy,
   _refresh: _dzSysMAFRefresh,
   _update: _dzSysMAFUpdate,
-  _regZTK: _dzSysMAFRegZTK,
   _fromZTK: _dzSysMAFFromZTK,
   _fprintZTK: _dzSysMAFFPrintZTK,
 };

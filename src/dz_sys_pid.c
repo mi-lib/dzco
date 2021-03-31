@@ -31,11 +31,6 @@ static ZTKPrp __ztk_prp_dzsys_p[] = {
   { "gain", 1, _dzSysPGainFromZTK, _dzSysPGainFPrintZTK },
 };
 
-static bool _dzSysPRegZTK(ZTK *ztk)
-{
-  return ZTKDefRegPrp( ztk, ZTK_TAG_DZSYS, __ztk_prp_dzsys_p ) ? true : false;
-}
-
 static dzSys *_dzSysPFromZTK(dzSys *sys, ZTK *ztk)
 {
   double gain = 0;
@@ -53,7 +48,6 @@ dzSysCom dz_sys_p_com = {
   _destroy: dzSysDefaultDestroy,
   _refresh: dzSysDefaultRefresh,
   _update: _dzSysPUpdate,
-  _regZTK: _dzSysPRegZTK,
   _fromZTK: _dzSysPFromZTK,
   _fprintZTK: _dzSysPFPrintZTK,
 };
@@ -118,11 +112,6 @@ static ZTKPrp __ztk_prp_dzsys_i[] = {
   { "fgt", 1, _dzSysIFgtFromZTK, _dzSysIFgtFPrintZTK },
 };
 
-static bool _dzSysIRegZTK(ZTK *ztk)
-{
-  return ZTKDefRegPrp( ztk, ZTK_TAG_DZSYS, __ztk_prp_dzsys_i ) ? true : false;
-}
-
 static dzSys *_dzSysIFromZTK(dzSys *sys, ZTK *ztk)
 {
   double val[] = { 0.0, 0.0 };
@@ -140,7 +129,6 @@ dzSysCom dz_sys_i_com = {
   _destroy: dzSysDefaultDestroy,
   _refresh: _dzSysIRefresh,
   _update: _dzSysIUpdate,
-  _regZTK: _dzSysIRegZTK,
   _fromZTK: _dzSysIFromZTK,
   _fprintZTK: _dzSysIFPrintZTK,
 };
@@ -222,11 +210,6 @@ static ZTKPrp __ztk_prp_dzsys_d[] = {
   { "tc", 1, _dzSysDTcFromZTK, _dzSysDTcFPrintZTK },
 };
 
-static bool _dzSysDRegZTK(ZTK *ztk)
-{
-  return ZTKDefRegPrp( ztk, ZTK_TAG_DZSYS, __ztk_prp_dzsys_d ) ? true : false;
-}
-
 static dzSys *_dzSysDFromZTK(dzSys *sys, ZTK *ztk)
 {
   double val[] = { 0.0, 0.0 };
@@ -244,7 +227,6 @@ dzSysCom dz_sys_d_com = {
   _destroy: dzSysDefaultDestroy,
   _refresh: _dzSysDRefresh,
   _update: _dzSysDUpdate,
-  _regZTK: _dzSysDRegZTK,
   _fromZTK: _dzSysDFromZTK,
   _fprintZTK: _dzSysDFPrintZTK,
 };
@@ -350,11 +332,6 @@ static ZTKPrp __ztk_prp_dzsys_pid[] = {
   { "fgt", 1, _dzSysPIDFgtFromZTK, _dzSysPIDFgtFPrintZTK },
 };
 
-static bool _dzSysPIDRegZTK(ZTK *ztk)
-{
-  return ZTKDefRegPrp( ztk, ZTK_TAG_DZSYS, __ztk_prp_dzsys_pid ) ? true : false;
-}
-
 static dzSys *_dzSysPIDFromZTK(dzSys *sys, ZTK *ztk)
 {
   double val[] = { 0.0, 0.0, 0.0, 0.0, 0.0 };
@@ -372,7 +349,6 @@ dzSysCom dz_sys_pid_com = {
   _destroy: dzSysDefaultDestroy,
   _refresh: _dzSysPIDRefresh,
   _update: _dzSysPIDUpdate,
-  _regZTK: _dzSysPIDRegZTK,
   _fromZTK: _dzSysPIDFromZTK,
   _fprintZTK: _dzSysPIDFPrintZTK,
 };
@@ -493,11 +469,6 @@ static ZTKPrp __ztk_prp_dzsys_qpd[] = {
   { "eps", 1, _dzSysQPDEpsFromZTK, _dzSysQPDEpsFPrintZTK },
 };
 
-static bool _dzSysQPDRegZTK(ZTK *ztk)
-{
-  return ZTKDefRegPrp( ztk, ZTK_TAG_DZSYS, __ztk_prp_dzsys_qpd ) ? true : false;
-}
-
 static dzSys *_dzSysQPDFromZTK(dzSys *sys, ZTK *ztk)
 {
   double val[] = { 0.0, 0.0, 1.0e-3 };
@@ -515,7 +486,6 @@ dzSysCom dz_sys_qpd_com = {
   _destroy: dzSysDefaultDestroy,
   _refresh: _dzSysQPDRefresh,
   _update: _dzSysQPDUpdate,
-  _regZTK: _dzSysQPDRegZTK,
   _fromZTK: _dzSysQPDFromZTK,
   _fprintZTK: _dzSysQPDFPrintZTK,
 };

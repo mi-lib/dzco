@@ -575,11 +575,6 @@ static ZTKPrp __ztk_prp_dzlin[] = {
   { "d", 1, _dzLinDFromZTK, _dzLinDFPrintZTK },
 };
 
-bool dzLinRegZTK(ZTK *ztk, char *tag)
-{
-  return ZTKDefRegPrp( ztk, tag, __ztk_prp_dzlin ) ? true : false;
-}
-
 dzLin *dzLinFromZTK(dzLin *lin, ZTK *ztk)
 {
   dzLinInit( lin );

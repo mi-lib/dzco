@@ -136,7 +136,6 @@ __EXPORT bool dzTFZeroPole(dzTF *tf);
  */
 __EXPORT bool dzTFZeroPoleReIm(dzTF *tf, zVec *zero1, zCVec *zero2, zVec *pole1, zCVec *pole2);
 
-__EXPORT bool dzTFRegZTK(ZTK *ztk, char *tag);
 __EXPORT dzTF *dzTFFromZTK(dzTF *tf, ZTK *ztk);
 __EXPORT void dzTFFPrintZTK(FILE *fp, dzTF *tf);
 

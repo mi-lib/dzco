@@ -221,11 +221,6 @@ static ZTKPrp __ztk_prp_dztf[] = {
   { "gain", 1, _dzTFGainFromZTK, NULL },
 };
 
-bool dzTFRegZTK(ZTK *ztk, char *tag)
-{
-  return ZTKDefRegPrp( ztk, tag, __ztk_prp_dztf ) ? true : false;
-}
-
 dzTF *dzTFFromZTK(dzTF *tf, ZTK *ztk)
 {
   dzTFInit( tf );
@@ -250,7 +245,6 @@ dzTF *dzTFReadZTK(dzTF *tf, char filename[])
   ZTK ztk;
 
   ZTKInit( &ztk );
-  if( !dzTFRegZTK( &ztk, "" ) ) return NULL;
   if( ZTKParse( &ztk, filename ) )
     tf = dzTFFromZTK( tf, &ztk );
   ZTKDestroy( &ztk );

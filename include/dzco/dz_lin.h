@@ -247,7 +247,6 @@ __EXPORT zVec dzLinLQR(dzLin *c, zVec q, double r, zVec f);
 __EXPORT dzLin *dzTF2LinCtrlCanon(dzTF *tf, dzLin *lin);
 __EXPORT dzLin *dzTF2LinObsCanon(dzTF *tf, dzLin *lin);
 
-__EXPORT bool dzLinRegZTK(ZTK *ztk, char *tag);
 __EXPORT dzLin *dzLinFromZTK(dzLin *lin, ZTK *ztk);
 __EXPORT void dzLinFPrintZTK(FILE *fp, dzLin *lin);
 

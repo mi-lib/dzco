@@ -7,7 +7,7 @@ int main(void)
   char buf[BUFSIZ];
   int i;
 
-  dzSysArrayScanZTK( &arr,"scan_test.ztk" );
+  dzSysArrayReadZTK( &arr,"read_test.ztk" );
   for( i=0; i<zArraySize(&arr); i++ )
     printf( "sys: %s\n", zName(zArrayElem(&arr,i)) );
   while( 1 ){

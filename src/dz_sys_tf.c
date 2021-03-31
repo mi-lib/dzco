@@ -76,11 +76,6 @@ static void dzSysTFFPrintZTK(FILE *fp, dzSys *sys)
   dzTFFPrintZTK( fp, ((dzSysTFPrm*)sys->prp)->tf );
 }
 
-static bool _dzSysTFRegZTK(ZTK *ztk)
-{
-  return dzTFRegZTK( ztk, ZTK_TAG_DZSYS );
-}
-
 static dzSys *_dzSysTFFromZTK(dzSys *sys, ZTK *ztk)
 {
   dzTF *tf;
@@ -95,7 +90,6 @@ dzSysCom dz_sys_tf_com = {
   _destroy: _dzSysTFDestroy,
   _refresh: _dzSysTFRefresh,
   _update: _dzSysTFUpdate,
-  _regZTK: _dzSysTFRegZTK,
   _fromZTK: _dzSysTFFromZTK,
   _fprintZTK: dzSysTFFPrintZTK,
 };

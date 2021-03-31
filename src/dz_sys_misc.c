@@ -19,11 +19,6 @@ static ZTKPrp __ztk_prp_dzsys_mi[] = {
   { "in", 1, _dzSysMIInFromZTK, _dzSysMIInFPrintZTK },
 };
 
-static bool _dzSysMIRegZTK(ZTK *ztk)
-{
-  return ZTKDefRegPrp( ztk, ZTK_TAG_DZSYS, __ztk_prp_dzsys_mi ) ? true : false;
-}
-
 static void _dzSysMIFPrintZTK(FILE *fp, dzSys *sys)
 {
   ZTKPrpKeyFPrint( fp, sys, __ztk_prp_dzsys_mi );
@@ -55,7 +50,6 @@ dzSysCom dz_sys_adder_com = {
   _destroy: dzSysDefaultDestroy,
   _refresh: dzSysDefaultRefresh,
   _update: _dzSysAdderUpdate,
-  _regZTK: _dzSysMIRegZTK,
   _fromZTK: _dzSysAdderFromZTK,
   _fprintZTK: _dzSysMIFPrintZTK,
 };
@@ -96,7 +90,6 @@ dzSysCom dz_sys_subtr_com = {
   _destroy: dzSysDefaultDestroy,
   _refresh: dzSysDefaultRefresh,
   _update: _dzSysSubtrUpdate,
-  _regZTK: _dzSysMIRegZTK,
   _fromZTK: _dzSysSubtrFromZTK,
   _fprintZTK: _dzSysMIFPrintZTK,
 };
@@ -146,11 +139,6 @@ static ZTKPrp __ztk_prp_dzsys_limit[] = {
   { "max", 1, _dzSysLimitMaxFromZTK, _dzSysLimitMaxFPrintZTK },
 };
 
-static bool _dzSysLimitRegZTK(ZTK *ztk)
-{
-  return ZTKDefRegPrp( ztk, ZTK_TAG_DZSYS, __ztk_prp_dzsys_limit ) ? true : false;
-}
-
 static dzSys *_dzSysLimitFromZTK(dzSys *sys, ZTK *ztk)
 {
   double val[2];
@@ -168,7 +156,6 @@ dzSysCom dz_sys_limit_com = {
   _destroy: dzSysDefaultDestroy,
   _refresh: dzSysDefaultRefresh,
   _update: _dzSysLimitUpdate,
-  _regZTK: _dzSysLimitRegZTK,
   _fromZTK: _dzSysLimitFromZTK,
   _fprintZTK: _dzSysLimitFPrintZTK,
 };

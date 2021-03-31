@@ -28,7 +28,6 @@ dzSysCom dz_sys_##mtype##_com = {\
   _destroy: dzSysDefaultDestroy,\
   _refresh: _dzSysFGRefresh,\
   _update: _dzSys##Type##Update,\
-  _regZTK: _dzSysFGRegZTK,\
   _fromZTK: _dzSys##Type##FromZTK,\
   _fprintZTK: _dzSysFGFPrintZTK,\
 };\

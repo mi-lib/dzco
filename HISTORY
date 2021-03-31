@@ -1,3 +1,5 @@
+2021. 3.31. Reflect modification of ZEDA and abolished *RegZTK. [dz_tf, dz_lin, dz_sys*]
+2021. 3.31. Modified makefile to separately make and install library and applications. [makefile]
 2020.11. 8. Modified lqr_test in example and lin_test in test. [example, test]
 2020. 5.12. Reflect new specification of zOptSolveNM. [dz_ident_lag]
 2020. 4. 3. Debugged dz_tf2zeropole conforming to new specification of dzTF. [app]

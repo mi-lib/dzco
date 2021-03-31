@@ -33,11 +33,6 @@ static void _dzSysLinFPrintZTK(FILE *fp, dzSys *sys)
   dzLinFPrintZTK( fp, sys->prp );
 }
 
-static bool _dzSysLinRegZTK(ZTK *ztk)
-{
-  return dzLinRegZTK( ztk, ZTK_TAG_DZSYS );
-}
-
 static dzSys *_dzSysLinFromZTK(dzSys *sys, ZTK *ztk)
 {
   dzLin *lin;
@@ -52,7 +47,6 @@ dzSysCom dz_sys_lin_com = {
   _destroy: _dzSysLinDestroy,
   _refresh: _dzSysLinRefresh,
   _update: _dzSysLinUpdate,
-  _regZTK: _dzSysLinRegZTK,
   _fromZTK: _dzSysLinFromZTK,
   _fprintZTK: _dzSysLinFPrintZTK,
 };

@@ -50,11 +50,6 @@ static ZTKPrp __ztk_prp_dzsys_fg[] = {
   { "period", 1, _dzSysFGPeriodFromZTK, _dzSysFGPeriodFPrintZTK },
 };
 
-static bool _dzSysFGRegZTK(ZTK *ztk)
-{
-  return ZTKDefRegPrp( ztk, ZTK_TAG_DZSYS, __ztk_prp_dzsys_fg ) ? true : false;
-}
-
 static void _dzSysFGFPrintZTK(FILE *fp, dzSys *sys)
 {
   ZTKPrpKeyFPrint( fp, sys, __ztk_prp_dzsys_fg );

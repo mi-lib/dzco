@@ -210,17 +210,7 @@ static ZTKPrp __ztk_prp_tag_dzsys[] = {
   { ZTK_TAG_DZSYS_CONNECT, 1, _dzSysArrayConnectFromZTK, _dzSysArrayConnectFPrintZTK },
 };
 
-bool dzSysRegZTK(ZTK *ztk)
-{
-  DZ_SYS_COM_ARRAY;
-  register int i;
-
-  if( !ZTKDefRegPrp( ztk, ZTK_TAG_DZSYS, __ztk_prp_dzsys ) ) return false;
-  for( i=0; _dz_sys_com[i]; i++ )
-    if( !_dz_sys_com[i]->_regZTK( ztk ) ) return false;
-  return ZTKDefRegTag( ztk, ZTK_TAG_DZSYS_CONNECT ) ? true : false;
-}
-
+/* read the current position of a ZTK file and create an array of systems. */
 dzSysArray *dzSysArrayFromZTK(dzSysArray *sarray, ZTK *ztk)
 {
   int num_sys;
@@ -247,12 +237,12 @@ void dzSysArrayFPrintZTK(FILE *fp, dzSysArray *arr)
   ZTKPrpTagFPrint( fp, arr, __ztk_prp_tag_dzsys );
 }
 
+/* read a ZTK file and create an array of systems. */
 dzSysArray *dzSysArrayReadZTK(dzSysArray *sarray, char filename[])
 {
   ZTK ztk;
 
   ZTKInit( &ztk );
-  if( !dzSysRegZTK( &ztk ) ) return NULL;
   zArrayInit( sarray );
   if( ZTKParse( &ztk, filename ) )
     sarray = dzSysArrayFromZTK( sarray, &ztk );
