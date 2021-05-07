@@ -1,3 +1,4 @@
+2021. 5. 7. Made tools/, and modified makefiles. [dzco, app, tools]
 2021. 4.29. Modified app/makefile. [app]
 2021. 4.29. Reflected new specification of zeda-config-gen. [app]
 2021. 3.31. Reflect modification of ZEDA and abolished *RegZTK. [dz_tf, dz_lin, dz_sys*]
