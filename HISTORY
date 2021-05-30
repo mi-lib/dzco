@@ -1,3 +1,4 @@
+2021. 5.30. Applied zeda-deb-gen. [makefile]
 2021. 5. 8. Reflected -ansi option of zeda-makefile-gen. [app]
 2021. 5. 7. Made tools/, and modified makefiles. [dzco, app, tools]
 2021. 4.29. Modified app/makefile. [app]
