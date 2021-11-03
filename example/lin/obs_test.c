@@ -46,7 +46,7 @@ int main(int argc, char *argv[])
 
   sl1 = create_sl();
   sl2 = create_sl(); /* observer */
-  dzSysCreateLin( &sys, sl1 );
+  dzSysLinCreate( &sys, sl1 );
   dzSysInputPtr(&sys,0) = &input;
   k = zVecAlloc( DIM );
   create_obs( sl2, k ); /* answer = [8 12] */

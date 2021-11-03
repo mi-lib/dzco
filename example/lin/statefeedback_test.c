@@ -35,8 +35,8 @@ int main(void)
   pole = zVecCloneArray( p, DIM );
   f = zVecAlloc( DIM );
   dzLinPoleAssign( sl2, pole, f );
-  dzSysCreateLin( &s1, sl1 );
-  dzSysCreateLin( &s2, sl2 );
+  dzSysLinCreate( &s1, sl1 );
+  dzSysLinCreate( &s2, sl2 );
   dzSysInputPtr(&s1,0) = &input1;
   dzSysInputPtr(&s2,0) = &input2;
   zVecSetElemList( sl1->x, 1.0,-1.0 );

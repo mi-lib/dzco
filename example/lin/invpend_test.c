@@ -71,7 +71,7 @@ void nominal_model_create(void)
   /* output transfer coefficient */
   nm->d = 0;
   /* dummy input variable */
-  dzSysCreateLin( &nms, nm );
+  dzSysLinCreate( &nms, nm );
   dzSysInputPtr(&nms,0) = &input;
 }
 
@@ -90,7 +90,7 @@ void regulator_create(void)
   q = zVecCreateList( DIM, Q1, Q1, Q2, Q2 );
   r = R;
   opt_gain = zVecAlloc( DIM );
-  if( !dzLinLQR( nms._prm, q, r, opt_gain ) ) exit( 1 );
+  if( !dzLinLQR( nms.prp, q, r, opt_gain ) ) exit( 1 );
   zVecFree( q );
 }
 
@@ -106,7 +106,7 @@ void observer_create(void)
 
   pole = zVecCreateList( DIM, P1, P2, P3, P4 );
   obs_gain = zVecAlloc( DIM );
-  if( !dzLinCreateObs( nms._prm, pole, obs_gain ) ) exit( 1 );
+  if( !dzLinCreateObs( nms.prp, pole, obs_gain ) ) exit( 1 );
   zVecFree( pole );
 }
 
@@ -169,7 +169,7 @@ void output(int i)
 
   sprintf( buf, "log/dat%s", itoa_zerofill(i,4,nbuf) );
   fp = fopen( buf, "w" );
-  printf( "%f %f %f %f\n", xt, x, dzSysOutputVal(&nms,0), zVecElem(((dzLin *)nms._prm)->x,0) );
+  printf( "%f %f %f %f\n", xt, x, dzSysOutputVal(&nms,0), zVecElem(((dzLin *)nms.prp)->x,0) );
   fprintf( fp, "0 0\n" );
   fprintf( fp, "%f 0\n", x );
   fprintf( fp, "%f %f\n", x + L * sin(theta), L * cos(theta) );
@@ -191,10 +191,10 @@ int main(int argc, char *argv[])
   if( argc > 2 ) zVecSetElem( ref, 0, atof(argv[2]) );
   for( i=0; i<STEP; i++ ){
     output( i );
-    input = dzLinStateFeedback( nms._prm, ref, opt_gain );
-    dzSysOutputVal(&nms,0) = dzLinOutput( nms._prm, dzSysInputVal(&nms,0) );
+    input = dzLinStateFeedback( nms.prp, ref, opt_gain );
+    dzSysOutputVal(&nms,0) = dzLinOutput( nms.prp, dzSysInputVal(&nms,0) );
     plant_output();
-    dzLinObsUpdate( nms._prm, obs_gain, dzSysInputVal(&nms,0), dzSysOutputVal(&nms,0)-xt, DT );
+    dzLinObsUpdate( nms.prp, obs_gain, dzSysInputVal(&nms,0), dzSysOutputVal(&nms,0)-xt, DT );
     plant_update( dzSysInputVal(&nms,0) );
   }
   output( STEP );
