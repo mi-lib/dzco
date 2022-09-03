@@ -1,3 +1,4 @@
+2022. 9. 4. Removed register keywords. [dz_tf, dz_tf_fr, dz_lin, dz_sys, dz_sys_misc, dz_sys_tf, dz_sys_filt_bw, dz_ident_lag]
 2021.11. 3. Added dzco.h. [dzco]
 2021.11. 3. Debugged some example codes. [example]
 2021. 6. 1. Applied new zeda-makefile-gen to compilation of shared objects. [src]

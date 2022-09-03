@@ -30,7 +30,7 @@ static void _dzSysMIFPrintZTK(FILE *fp, dzSys *sys)
 
 static zVec _dzSysAdderUpdate(dzSys *sys, double dt)
 {
-  register int i;
+  int i;
 
   dzSysOutputVal(sys,0) = dzSysInputVal(sys,0);
   for( i=1; i<dzSysInputNum(sys); i++ )
@@ -70,7 +70,7 @@ dzSys *dzSysAdderCreate(dzSys *sys, int n)
 
 static zVec _dzSysSubtrUpdate(dzSys *sys, double dt)
 {
-  register int i;
+  int i;
 
   dzSysOutputVal(sys,0) = dzSysInputVal(sys,0);
   for( i=1; i<dzSysInputNum(sys); i++ )

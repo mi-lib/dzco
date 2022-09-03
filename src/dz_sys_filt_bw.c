@@ -74,7 +74,7 @@ static void _dzBWDestroy(_dzBW *bw)
 
 static bool _dzBWCreate(_dzBW *bw, double cf, int dim)
 {
-  register int i;
+  int i;
 
   if( dim == 0 ){
     ZRUNERROR( DZ_ERR_SYS_BW_ZEROORDER );
@@ -98,7 +98,7 @@ static bool _dzBWCreate(_dzBW *bw, double cf, int dim)
 static double _dzBWUpdate(_dzBW *bw, double input, double dt)
 {
   double wt, output;
-  register int i;
+  int i;
 
   wt = bw->wc * dt;
   if( bw->n1 > 0 ){
@@ -132,7 +132,7 @@ void dzSysBWDestroy(dzSys *sys)
 void dzSysBWRefresh(dzSys *sys)
 {
   _dzBW *bw;
-  register int i;
+  int i;
 
   bw = sys->prp;
   if( bw->f1 )

@@ -11,13 +11,15 @@
  * general linear system
  * ********************************************************** */
 
-static bool _dzLinAllocODE(dzLin *c);
-static void _dzLinDestroy(dzLin *c);
-static void _dzLinDestroyODE(dzLin *c);
-static bool _dzLinCheckSize(dzLin *lin);
+/* compute state velocity. */
+static zVec __dz_lin_state_dif(double t, zVec x, void *sys, zVec dx)
+{
+  dzLin *lin;
 
-static zVec __dz_lin_state_dif(double t, zVec x, void *sys, zVec dx);
-static bool _dzLinCOMatPrep(dzLin *c, zMat m, uint size, zVec *v);
+  lin = sys;
+  zMulMatVec( lin->a, x, lin->_ax );
+  return zVecAdd( lin->_ax, lin->_bu, dx );
+}
 
 /* initialize a linear system. */
 dzLin *dzLinInit(dzLin *lin)
@@ -27,6 +29,47 @@ dzLin *dzLinInit(dzLin *lin)
   lin->d = 0;
   lin->_ax = lin->_bu = NULL;
   return lin;
+}
+
+/* destroy internal working space of a linear system. */
+static void _dzLinDestroyODE(dzLin *lin)
+{
+  zVecFree( lin->_ax );
+  zVecFree( lin->_bu );
+  zODEDestroy( &lin->_ode );
+}
+
+/* destroy working space a linear system. */
+static void _dzLinDestroy(dzLin *lin)
+{
+  zMatFree( lin->a );
+  zVecFree( lin->b );
+  zVecFree( lin->c );
+  zVecFree( lin->x );
+}
+
+/* destroy general linear system. */
+void dzLinDestroy(dzLin *lin)
+{
+  _dzLinDestroy( lin );
+  _dzLinDestroyODE( lin );
+}
+
+/* allocate internal working space of a linear system. */
+static bool _dzLinAllocODE(dzLin *lin)
+{
+  int dim;
+
+  dim = dzLinDim( lin );
+  lin->_ax = zVecAlloc( dim );
+  lin->_bu = zVecAlloc( dim );
+  zODEAssign( &lin->_ode, RKG, NULL, NULL ); /* Runge-Kutta-Gill's method */
+  if( !lin->_ax || !lin->_bu ||
+      !zODEInit( &lin->_ode, dim, 0, __dz_lin_state_dif ) ){
+    _dzLinDestroyODE( lin );
+    return false;
+  }
+  return true;
 }
 
 /* allocate working space of a linear system. */
@@ -44,63 +87,12 @@ bool dzLinAlloc(dzLin *lin, int dim)
   return true;
 }
 
-/* allocate internal working space of a linear system. */
-bool _dzLinAllocODE(dzLin *lin)
-{
-  int dim;
-
-  dim = dzLinDim( lin );
-  lin->_ax = zVecAlloc( dim );
-  lin->_bu = zVecAlloc( dim );
-  zODEAssign( &lin->_ode, RKG, NULL, NULL ); /* Runge-Kutta-Gill's method */
-  if( !lin->_ax || !lin->_bu ||
-      !zODEInit( &lin->_ode, dim, 0, __dz_lin_state_dif ) ){
-    _dzLinDestroyODE( lin );
-    return false;
-  }
-  return true;
-}
-
-/* destroy working space a linear system. */
-void _dzLinDestroy(dzLin *lin)
-{
-  zMatFree( lin->a );
-  zVecFree( lin->b );
-  zVecFree( lin->c );
-  zVecFree( lin->x );
-}
-
-/* destroy internal working space of a linear system. */
-void _dzLinDestroyODE(dzLin *lin)
-{
-  zVecFree( lin->_ax );
-  zVecFree( lin->_bu );
-  zODEDestroy( &lin->_ode );
-}
-
-/* destroy general linear system. */
-void dzLinDestroy(dzLin *lin)
-{
-  _dzLinDestroy( lin );
-  _dzLinDestroyODE( lin );
-}
-
 /* check size consistency of a linear system. */
-bool _dzLinCheckSize(dzLin *lin)
+static bool _dzLinCheckSize(dzLin *lin)
 {
   return zMatIsSqr( lin->a ) &&
          zMatColVecSizeIsEqual( lin->a, lin->b ) &&
          zMatRowVecSizeIsEqual( lin->a, lin->c ) ? true : false;
-}
-
-/* compute state velocity. */
-zVec __dz_lin_state_dif(double t, zVec x, void *sys, zVec dx)
-{
-  dzLin *lin;
-
-  lin = sys;
-  zMulMatVec( lin->a, x, lin->_ax );
-  return zVecAdd( lin->_ax, lin->_bu, dx );
 }
 
 /* update the inner state of linear system. */
@@ -131,7 +123,7 @@ double dzLinStateFeedback(dzLin *c, zVec ref, zVec f)
 }
 
 /* preparation for dzLinCtrlMat and dzLinObsMat. */
-bool _dzLinCOMatPrep(dzLin *c, zMat m, uint size, zVec *v)
+static bool _dzLinCOMatPrep(dzLin *c, zMat m, uint size, zVec *v)
 {
   if( zMatRowSize(m) != zMatRowSize(c->a) ||
       zMatColSize(m) != zMatColSize(c->a) ){
@@ -145,7 +137,7 @@ bool _dzLinCOMatPrep(dzLin *c, zMat m, uint size, zVec *v)
 zMat dzLinCtrlMat(dzLin *c, zMat m)
 {
   zVec v;
-  register uint i = 0;
+  uint i = 0;
 
   if( !_dzLinCOMatPrep( c, m, zVecSize(c->b), &v ) )
     return NULL;
@@ -163,7 +155,7 @@ zMat dzLinCtrlMat(dzLin *c, zMat m)
 zMat dzLinObsMat(dzLin *c, zMat m)
 {
   zVec v;
-  register uint i = 0;
+  uint i = 0;
 
   if( !_dzLinCOMatPrep( c, m, zVecSize(c->c), &v ) )
     return NULL;
@@ -234,7 +226,7 @@ zMat dzLinCtrlCanon(dzLin *c, zMat t)
 {
   zMat uc, uc_inv;
   double *ap, *tp;
-  register uint i;
+  uint i;
 
   uc = zMatAllocSqr( dzLinDim(c) );
   uc_inv = zMatAllocSqr( dzLinDim(c) );
@@ -268,7 +260,7 @@ zVec dzLinPoleAssign(dzLin *c, zVec pole, zVec f)
   zMat a, tmp, t;
   zPex eig = NULL;
   double *ap;
-  register int i, dim;
+  int i, dim;
 
   a = zMatAllocSqr( dzLinDim(c) );
   tmp = zMatAllocSqr( dzLinDim(c) );
@@ -349,7 +341,7 @@ double dzLinRiccatiError(zMat p, dzLin *c, zMat q, double r, zMat e)
 zMat dzLinRiccatiSolveEuler(zMat p, dzLin *c, zMat q, double r, double tol, int iter)
 {
 #define DZ_RICCATI_DT 0.01
-  register int i;
+  int i;
   zMat res, tmp;
   zVec pb;
   double err, err_old = HUGE_VAL;
@@ -380,7 +372,7 @@ zMat dzLinRiccatiSolveEuler(zMat p, dzLin *c, zMat q, double r, double tol, int 
 /* solve Riccati's equation by Kleinman's method (1967). */
 zMat dzLinRiccatiSolveKleinman(zMat p, zVec f, dzLin *c, zMat q, double r, double tol, int iter)
 {
-  register int i;
+  int i;
   zMat ae, qe;
   zVec pb, _f;
   double err, err_old = HUGE_VAL;
@@ -455,7 +447,7 @@ zVec dzLinLQR(dzLin *c, zVec q, double r, zVec f)
  */
 static dzLin *_dzTF2LinCtrlCanon_tf(dzTF *tf, dzLin *lin)
 {
-  register uint i, n;
+  uint i, n;
   double a;
 
   n = dzTFDenDim(tf) - 1;
@@ -476,7 +468,7 @@ static dzLin *_dzTF2LinCtrlCanon_tf(dzTF *tf, dzLin *lin)
 
 static dzLin *_dzTF2LinObsCanon_tf(dzTF *tf, dzLin *lin)
 {
-  register int i, n;
+  int i, n;
   double a;
 
   n = dzTFDenDim(tf) - 1;

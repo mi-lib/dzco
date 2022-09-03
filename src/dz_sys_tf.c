@@ -57,7 +57,7 @@ static void _dzSysTFRefresh(dzSys *sys)
 
 static zVec _dzSysTFUpdate(dzSys *sys, double dt)
 {
-  register int i;
+  int i;
   dzSysTFPrm *prm;
   double v;
 

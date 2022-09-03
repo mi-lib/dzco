@@ -10,7 +10,7 @@
 int dzIdentTrig(double r[], int n)
 {
   double r_old;
-  register int i;
+  int i;
 
   r_old = r[0];
   for( i=1; i<n; i++ ){
@@ -36,7 +36,7 @@ struct _dzIdentFOL_t{
 /* initial estimation of first-order-lag system parameters. */
 void dzIdentFOL1(double t[], double r[], double y[], int n, int trig, double *tc, double *gain)
 {
-  register int i;
+  int i;
   double k, r0, y0;
 
   if( trig > 0 ){
@@ -59,7 +59,7 @@ void dzIdentFOL1(double t[], double r[], double y[], int n, int trig, double *tc
 static double _dzIdentFOLEval(zVec prm, void *priv)
 {
   struct _dzIdentFOL_t *ws = priv;
-  register int i;
+  int i;
   double tc, k, r, eval;
 
   tc = zVecElem( prm, 0 ); /* time constant */
@@ -114,7 +114,7 @@ struct _dzIdentSOL_t{
 static int _dzIdentSOLPeak(double y[], int n, int trig)
 {
   double y_max, val;
-  register int i, peak;
+  int i, peak;
 
   y_max = fabs( y[( peak = trig )] - y[trig-1] );
   for( i=trig+1; i<n; i++ )
@@ -173,7 +173,7 @@ static double _dzIdentSOL_ref(double t, double z, double k)
 static double _dzIdentSOLEval(zVec prm, void *priv)
 {
   struct _dzIdentSOL_t *ws = priv;
-  register int i;
+  int i;
   double tc, z, gain, r, eval;
 
   tc = zVecElem( prm, 0 ); /* time constant */

@@ -73,7 +73,7 @@ dzFreqRes *dzFreqRes2Open(dzFreqRes *frin, dzFreqRes *frout)
 dzFreqRes *dzFreqResFromTF(dzFreqRes *fr, dzTF *tf, double af)
 {
   zComplex c;
-  register int i;
+  int i;
 
   fr->f = af / zPIx2;
   fr->g = log10( dzTFNumElem(tf,dzTFNumDim(tf)) / dzTFDenElem(tf,dzTFDenDim(tf)) );
@@ -160,7 +160,7 @@ int dzFreqResListFScan(FILE *fp, dzFreqResList *list, double fmin, double fmax)
 int dzFreqResListFPrint(FILE *fp, dzFreqResList *list, double fmin, double fmax)
 {
   dzFreqResListCell *cp;
-  register int count = 0;
+  int count = 0;
 
   zListForEach( list, cp ){
     if( cp->data.f < fmin || cp->data.f > fmax ) continue;
@@ -277,7 +277,7 @@ static int _dzFreqResIdentDataRead(dzFreqResIdentData *fri, dzFreqResList *list,
   dzFreqResListCell *cp;
   double omega, omegaj;
   zComplex iomegaj, c;
-  register int j, k = 0;
+  int j, k = 0;
 
   if( !_dzFreqResIdentDataAlloc( fri, nn, nd, zListSize(list) ) ) return 0;
   zListForEach( list, cp ){
@@ -303,7 +303,7 @@ static int _dzFreqResIdentDataRead(dzFreqResIdentData *fri, dzFreqResList *list,
 
 static void _dzFreqResIdentDataLSMCreate(dzFreqResIdentData *fri)
 {
-  register int j, k;
+  int j, k;
 
   zMatZero( fri->q );
   zVecZero( fri->p );
@@ -327,7 +327,7 @@ static void _dzFreqResIdentDataLSMCreate(dzFreqResIdentData *fri)
 
 static void _dzFreqResIdentDataUpdateMag(dzFreqResIdentData *fri)
 {
-  register int j, k;
+  int j, k;
   double rr, ri;
 
   for( k=0; k<fri->ns; k++ ){
@@ -345,7 +345,7 @@ static void _dzFreqResIdentDataUpdateMag(dzFreqResIdentData *fri)
 static bool _dzFreqResIdent(dzFreqResIdentData *fri, dzFreqResList *list, int nn, int nd, int iter)
 {
   double dist, dist_prev;
-  register int i;
+  int i;
 
   if( _dzFreqResIdentDataRead( fri, list, nn, nd ) == 0 ) return false;
   if( !_dzFreqResIdentDataLSMAlloc( fri ) ) return false;
@@ -367,7 +367,7 @@ static bool _dzFreqResIdent(dzFreqResIdentData *fri, dzFreqResList *list, int nn
 dzTF *dzTFIdentFromFreqRes(dzTF *tf, dzFreqResList *list, int nn, int nd, int iter)
 {
   dzFreqResIdentData fri;
-  register int i;
+  int i;
 
   if( !_dzFreqResIdent( &fri, list, nn, nd, iter ) ) return NULL;
   if( !dzTFAlloc( tf, nn, nd ) ) return NULL;

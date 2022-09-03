@@ -42,7 +42,7 @@ bool dzSysConnect(dzSys *s1, int p1, dzSys *s2, int p2)
 void dzSysChain(int n, ...)
 {
   va_list arg;
-  register int i;
+  int i;
   dzSys *s1, *s2;
 
   va_start( arg, n );
@@ -58,7 +58,7 @@ void dzSysChain(int n, ...)
 static dzSys *_dzSysQueryAssign(dzSys *sys, char *str)
 {
   DZ_SYS_COM_ARRAY;
-  register int i;
+  int i;
 
   for( i=0; _dz_sys_com[i]; i++ )
     if( strcmp( _dz_sys_com[i]->typestr, str ) == 0 ){
@@ -112,7 +112,7 @@ void dzSysFPrintZTK(FILE *fp, dzSys *sys)
 /* allocate an array of systems. */
 dzSysArray *dzSysArrayAlloc(dzSysArray *arr, int size)
 {
-  register int i;
+  int i;
 
   zArrayAlloc( arr, dzSys, size );
   if( zArraySize(arr) != size ) return NULL;
@@ -124,7 +124,7 @@ dzSysArray *dzSysArrayAlloc(dzSysArray *arr, int size)
 /* destroy an array of systems. */
 void dzSysArrayDestroy(dzSysArray *arr)
 {
-  register int i;
+  int i;
 
   for( i=0; i<zArraySize(arr); i++ )
     dzSysDestroy( zArrayElemNC(arr,i) );
@@ -147,7 +147,7 @@ dzSys *dzSysArrayNameFind(dzSysArray *arr, const char *name)
 /* update all systems of an array. */
 void dzSysArrayUpdate(dzSysArray *arr, double dt)
 {
-  register int i;
+  int i;
 
   for( i=0; i<zArraySize(arr); i++ )
     dzSysUpdate( zArrayElemNC(arr,i), dt );
@@ -192,7 +192,7 @@ static void *_dzSysArrayConnectFromZTK(void *obj, int i, void *arg, ZTK *ztk){
 }
 
 static void _dzSysArrayConnectFPrintZTK(FILE *fp, int i, void *obj){
-  register int j, k;
+  int j, k;
   dzSys *sys;
   dzSysPort *sp;
 
@@ -227,7 +227,7 @@ dzSysArray *dzSysArrayFromZTK(dzSysArray *sarray, ZTK *ztk)
 /* print an array of systems to the current position of a ZTK file. */
 void dzSysArrayFPrintZTK(FILE *fp, dzSysArray *arr)
 {
-  register int i;
+  int i;
 
   for( i=0; i<zArraySize(arr); i++ ){
     fprintf( fp, "[%s]\n", ZTK_TAG_DZSYS );
