@@ -29,7 +29,7 @@ static dzSysTFPrm *_dzSysTFPrmAlloc(int n)
 {
   dzSysTFPrm *prm;
 
-  if( !( prm = zAlloc( dzSysTFPrm, 1 ) ) ) return false;
+  if( !( prm = zAlloc( dzSysTFPrm, 1 ) ) ) return NULL;
   prm->z = zAlloc( double, n );
   prm->a = zAlloc( double, n );
   prm->c = zAlloc( double, n );
@@ -45,7 +45,7 @@ static void _dzSysTFDestroy(dzSys *sys)
 {
   zArrayFree( dzSysInput(sys) );
   zVecFree( dzSysOutput(sys) );
-  _dzSysTFPrmFree( sys->prp );
+  _dzSysTFPrmFree( (dzSysTFPrm *)sys->prp );
   zNameFree( sys );
   dzSysInit( sys );
 }
@@ -61,7 +61,7 @@ static zVec _dzSysTFUpdate(dzSys *sys, double dt)
   dzSysTFPrm *prm;
   double v;
 
-  prm = sys->prp;
+  prm = (dzSysTFPrm *)sys->prp;
   dzSysOutputVal(sys,0) =
     zRawVecInnerProd( prm->c, prm->z, prm->n ) + prm->d*dzSysInputVal(sys,0);
   v = zRawVecInnerProd( prm->a, prm->z, prm->n ) + dzSysInputVal(sys,0);

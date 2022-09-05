@@ -58,10 +58,11 @@ void dzIdentFOL1(double t[], double r[], double y[], int n, int trig, double *tc
 /* evaluate residual of FOL system. */
 static double _dzIdentFOLEval(zVec prm, void *priv)
 {
-  struct _dzIdentFOL_t *ws = priv;
+  struct _dzIdentFOL_t *ws;
   int i;
   double tc, k, r, eval;
 
+  ws = (struct _dzIdentFOL_t *)priv;
   tc = zVecElem( prm, 0 ); /* time constant */
   k  = zVecElem( prm, 1 ); /* gain */
   for( eval=0, i=ws->trig; i<ws->n; i++ ){
@@ -172,10 +173,11 @@ static double _dzIdentSOL_ref(double t, double z, double k)
 /* evaluate residual of SOL system. */
 static double _dzIdentSOLEval(zVec prm, void *priv)
 {
-  struct _dzIdentSOL_t *ws = priv;
+  struct _dzIdentSOL_t *ws;
   int i;
   double tc, z, gain, r, eval;
 
+  ws = (struct _dzIdentSOL_t *)priv;
   tc = zVecElem( prm, 0 ); /* time constant */
   z  = zVecElem( prm, 1 ); /* damping coefficient */
   gain  = zVecElem( prm, 2 ); /* gain */

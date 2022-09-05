@@ -17,7 +17,9 @@ __BEGIN_DECLS
  * ********************************************************** */
 
 typedef struct{
-  double f, g, p;
+  double f; /*!< frequency */
+  double g; /*!< gain */
+  double p; /*!< phase lag */
 } dzFreqRes;
 
 __EXPORT zComplex *dzFreqResToComplex(dzFreqRes *fr, zComplex *c, double *af);
@@ -66,7 +68,7 @@ __EXPORT int dzFreqResListPrintFile(dzFreqResList *list, char filename[], double
 /* identification of a transfer function from frequency response
  * ********************************************************** */
 
-__EXPORT dzTF *dzTFIdentFromFreqRes(dzTF *tf, dzFreqResList *list, int nn, int nd, int iter);
+__EXPORT dzTF *dzTFIdentFromFreqRes(dzTF *tf, dzFreqResList *list, uint nn, uint nd, int iter);
 
 __END_DECLS
 

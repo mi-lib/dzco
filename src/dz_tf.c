@@ -169,7 +169,7 @@ bool dzTFZeroPoleReIm(dzTF *tf, zVec *zero1, zCVec *zero2, zVec *pole1, zCVec *p
 static bool _dzTFFactorFromZTK(zPex *pex, ZTK *ztk){
   zCVec factor;
   zPex newpex;
-  int i;
+  uint i;
   bool ret = true;
 
   if( !( factor = zCVecAlloc( zListSize(&ztk->kf_cp->data.vallist) ) ) ) return false;

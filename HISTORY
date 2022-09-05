@@ -1,3 +1,6 @@
+2022. 9. 5. Debugged return type of _dzSysTFPrmAlloc. [dz_sys_tf]
+2022. 9. 5. Added explicit castings of utility void pointers. [dz_lin, dz_sys, dz_sys_lin, dz_sys_tf, dz_sys_filt_bw, dz_ident_lag]
+2022. 9. 5. Corrected arithmetic of signed integer values. [dz_tf, dz_tf_fr, dz_lin, dz_sys, dz_sys_misc, dz_sys_filt_bw]
 2022. 9. 4. Removed register keywords. [dz_tf, dz_tf_fr, dz_lin, dz_sys, dz_sys_misc, dz_sys_tf, dz_sys_filt_bw, dz_ident_lag]
 2021.11. 3. Added dzco.h. [dzco]
 2021.11. 3. Debugged some example codes. [example]

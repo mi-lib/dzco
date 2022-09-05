@@ -16,7 +16,7 @@ static zVec __dz_lin_state_dif(double t, zVec x, void *sys, zVec dx)
 {
   dzLin *lin;
 
-  lin = sys;
+  lin = (dzLin *)sys;
   zMulMatVec( lin->a, x, lin->_ax );
   return zVecAdd( lin->_ax, lin->_bu, dx );
 }
@@ -260,7 +260,7 @@ zVec dzLinPoleAssign(dzLin *c, zVec pole, zVec f)
   zMat a, tmp, t;
   zPex eig = NULL;
   double *ap;
-  int i, dim;
+  uint i, dim;
 
   a = zMatAllocSqr( dzLinDim(c) );
   tmp = zMatAllocSqr( dzLinDim(c) );
@@ -468,7 +468,7 @@ static dzLin *_dzTF2LinCtrlCanon_tf(dzTF *tf, dzLin *lin)
 
 static dzLin *_dzTF2LinObsCanon_tf(dzTF *tf, dzLin *lin)
 {
-  int i, n;
+  uint i, n;
   double a;
 
   n = dzTFDenDim(tf) - 1;

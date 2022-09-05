@@ -57,12 +57,12 @@ static double _dzBW2Update(_dzBW2 *p, double wt, double input, double dt)
  * first order & second order Butterworth filters.
  */
 typedef struct{
-  int n1, n2;
+  uint n1, n2;
   _dzBW1 *f1;
   _dzBW2 *f2;
   double wc;
   double cf; /* only for memory */
-  int dim;   /* only for memory */
+  uint dim;   /* only for memory */
 } _dzBW;
 
 static void _dzBWDestroy(_dzBW *bw)
@@ -74,7 +74,7 @@ static void _dzBWDestroy(_dzBW *bw)
 
 static bool _dzBWCreate(_dzBW *bw, double cf, int dim)
 {
-  int i;
+  uint i;
 
   if( dim == 0 ){
     ZRUNERROR( DZ_ERR_SYS_BW_ZEROORDER );
@@ -98,7 +98,7 @@ static bool _dzBWCreate(_dzBW *bw, double cf, int dim)
 static double _dzBWUpdate(_dzBW *bw, double input, double dt)
 {
   double wt, output;
-  int i;
+  uint i;
 
   wt = bw->wc * dt;
   if( bw->n1 > 0 ){
@@ -121,7 +121,7 @@ void dzSysBWDestroy(dzSys *sys)
   zArrayFree( dzSysInput(sys) );
   zVecFree( dzSysOutput(sys) );
   if( sys->prp ){
-    _dzBWDestroy( sys->prp );
+    _dzBWDestroy( (_dzBW *)sys->prp );
     zFree( sys->prp );
   }
   zNameFree( sys );
@@ -132,9 +132,9 @@ void dzSysBWDestroy(dzSys *sys)
 void dzSysBWRefresh(dzSys *sys)
 {
   _dzBW *bw;
-  int i;
+  uint i;
 
-  bw = sys->prp;
+  bw = (_dzBW *)sys->prp;
   if( bw->f1 )
     _dzBW1Refresh( bw->f1 );
   for( i=0; i<bw->n2; i++ )
@@ -144,13 +144,13 @@ void dzSysBWRefresh(dzSys *sys)
 /* update a Butterworth filter. */
 zVec dzSysBWUpdate(dzSys *sys, double dt)
 {
-  dzSysOutputVal(sys,0) = _dzBWUpdate( sys->prp, dzSysInputVal(sys,0), dt );
+  dzSysOutputVal(sys,0) = _dzBWUpdate( (_dzBW *)sys->prp, dzSysInputVal(sys,0), dt );
   return dzSysOutput(sys);
 }
 
 typedef struct{
   double cf;
-  int dim;
+  uint dim;
 } _dzBWParam;
 
 static void *_dzSysBWCFFromZTK(void *val, int i, void *arg, ZTK *ztk){
@@ -204,5 +204,5 @@ dzSys *dzSysBWCreate(dzSys *sys, double cf, uint dim)
   return dzSysInputNum(sys) == 1 &&
          dzSysAllocOutput( sys, 1 ) &&
          ( sys->prp = zAlloc( _dzBW, 1 ) ) &&
-         _dzBWCreate( sys->prp, cf, dim ) ? sys : NULL;
+         _dzBWCreate( (_dzBW *)sys->prp, cf, dim ) ? sys : NULL;
 }

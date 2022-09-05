@@ -22,7 +22,7 @@ void dzSysDefaultDestroy(dzSys *sys)
 void dzSysDefaultRefresh(dzSys *sys){}
 
 /* connect two systems. */
-bool dzSysConnect(dzSys *s1, int p1, dzSys *s2, int p2)
+bool dzSysConnect(dzSys *s1, uint p1, dzSys *s2, uint p2)
 {
   if( p1 >= dzSysOutputNum(s1) ){
     ZRUNWARN( DZ_WARN_SYS_INVALID_OUTPUTPORT, zName(s1), p1 );
@@ -55,7 +55,7 @@ void dzSysChain(int n, ...)
   va_end( arg );
 }
 
-static dzSys *_dzSysQueryAssign(dzSys *sys, char *str)
+static dzSys *_dzSysQueryAssign(dzSys *sys, const char *str)
 {
   DZ_SYS_COM_ARRAY;
   int i;
@@ -110,9 +110,9 @@ void dzSysFPrintZTK(FILE *fp, dzSys *sys)
  * ********************************************************** */
 
 /* allocate an array of systems. */
-dzSysArray *dzSysArrayAlloc(dzSysArray *arr, int size)
+dzSysArray *dzSysArrayAlloc(dzSysArray *arr, uint size)
 {
-  int i;
+  uint i;
 
   zArrayAlloc( arr, dzSys, size );
   if( zArraySize(arr) != size ) return NULL;
@@ -124,7 +124,7 @@ dzSysArray *dzSysArrayAlloc(dzSysArray *arr, int size)
 /* destroy an array of systems. */
 void dzSysArrayDestroy(dzSysArray *arr)
 {
-  int i;
+  uint i;
 
   for( i=0; i<zArraySize(arr); i++ )
     dzSysDestroy( zArrayElemNC(arr,i) );
@@ -147,7 +147,7 @@ dzSys *dzSysArrayNameFind(dzSysArray *arr, const char *name)
 /* update all systems of an array. */
 void dzSysArrayUpdate(dzSysArray *arr, double dt)
 {
-  int i;
+  uint i;
 
   for( i=0; i<zArraySize(arr); i++ )
     dzSysUpdate( zArrayElemNC(arr,i), dt );
@@ -163,7 +163,7 @@ static void *_dzSysArraySysFromZTK(void *obj, int i, void *arg, ZTK *ztk){
 static void *_dzSysArrayConnectFromZTK(void *obj, int i, void *arg, ZTK *ztk){
   _dzSysConnectState state = DZ_SYS_CONNECT_OUT;
   dzSys *sys_out, *sys_in;
-  int port_out, port_in;
+  uint port_out, port_in;
 
   if( !ZTKKeyRewind( ztk ) || !ZTKValRewind( ztk ) ) return NULL;
   sys_out = sys_in = NULL;
@@ -171,13 +171,13 @@ static void *_dzSysArrayConnectFromZTK(void *obj, int i, void *arg, ZTK *ztk){
   do{
     switch( state ){
     case DZ_SYS_CONNECT_OUT:
-      if( !( sys_out = dzSysArrayNameFind( obj, ZTKVal(ztk) ) ) ) return NULL;
+      if( !( sys_out = dzSysArrayNameFind( (dzSysArray *)obj, ZTKVal(ztk) ) ) ) return NULL;
       ZTKValNext( ztk );
       port_out = ZTKInt(ztk);
       state = DZ_SYS_CONNECT_IN;
       break;
     case DZ_SYS_CONNECT_IN:
-      if( !( sys_in = dzSysArrayNameFind( obj, ZTKVal(ztk) ) ) ) return NULL;
+      if( !( sys_in = dzSysArrayNameFind( (dzSysArray *)obj, ZTKVal(ztk) ) ) ) return NULL;
       ZTKValNext( ztk );
       port_in = ZTKInt(ztk);
       if( !dzSysConnect( sys_out, port_out, sys_in, port_in ) ) return NULL;
@@ -192,7 +192,7 @@ static void *_dzSysArrayConnectFromZTK(void *obj, int i, void *arg, ZTK *ztk){
 }
 
 static void _dzSysArrayConnectFPrintZTK(FILE *fp, int i, void *obj){
-  int j, k;
+  uint j, k;
   dzSys *sys;
   dzSysPort *sp;
 
@@ -213,7 +213,7 @@ static ZTKPrp __ztk_prp_tag_dzsys[] = {
 /* read the current position of a ZTK file and create an array of systems. */
 dzSysArray *dzSysArrayFromZTK(dzSysArray *sarray, ZTK *ztk)
 {
-  int num_sys;
+  uint num_sys;
 
   if( ( num_sys = ZTKCountTag( ztk, ZTK_TAG_DZSYS ) ) == 0 ){
     ZRUNWARN( DZ_WARN_SYSARRAY_EMPTY );
@@ -227,7 +227,7 @@ dzSysArray *dzSysArrayFromZTK(dzSysArray *sarray, ZTK *ztk)
 /* print an array of systems to the current position of a ZTK file. */
 void dzSysArrayFPrintZTK(FILE *fp, dzSysArray *arr)
 {
-  int i;
+  uint i;
 
   for( i=0; i<zArraySize(arr); i++ ){
     fprintf( fp, "[%s]\n", ZTK_TAG_DZSYS );
