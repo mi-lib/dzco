@@ -44,12 +44,12 @@ static void _dzSysPFPrintZTK(FILE *fp, dzSys *sys)
 }
 
 dzSysCom dz_sys_p_com = {
-  typestr: "amplifier",
-  _destroy: dzSysDefaultDestroy,
-  _refresh: dzSysDefaultRefresh,
-  _update: _dzSysPUpdate,
-  _fromZTK: _dzSysPFromZTK,
-  _fprintZTK: _dzSysPFPrintZTK,
+  .typestr = "amplifier",
+  ._destroy = dzSysDefaultDestroy,
+  ._refresh = dzSysDefaultRefresh,
+  ._update = _dzSysPUpdate,
+  ._fromZTK = _dzSysPFromZTK,
+  ._fprintZTK = _dzSysPFPrintZTK,
 };
 
 /* create a proportional amplifier. */
@@ -125,12 +125,12 @@ static void _dzSysIFPrintZTK(FILE *fp, dzSys *sys)
 }
 
 dzSysCom dz_sys_i_com = {
-  typestr: "integrator",
-  _destroy: dzSysDefaultDestroy,
-  _refresh: _dzSysIRefresh,
-  _update: _dzSysIUpdate,
-  _fromZTK: _dzSysIFromZTK,
-  _fprintZTK: _dzSysIFPrintZTK,
+  .typestr = "integrator",
+  ._destroy = dzSysDefaultDestroy,
+  ._refresh = _dzSysIRefresh,
+  ._update = _dzSysIUpdate,
+  ._fromZTK = _dzSysIFromZTK,
+  ._fprintZTK = _dzSysIFPrintZTK,
 };
 
 /* create an integrator. */
@@ -223,12 +223,12 @@ static void _dzSysDFPrintZTK(FILE *fp, dzSys *sys)
 }
 
 dzSysCom dz_sys_d_com = {
-  typestr: "differentiator",
-  _destroy: dzSysDefaultDestroy,
-  _refresh: _dzSysDRefresh,
-  _update: _dzSysDUpdate,
-  _fromZTK: _dzSysDFromZTK,
-  _fprintZTK: _dzSysDFPrintZTK,
+  .typestr = "differentiator",
+  ._destroy = dzSysDefaultDestroy,
+  ._refresh = _dzSysDRefresh,
+  ._update = _dzSysDUpdate,
+  ._fromZTK = _dzSysDFromZTK,
+  ._fprintZTK = _dzSysDFPrintZTK,
 };
 
 /* create a differentiator. */
@@ -345,12 +345,12 @@ static void _dzSysPIDFPrintZTK(FILE *fp, dzSys *sys)
 }
 
 dzSysCom dz_sys_pid_com = {
-  typestr: "PID",
-  _destroy: dzSysDefaultDestroy,
-  _refresh: _dzSysPIDRefresh,
-  _update: _dzSysPIDUpdate,
-  _fromZTK: _dzSysPIDFromZTK,
-  _fprintZTK: _dzSysPIDFPrintZTK,
+  .typestr = "PID",
+  ._destroy = dzSysDefaultDestroy,
+  ._refresh = _dzSysPIDRefresh,
+  ._update = _dzSysPIDUpdate,
+  ._fromZTK = _dzSysPIDFromZTK,
+  ._fprintZTK = _dzSysPIDFPrintZTK,
 };
 
 /* create a PID controller. */
@@ -482,12 +482,12 @@ static void _dzSysQPDFPrintZTK(FILE *fp, dzSys *sys)
 }
 
 dzSysCom dz_sys_qpd_com = {
-  typestr: "QPD",
-  _destroy: dzSysDefaultDestroy,
-  _refresh: _dzSysQPDRefresh,
-  _update: _dzSysQPDUpdate,
-  _fromZTK: _dzSysQPDFromZTK,
-  _fprintZTK: _dzSysQPDFPrintZTK,
+  .typestr = "QPD",
+  ._destroy = dzSysDefaultDestroy,
+  ._refresh = _dzSysQPDRefresh,
+  ._update = _dzSysQPDUpdate,
+  ._fromZTK = _dzSysQPDFromZTK,
+  ._fprintZTK = _dzSysQPDFPrintZTK,
 };
 
 /* create a QPD controller. */

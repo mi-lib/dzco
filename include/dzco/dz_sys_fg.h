@@ -24,12 +24,12 @@ static dzSys *_dzSys##Type##FromZTK(dzSys *sys, ZTK *ztk){\
   return dzSys##Type##Create( sys, val[0], val[1], val[2] );\
 }\
 dzSysCom dz_sys_##mtype##_com = {\
-  typestr: #mtype,\
-  _destroy: dzSysDefaultDestroy,\
-  _refresh: _dzSysFGRefresh,\
-  _update: _dzSys##Type##Update,\
-  _fromZTK: _dzSys##Type##FromZTK,\
-  _fprintZTK: _dzSysFGFPrintZTK,\
+  .typestr = #mtype,\
+  ._destroy = dzSysDefaultDestroy,\
+  ._refresh = _dzSysFGRefresh,\
+  ._update = _dzSys##Type##Update,\
+  ._fromZTK = _dzSys##Type##FromZTK,\
+  ._fprintZTK = _dzSysFGFPrintZTK,\
 };\
 dzSys *dzSys##Type##Create(dzSys *sys, double amp, double delay, double period)\
 {\

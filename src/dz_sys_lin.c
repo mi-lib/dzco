@@ -43,12 +43,12 @@ static dzSys *_dzSysLinFromZTK(dzSys *sys, ZTK *ztk)
 }
 
 dzSysCom dz_sys_lin_com = {
-  typestr: "lin",
-  _destroy: _dzSysLinDestroy,
-  _refresh: _dzSysLinRefresh,
-  _update: _dzSysLinUpdate,
-  _fromZTK: _dzSysLinFromZTK,
-  _fprintZTK: _dzSysLinFPrintZTK,
+  .typestr = "lin",
+  ._destroy = _dzSysLinDestroy,
+  ._refresh = _dzSysLinRefresh,
+  ._update = _dzSysLinUpdate,
+  ._fromZTK = _dzSysLinFromZTK,
+  ._fprintZTK = _dzSysLinFPrintZTK,
 };
 
 /* create a linear system. */

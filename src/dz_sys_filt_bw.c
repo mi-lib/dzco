@@ -187,12 +187,12 @@ static void _dzSysBWFPrintZTK(FILE *fp, dzSys *sys)
 }
 
 dzSysCom dz_sys_bw_com = {
-  typestr: "butterworth",
-  _destroy: dzSysBWDestroy,
-  _refresh: dzSysBWRefresh,
-  _update: dzSysBWUpdate,
-  _fromZTK: _dzSysBWFromZTK,
-  _fprintZTK: _dzSysBWFPrintZTK,
+  .typestr = "butterworth",
+  ._destroy = dzSysBWDestroy,
+  ._refresh = dzSysBWRefresh,
+  ._update = dzSysBWUpdate,
+  ._fromZTK = _dzSysBWFromZTK,
+  ._fprintZTK = _dzSysBWFPrintZTK,
 };
 
 /* create a Butterworth filter. */

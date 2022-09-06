@@ -86,12 +86,12 @@ static dzSys *_dzSysTFFromZTK(dzSys *sys, ZTK *ztk)
 }
 
 dzSysCom dz_sys_tf_com = {
-  typestr: "tf",
-  _destroy: _dzSysTFDestroy,
-  _refresh: _dzSysTFRefresh,
-  _update: _dzSysTFUpdate,
-  _fromZTK: _dzSysTFFromZTK,
-  _fprintZTK: dzSysTFFPrintZTK,
+  .typestr = "tf",
+  ._destroy = _dzSysTFDestroy,
+  ._refresh = _dzSysTFRefresh,
+  ._update = _dzSysTFUpdate,
+  ._fromZTK = _dzSysTFFromZTK,
+  ._fprintZTK = dzSysTFFPrintZTK,
 };
 
 /* create a transfer function from a polynomial rational expression

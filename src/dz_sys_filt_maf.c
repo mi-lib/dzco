@@ -59,12 +59,12 @@ static void _dzSysMAFFPrintZTK(FILE *fp, dzSys *sys)
 }
 
 dzSysCom dz_sys_maf_com = {
-  typestr: "maf",
-  _destroy: dzSysDefaultDestroy,
-  _refresh: _dzSysMAFRefresh,
-  _update: _dzSysMAFUpdate,
-  _fromZTK: _dzSysMAFFromZTK,
-  _fprintZTK: _dzSysMAFFPrintZTK,
+  .typestr = "maf",
+  ._destroy = dzSysDefaultDestroy,
+  ._refresh = _dzSysMAFRefresh,
+  ._update = _dzSysMAFUpdate,
+  ._fromZTK = _dzSysMAFFromZTK,
+  ._fprintZTK = _dzSysMAFFPrintZTK,
 };
 
 void dzSysMAFSetCF(dzSys *sys, double cf, double dt)

@@ -62,12 +62,12 @@ static void _dzSysFOLFPrintZTK(FILE *fp, dzSys *sys)
 }
 
 dzSysCom dz_sys_fol_com = {
-  typestr: "FOL",
-  _destroy: dzSysDefaultDestroy,
-  _refresh: _dzSysFOLRefresh,
-  _update: _dzSysFOLUpdate,
-  _fromZTK: _dzSysFOLFromZTK,
-  _fprintZTK: _dzSysFOLFPrintZTK,
+  .typestr = "FOL",
+  ._destroy = dzSysDefaultDestroy,
+  ._refresh = _dzSysFOLRefresh,
+  ._update = _dzSysFOLUpdate,
+  ._fromZTK = _dzSysFOLFromZTK,
+  ._fprintZTK = _dzSysFOLFPrintZTK,
 };
 
 /* create a first-order-lag system. */
@@ -179,12 +179,12 @@ static void _dzSysSOLFPrintZTK(FILE *fp, dzSys *sys)
 }
 
 dzSysCom dz_sys_sol_com = {
-  typestr: "SOL",
-  _destroy: dzSysDefaultDestroy,
-  _refresh: _dzSysSOLRefresh,
-  _update: _dzSysSOLUpdate,
-  _fromZTK: _dzSysSOLFromZTK,
-  _fprintZTK: _dzSysSOLFPrintZTK,
+  .typestr = "SOL",
+  ._destroy = dzSysDefaultDestroy,
+  ._refresh = _dzSysSOLRefresh,
+  ._update = _dzSysSOLUpdate,
+  ._fromZTK = _dzSysSOLFromZTK,
+  ._fprintZTK = _dzSysSOLFPrintZTK,
 };
 
 /* create a second-order-lag system in standard form. */
@@ -279,12 +279,12 @@ static void _dzSysPCFPrintZTK(FILE *fp, dzSys *sys)
 }
 
 dzSysCom dz_sys_pc_com = {
-  typestr: "phasecomp",
-  _destroy: dzSysDefaultDestroy,
-  _refresh: _dzSysPCRefresh,
-  _update: _dzSysPCUpdate,
-  _fromZTK: _dzSysPCFromZTK,
-  _fprintZTK: _dzSysPCFPrintZTK,
+  .typestr = "phasecomp",
+  ._destroy = dzSysDefaultDestroy,
+  ._refresh = _dzSysPCRefresh,
+  ._update = _dzSysPCUpdate,
+  ._fromZTK = _dzSysPCFromZTK,
+  ._fprintZTK = _dzSysPCFPrintZTK,
 };
 
 /* create a phase compensator. */
@@ -368,12 +368,12 @@ static void _dzSysAdaptFPrintZTK(FILE *fp, dzSys *sys)
 }
 
 dzSysCom dz_sys_adapt_com = {
-  typestr: "adapt",
-  _destroy: dzSysDefaultDestroy,
-  _refresh: _dzSysAdaptRefresh,
-  _update: _dzSysAdaptUpdate,
-  _fromZTK: _dzSysAdaptFromZTK,
-  _fprintZTK: _dzSysAdaptFPrintZTK,
+  .typestr = "adapt",
+  ._destroy = dzSysDefaultDestroy,
+  ._refresh = _dzSysAdaptRefresh,
+  ._update = _dzSysAdaptUpdate,
+  ._fromZTK = _dzSysAdaptFromZTK,
+  ._fprintZTK = _dzSysAdaptFPrintZTK,
 };
 
 /* create an adaptive system. */

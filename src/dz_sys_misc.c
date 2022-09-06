@@ -46,12 +46,12 @@ static dzSys *_dzSysAdderFromZTK(dzSys *sys, ZTK *ztk)
 }
 
 dzSysCom dz_sys_adder_com = {
-  typestr: "adder",
-  _destroy: dzSysDefaultDestroy,
-  _refresh: dzSysDefaultRefresh,
-  _update: _dzSysAdderUpdate,
-  _fromZTK: _dzSysAdderFromZTK,
-  _fprintZTK: _dzSysMIFPrintZTK,
+  .typestr = "adder",
+  ._destroy = dzSysDefaultDestroy,
+  ._refresh = dzSysDefaultRefresh,
+  ._update = _dzSysAdderUpdate,
+  ._fromZTK = _dzSysAdderFromZTK,
+  ._fprintZTK = _dzSysMIFPrintZTK,
 };
 
 /* create an adder. */
@@ -85,12 +85,12 @@ static dzSys *_dzSysSubtrFromZTK(dzSys *sys, ZTK *ztk)
 }
 
 dzSysCom dz_sys_subtr_com = {
-  typestr: "subtr",
-  _destroy: dzSysDefaultDestroy,
-  _refresh: dzSysDefaultRefresh,
-  _update: _dzSysSubtrUpdate,
-  _fromZTK: _dzSysSubtrFromZTK,
-  _fprintZTK: _dzSysMIFPrintZTK,
+  .typestr = "subtr",
+  ._destroy = dzSysDefaultDestroy,
+  ._refresh = dzSysDefaultRefresh,
+  ._update = _dzSysSubtrUpdate,
+  ._fromZTK = _dzSysSubtrFromZTK,
+  ._fprintZTK = _dzSysMIFPrintZTK,
 };
 
 /* create a subtractor. */
@@ -150,12 +150,12 @@ static void _dzSysLimitFPrintZTK(FILE *fp, dzSys *sys)
 }
 
 dzSysCom dz_sys_limit_com = {
-  typestr: "limiter",
-  _destroy: dzSysDefaultDestroy,
-  _refresh: dzSysDefaultRefresh,
-  _update: _dzSysLimitUpdate,
-  _fromZTK: _dzSysLimitFromZTK,
-  _fprintZTK: _dzSysLimitFPrintZTK,
+  .typestr = "limiter",
+  ._destroy = dzSysDefaultDestroy,
+  ._refresh = dzSysDefaultRefresh,
+  ._update = _dzSysLimitUpdate,
+  ._fromZTK = _dzSysLimitFromZTK,
+  ._fprintZTK = _dzSysLimitFPrintZTK,
 };
 
 /* create a saturater. */
