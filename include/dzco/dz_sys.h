@@ -41,7 +41,7 @@ typedef struct{
 } dzSysCom;
 
 typedef struct _dzSys{
-  Z_NAMED_CLASS;
+  Z_NAMED_CLASS
   dzSysPortArray input;
   zVec output;
   void *prp; /* utility for inheritance class of dzSys */
