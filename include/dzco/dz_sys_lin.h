@@ -33,7 +33,7 @@ __BEGIN_DECLS
  */
 __EXPORT dzSys *dzSysLinCreate(dzSys *sys, dzLin *lin);
 
-extern dzSysCom dz_sys_lin_com;
+__EXPORT dzSysCom dz_sys_lin_com;
 
 __END_DECLS
 

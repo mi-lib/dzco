@@ -27,11 +27,11 @@ __BEGIN_DECLS
  */
 __EXPORT dzSys *dzSysAdderCreate(dzSys *sys, uint n);
 
-extern dzSysCom dz_sys_adder_com;
+__EXPORT dzSysCom dz_sys_adder_com;
 
 __EXPORT dzSys *dzSysSubtrCreate(dzSys *sys, uint n);
 
-extern dzSysCom dz_sys_subtr_com;
+__EXPORT dzSysCom dz_sys_subtr_com;
 
 /* ********************************************************** */
 /* saturater
@@ -51,7 +51,7 @@ extern dzSysCom dz_sys_subtr_com;
  */
 __EXPORT dzSys *dzSysLimitCreate(dzSys *sys, double min, double max);
 
-extern dzSysCom dz_sys_limit_com;
+__EXPORT dzSysCom dz_sys_limit_com;
 
 __END_DECLS
 

@@ -33,7 +33,7 @@ __EXPORT dzSys *dzSysFOLCreate(dzSys *sys, double tc, double gain);
 __EXPORT void dzSysFOLSetTC(dzSys *sys, double tc);
 __EXPORT void dzSysFOLSetGain(dzSys *sys, double gain);
 
-extern dzSysCom dz_sys_fol_com;
+__EXPORT dzSysCom dz_sys_fol_com;
 
 /* ********************************************************** */
 /* second-order-lag system
@@ -75,7 +75,7 @@ extern dzSysCom dz_sys_fol_com;
 __EXPORT dzSys *dzSysSOLCreate(dzSys *sys, double t1, double t2, double damp, double gain);
 __EXPORT dzSys *dzSysSOLCreateGeneric(dzSys *sys, double a, double b, double c, double d, double e);
 
-extern dzSysCom dz_sys_sol_com;
+__EXPORT dzSysCom dz_sys_sol_com;
 
 /* ********************************************************** */
 /* phase compensator system
@@ -100,7 +100,7 @@ extern dzSysCom dz_sys_sol_com;
  */
 __EXPORT dzSys *dzSysPCCreate(dzSys *sys, double t1, double t2, double gain);
 
-extern dzSysCom dz_sys_pc_com;
+__EXPORT dzSysCom dz_sys_pc_com;
 
 /* ********************************************************** */
 /* adaptive system
@@ -122,7 +122,7 @@ __EXPORT void dzSysAdaptSetBase(dzSys *sys, double base);
  */
 __EXPORT dzSys *dzSysAdaptCreate(dzSys *sys, double tc, double base);
 
-extern dzSysCom dz_sys_adapt_com;
+__EXPORT dzSysCom dz_sys_adapt_com;
 
 __END_DECLS
 

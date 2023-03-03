@@ -20,7 +20,7 @@ __EXPORT void dzSysMAFSetCF(dzSys *sys, double cf, double dt);
 /* cut-off frequency */
 __EXPORT double dzSysMAFCF(dzSys *sys, double dt);
 
-extern dzSysCom dz_sys_maf_com;
+__EXPORT dzSysCom dz_sys_maf_com;
 
 __END_DECLS
 

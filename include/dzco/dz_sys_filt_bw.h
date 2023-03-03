@@ -27,7 +27,7 @@ __BEGIN_DECLS
  */
 __EXPORT dzSys *dzSysBWCreate(dzSys *sys, double cf, uint dim);
 
-extern dzSysCom dz_sys_bw_com;
+__EXPORT dzSysCom dz_sys_bw_com;
 
 __END_DECLS
 

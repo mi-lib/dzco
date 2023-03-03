@@ -29,7 +29,7 @@ __BEGIN_DECLS
  */
 __EXPORT dzSys *dzSysTFCreate(dzSys *sys, dzTF *tf);
 
-extern dzSysCom dz_sys_tf_com;
+__EXPORT dzSysCom dz_sys_tf_com;
 
 __END_DECLS
 
