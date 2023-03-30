@@ -18,14 +18,14 @@ __BEGIN_DECLS
  * transfer function by polynomial rational expression
  * ********************************************************** */
 
-typedef struct{
+ZDEF_STRUCT( dzTF ){
   zPex num; /*!< polynomial for numerator */
   zPex den; /*!< polynomial for denominator */
   /*! \cond */
   zCVec zero; /* zeros */
   zCVec pole; /* poles */
   /*! \endcond */
-} dzTF;
+};
 
 #define dzTFNum(tf)            (tf)->num
 #define dzTFDen(tf)            (tf)->den

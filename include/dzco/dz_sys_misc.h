@@ -25,11 +25,11 @@ __BEGIN_DECLS
  * if they fail to allocate internal memory. Otherwise, a pointer
  * \a sys is returned.
  */
-__EXPORT dzSys *dzSysAdderCreate(dzSys *sys, uint n);
+__EXPORT dzSys *dzSysAdderCreate(dzSys *sys, int n);
 
 __EXPORT dzSysCom dz_sys_adder_com;
 
-__EXPORT dzSys *dzSysSubtrCreate(dzSys *sys, uint n);
+__EXPORT dzSys *dzSysSubtrCreate(dzSys *sys, int n);
 
 __EXPORT dzSysCom dz_sys_subtr_com;
 

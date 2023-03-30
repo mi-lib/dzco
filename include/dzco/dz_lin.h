@@ -16,7 +16,7 @@ __BEGIN_DECLS
  * general linear system
  * ********************************************************** */
 
-typedef struct{
+ZDEF_STRUCT( dzLin ){
   zMat a;    /*!< A matrix */
   zVec b;    /*!< B matrix */
   zVec c;    /*!< C matrix */
@@ -27,7 +27,7 @@ typedef struct{
   zVec _bu;  /* inner working memory space */
   zODE _ode; /* integrator */
   /*! \endcond */
-} dzLin;
+};
 
 #define dzLinDim(c) zVecSizeNC((c)->x)
 

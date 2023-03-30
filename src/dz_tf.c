@@ -100,7 +100,7 @@ int __next(int i){ return i==2 ? 0 : i+1; }
 bool dzTFIsStable(dzTF *tf)
 {
   zVec v[3];
-  uint i, j, k, m, n;
+  int i, j, k, m, n;
   bool result = false;
 
   /* if the dimension of numerator is equal to or larger
@@ -169,7 +169,7 @@ bool dzTFZeroPoleReIm(dzTF *tf, zVec *zero1, zCVec *zero2, zVec *pole1, zCVec *p
 static bool _dzTFFactorFromZTK(zPex *pex, ZTK *ztk){
   zCVec factor;
   zPex newpex;
-  uint i;
+  int i;
   bool ret = true;
 
   if( !( factor = zCVecAlloc( zListSize(&ztk->kf_cp->data.vallist) ) ) ) return false;

@@ -73,7 +73,7 @@ dzFreqRes *dzFreqRes2Open(dzFreqRes *frin, dzFreqRes *frout)
 dzFreqRes *dzFreqResFromTF(dzFreqRes *fr, dzTF *tf, double af)
 {
   zComplex c;
-  uint i;
+  int i;
 
   fr->f = af / zPIx2;
   fr->g = log10( dzTFNumElem(tf,dzTFNumDim(tf)) / dzTFDenElem(tf,dzTFDenDim(tf)) );
@@ -201,11 +201,11 @@ int dzFreqResListPrintFile(dzFreqResList *list, char filename[], double fmin, do
 /* identification of a transfer function from frequency response
  * ********************************************************** */
 
-typedef struct{
-  uint ns; /* number of samples */
-  uint nn; /* dimension of numerator */
-  uint nd; /* dimension of denominator */
-  uint ndim; /* larger number of nn and nd */
+ZDEF_STRUCT( dzFreqResIdentData ){
+  int ns; /* number of samples */
+  int nn; /* dimension of numerator */
+  int nd; /* dimension of denominator */
+  int ndim; /* larger number of nn and nd */
   zCVec freq_res; /* sampled frequency responses */
   zVec ang_freq; /* sampled angular frequencies */
   zVec mag; /* inverse of currently estimated denominator */
@@ -217,9 +217,9 @@ typedef struct{
   zVec phi_prev; /* parameters identified in the previous step */
   zVec xr, xi; /* intermediate vectors to compute matrix and vector for least-square solution */
   double gr, gi; /* intermedial values to compute matrix and vector for least-square solution */
-} dzFreqResIdentData;
+};
 
-static bool _dzFreqResIdentDataAlloc(dzFreqResIdentData *fri, uint nn, uint nd, int size)
+static bool _dzFreqResIdentDataAlloc(dzFreqResIdentData *fri, int nn, int nd, int size)
 {
   fri->ns = size;
   fri->nn = nn;
@@ -272,12 +272,12 @@ static void _dzFreqResIdentDataLSMFree(dzFreqResIdentData *fri)
   zVecFree( fri->xi );
 }
 
-static int _dzFreqResIdentDataRead(dzFreqResIdentData *fri, dzFreqResList *list, uint nn, uint nd)
+static int _dzFreqResIdentDataRead(dzFreqResIdentData *fri, dzFreqResList *list, int nn, int nd)
 {
   dzFreqResListCell *cp;
   double omega, omegaj;
   zComplex iomegaj, c;
-  uint j, k = 0;
+  int j, k = 0;
 
   if( !_dzFreqResIdentDataAlloc( fri, nn, nd, zListSize(list) ) ) return 0;
   zListForEach( list, cp ){
@@ -303,7 +303,7 @@ static int _dzFreqResIdentDataRead(dzFreqResIdentData *fri, dzFreqResList *list,
 
 static void _dzFreqResIdentDataLSMCreate(dzFreqResIdentData *fri)
 {
-  uint j, k;
+  int j, k;
 
   zMatZero( fri->q );
   zVecZero( fri->p );
@@ -327,7 +327,7 @@ static void _dzFreqResIdentDataLSMCreate(dzFreqResIdentData *fri)
 
 static void _dzFreqResIdentDataUpdateMag(dzFreqResIdentData *fri)
 {
-  uint j, k;
+  int j, k;
   double rr, ri;
 
   for( k=0; k<fri->ns; k++ ){
@@ -342,7 +342,7 @@ static void _dzFreqResIdentDataUpdateMag(dzFreqResIdentData *fri)
   }
 }
 
-static bool _dzFreqResIdent(dzFreqResIdentData *fri, dzFreqResList *list, uint nn, uint nd, int iter)
+static bool _dzFreqResIdent(dzFreqResIdentData *fri, dzFreqResList *list, int nn, int nd, int iter)
 {
   double dist, dist_prev;
   int i;
@@ -364,10 +364,10 @@ static bool _dzFreqResIdent(dzFreqResIdentData *fri, dzFreqResList *list, uint n
   return true;
 }
 
-dzTF *dzTFIdentFromFreqRes(dzTF *tf, dzFreqResList *list, uint nn, uint nd, int iter)
+dzTF *dzTFIdentFromFreqRes(dzTF *tf, dzFreqResList *list, int nn, int nd, int iter)
 {
   dzFreqResIdentData fri;
-  uint i;
+  int i;
 
   if( !_dzFreqResIdent( &fri, list, nn, nd, iter ) ) return NULL;
   if( !dzTFAlloc( tf, nn, nd ) ) return NULL;

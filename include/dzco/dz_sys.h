@@ -19,11 +19,11 @@ __BEGIN_DECLS
 
 struct _dzSys;
 
-typedef struct{
+ZDEF_STRUCT( dzSysPort ){
   struct _dzSys *sp;
   int port;
   double *vp;
-} dzSysPort;
+};
 
 zArrayClass( dzSysPortArray, dzSysPort );
 
@@ -31,14 +31,14 @@ zArrayClass( dzSysPortArray, dzSysPort );
 /* \class dzSys
  * ********************************************************** */
 
-typedef struct{
+ZDEF_STRUCT( dzSysCom ){
   const char *typestr;
   void (* _destroy)(struct _dzSys*);
   void (* _refresh)(struct _dzSys*);
   zVec (* _update)(struct _dzSys*, double);
   struct _dzSys *(* _fromZTK)(struct _dzSys*, ZTK*);
   void (* _fprintZTK)(FILE *fp, struct _dzSys*);
-} dzSysCom;
+};
 
 typedef struct _dzSys{
   Z_NAMED_CLASS;
@@ -113,7 +113,7 @@ typedef struct _dzSys{
  * they succeed to connect the specified systems. Otherwise,
  * the false value is returned.
  */
-__EXPORT bool dzSysConnect(dzSys *s1, uint p1, dzSys *s2, uint p2);
+__EXPORT bool dzSysConnect(dzSys *s1, int p1, dzSys *s2, int p2);
 __EXPORT void dzSysChain(int n, ...);
 
 /* default destroying method */
@@ -136,7 +136,7 @@ __EXPORT void dzSysFPrintZTK(FILE *fp, dzSys *sys);
 zArrayClass( dzSysArray, dzSys );
 
 /*! \brief allocate an array of systems. */
-__EXPORT dzSysArray *dzSysArrayAlloc(dzSysArray *arr, uint size);
+__EXPORT dzSysArray *dzSysArrayAlloc(dzSysArray *arr, int size);
 
 /*! \brief destroy an array of systems. */
 __EXPORT void dzSysArrayDestroy(dzSysArray *arr);
