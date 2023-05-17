@@ -20,6 +20,7 @@
 #ifndef __DZCO_H__
 #define __DZCO_H__
 
+#include <dzco/dz_tf.h>
 #include <dzco/dz_sys.h>
 #include <dzco/dz_ident_lag.h>
 

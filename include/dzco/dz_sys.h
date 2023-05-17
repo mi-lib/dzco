@@ -7,9 +7,7 @@
 #ifndef __DZ_SYS_H__
 #define __DZ_SYS_H__
 
-#include <zm/zm.h>
-
-#include <dzco/dz_errmsg.h>
+#include <dzco/dz_misc.h>
 
 __BEGIN_DECLS
 
@@ -113,21 +111,21 @@ typedef struct _dzSys{
  * they succeed to connect the specified systems. Otherwise,
  * the false value is returned.
  */
-__EXPORT bool dzSysConnect(dzSys *s1, int p1, dzSys *s2, int p2);
-__EXPORT void dzSysChain(int n, ...);
+__DZCO_EXPORT bool dzSysConnect(dzSys *s1, int p1, dzSys *s2, int p2);
+__DZCO_EXPORT void dzSysChain(int n, ...);
 
 /* default destroying method */
-__EXPORT void dzSysDefaultDestroy(dzSys *sys);
+__DZCO_EXPORT void dzSysDefaultDestroy(dzSys *sys);
 
 /* default refreshing method */
-__EXPORT void dzSysDefaultRefresh(dzSys *sys);
+__DZCO_EXPORT void dzSysDefaultRefresh(dzSys *sys);
 
 #define ZTK_TAG_DZSYS "sys"
 #define ZTK_TAG_DZSYS_CONNECT "connect"
 
-__EXPORT void *dzSysFromZTK(dzSys *sys, ZTK *ztk);
+__DZCO_EXPORT void *dzSysFromZTK(dzSys *sys, ZTK *ztk);
 
-__EXPORT void dzSysFPrintZTK(FILE *fp, dzSys *sys);
+__DZCO_EXPORT void dzSysFPrintZTK(FILE *fp, dzSys *sys);
 
 /* ********************************************************** */
 /* \class dzSysArray
@@ -136,26 +134,26 @@ __EXPORT void dzSysFPrintZTK(FILE *fp, dzSys *sys);
 zArrayClass( dzSysArray, dzSys );
 
 /*! \brief allocate an array of systems. */
-__EXPORT dzSysArray *dzSysArrayAlloc(dzSysArray *arr, int size);
+__DZCO_EXPORT dzSysArray *dzSysArrayAlloc(dzSysArray *arr, int size);
 
 /*! \brief destroy an array of systems. */
-__EXPORT void dzSysArrayDestroy(dzSysArray *arr);
+__DZCO_EXPORT void dzSysArrayDestroy(dzSysArray *arr);
 
 /*! \brief find a system from array by name. */
-__EXPORT dzSys *dzSysArrayNameFind(dzSysArray *arr, const char *name);
+__DZCO_EXPORT dzSys *dzSysArrayNameFind(dzSysArray *arr, const char *name);
 
 /*! \brief update all systems of an array. */
-__EXPORT void dzSysArrayUpdate(dzSysArray *arr, double dt);
+__DZCO_EXPORT void dzSysArrayUpdate(dzSysArray *arr, double dt);
 
 /*! \brief read the current position of a ZTK file and create an array of systems. */
-__EXPORT dzSysArray *dzSysArrayFromZTK(dzSysArray *sarray, ZTK *ztk);
+__DZCO_EXPORT dzSysArray *dzSysArrayFromZTK(dzSysArray *sarray, ZTK *ztk);
 /*! \brief print an array of systems to the current position of a ZTK file. */
-__EXPORT void dzSysArrayFPrintZTK(FILE *fp, dzSysArray *sys);
+__DZCO_EXPORT void dzSysArrayFPrintZTK(FILE *fp, dzSysArray *sys);
 
 /*! \brief read a ZTK file and create an array of systems. */
-__EXPORT dzSysArray *dzSysArrayReadZTK(dzSysArray *sarray, char filename[]);
+__DZCO_EXPORT dzSysArray *dzSysArrayReadZTK(dzSysArray *sarray, char filename[]);
 /*! \brief write an array of systems to a file in ZTK format. */
-__EXPORT bool dzSysArrayWriteZTK(dzSysArray *sarray, char filename[]);
+__DZCO_EXPORT bool dzSysArrayWriteZTK(dzSysArray *sarray, char filename[]);
 
 __END_DECLS
 

@@ -25,9 +25,9 @@ __BEGIN_DECLS
  * dzSysBWCreate() returns a pointer \a sys if succeeding.
  * Or, it returns the null pointer when failing by any reasons.
  */
-__EXPORT dzSys *dzSysBWCreate(dzSys *sys, double cf, uint dim);
+__DZCO_EXPORT dzSys *dzSysBWCreate(dzSys *sys, double cf, uint dim);
 
-__EXPORT dzSysCom dz_sys_bw_com;
+__DZCO_EXPORT dzSysCom dz_sys_bw_com;
 
 __END_DECLS
 

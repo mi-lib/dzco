@@ -13,8 +13,8 @@ __BEGIN_DECLS
 
 /*! \brief auto prototype generator */
 #define dzSysFGPrototype(Type,mtype) \
-__EXPORT dzSys *dzSys##Type##Create(dzSys *sys, double amp, double delay, double period);\
-__EXPORT dzSysCom dz_sys_##mtype##_com
+__DZCO_EXPORT dzSys *dzSys##Type##Create(dzSys *sys, double amp, double delay, double period);\
+__DZCO_EXPORT dzSysCom dz_sys_##mtype##_com
 
 /*! \brief auto definition generator */
 #define dzSysFGDefine(Type,mtype) \

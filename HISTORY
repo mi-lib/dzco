@@ -1,3 +1,5 @@
+2023. 5.16. Replaced __EXPORT to __DZCO_EXPORT. [all]
+2023. 5.16. Added dz_misc.h. [dz_misc, dz_tf, dz_sys, dz_ident_lag]
 2023. 3.29. Reflected new specification of zArrayClass and zArray2Class. [dz_tf, dz_tf_fr, dz_lin, dz_sys, dz_sys_misc]
 2023. 3.29. Modified config.lib and config.tools for C++ compilation. [src, tools]
 2023. 3. 3. Modified dz_sys_adder_com, dz_sys_subtr_com, dz_sys_limit_com, dz_sys_fol_com, dz_sys_sol_com, dz_sys_pc_com, dz_sys_adapt_com, dz_sys_p_com, dz_sys_i_com, dz_sys_d_com, dz_sys_pid_com, dz_sys_qpd_com, dz_sys_bw_com, dz_sys_maf_com, dz_sys_tf_com, dz_sys_lin_com with the new definition of __EXPORT. [dz_sys_misc, dz_sys_lag, dz_sys_pid, dz_sys_filt_bw, dz_sys_filt_maf, dz_sys_tf, dz_sys_lin]
