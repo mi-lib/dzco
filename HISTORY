@@ -1,3 +1,4 @@
+2023. 5.20. Reflected new specification of zeda-makefile-gen, and modified src/makefile. [src]
 2023. 5.16. Replaced __EXPORT to __DZCO_EXPORT. [all]
 2023. 5.16. Added dz_misc.h. [dz_misc, dz_tf, dz_sys, dz_ident_lag]
 2023. 3.29. Reflected new specification of zArrayClass and zArray2Class. [dz_tf, dz_tf_fr, dz_lin, dz_sys, dz_sys_misc]
