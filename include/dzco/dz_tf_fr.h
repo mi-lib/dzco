@@ -16,7 +16,7 @@ __BEGIN_DECLS
  * frequency response
  * ********************************************************** */
 
-ZDEF_STRUCT( dzFreqRes ){
+ZDEF_STRUCT( __DZCO_CLASS_EXPORT, dzFreqRes ){
   double f; /*!< frequency */
   double g; /*!< gain */
   double p; /*!< phase lag */

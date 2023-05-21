@@ -201,7 +201,7 @@ int dzFreqResListPrintFile(dzFreqResList *list, char filename[], double fmin, do
 /* identification of a transfer function from frequency response
  * ********************************************************** */
 
-ZDEF_STRUCT( dzFreqResIdentData ){
+ZDEF_STRUCT( , dzFreqResIdentData ){
   int ns; /* number of samples */
   int nn; /* dimension of numerator */
   int nd; /* dimension of denominator */

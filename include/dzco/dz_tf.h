@@ -16,7 +16,7 @@ __BEGIN_DECLS
  * transfer function by polynomial rational expression
  * ********************************************************** */
 
-ZDEF_STRUCT( dzTF ){
+ZDEF_STRUCT( __DZCO_CLASS_EXPORT, dzTF ){
   zPex num; /*!< polynomial for numerator */
   zPex den; /*!< polynomial for denominator */
   /*! \cond */

@@ -17,7 +17,7 @@ __BEGIN_DECLS
 
 struct _dzSys;
 
-ZDEF_STRUCT( dzSysPort ){
+ZDEF_STRUCT( __DZCO_CLASS_EXPORT, dzSysPort ){
   struct _dzSys *sp;
   int port;
   double *vp;
@@ -29,7 +29,7 @@ zArrayClass( dzSysPortArray, dzSysPort );
 /* \class dzSys
  * ********************************************************** */
 
-ZDEF_STRUCT( dzSysCom ){
+ZDEF_STRUCT( __DZCO_CLASS_EXPORT, dzSysCom ){
   const char *typestr;
   void (* _destroy)(struct _dzSys*);
   void (* _refresh)(struct _dzSys*);

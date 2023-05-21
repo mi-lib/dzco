@@ -16,7 +16,7 @@ __BEGIN_DECLS
  * general linear system
  * ********************************************************** */
 
-ZDEF_STRUCT( dzLin ){
+ZDEF_STRUCT( __DZCO_CLASS_EXPORT, dzLin ){
   zMat a;    /*!< A matrix */
   zVec b;    /*!< B matrix */
   zVec c;    /*!< C matrix */
