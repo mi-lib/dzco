@@ -13,14 +13,14 @@ __BEGIN_DECLS
 
 /* value map: [ff][inverse of variance] */
 
-__EXPORT dzSys *dzSysMAFCreate(dzSys *sys, double ff);
+__DZCO_EXPORT dzSys *dzSysMAFCreate(dzSys *sys, double ff);
 
 /* set forgetting-factor based on the cut-off frequency */
-__EXPORT void dzSysMAFSetCF(dzSys *sys, double cf, double dt);
+__DZCO_EXPORT void dzSysMAFSetCF(dzSys *sys, double cf, double dt);
 /* cut-off frequency */
-__EXPORT double dzSysMAFCF(dzSys *sys, double dt);
+__DZCO_EXPORT double dzSysMAFCF(dzSys *sys, double dt);
 
-extern dzSysCom dz_sys_maf_com;
+__DZCO_EXPORT dzSysCom dz_sys_maf_com;
 
 __END_DECLS
 

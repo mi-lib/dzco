@@ -7,9 +7,7 @@
 #ifndef __DZ_TF_H__
 #define __DZ_TF_H__
 
-#include <zm/zm.h>
-
-#include <dzco/dz_errmsg.h>
+#include <dzco/dz_misc.h>
 
 __BEGIN_DECLS
 
@@ -18,14 +16,14 @@ __BEGIN_DECLS
  * transfer function by polynomial rational expression
  * ********************************************************** */
 
-typedef struct{
+ZDEF_STRUCT( __DZCO_CLASS_EXPORT, dzTF ){
   zPex num; /*!< polynomial for numerator */
   zPex den; /*!< polynomial for denominator */
   /*! \cond */
   zCVec zero; /* zeros */
   zCVec pole; /* poles */
   /*! \endcond */
-} dzTF;
+};
 
 #define dzTFNum(tf)            (tf)->num
 #define dzTFDen(tf)            (tf)->den
@@ -66,9 +64,9 @@ typedef struct{
  *
  * dzTFDestroy() returns no value.
  */
-__EXPORT bool dzTFAlloc(dzTF *tf, int nsize, int dsize);
-__EXPORT bool dzTFCreateZeroPole(dzTF *tf, zCVec zero, zCVec pole, double gain);
-__EXPORT void dzTFDestroy(dzTF *tf);
+__DZCO_EXPORT bool dzTFAlloc(dzTF *tf, int nsize, int dsize);
+__DZCO_EXPORT bool dzTFCreateZeroPole(dzTF *tf, zCVec zero, zCVec pole, double gain);
+__DZCO_EXPORT void dzTFDestroy(dzTF *tf);
 
 /*! \brief set coefficients of numerator and denominator of
  *   transfer function.
@@ -87,8 +85,8 @@ __EXPORT void dzTFDestroy(dzTF *tf);
  * \return
  * Neither dzTFSetNumList() nor dzTFSetDenList() return any values.
  */
-__EXPORT void dzTFSetNumList(dzTF *tf, ...);
-__EXPORT void dzTFSetDenList(dzTF *tf, ...);
+__DZCO_EXPORT void dzTFSetNumList(dzTF *tf, ...);
+__DZCO_EXPORT void dzTFSetDenList(dzTF *tf, ...);
 
 /*! \brief connect a transfer function.
  *
@@ -98,7 +96,7 @@ __EXPORT void dzTFSetDenList(dzTF *tf, ...);
  * dzTFConnect() returns a pointer \a tf, or the null pointer if
  * it fails to allocate memory for the new transfer function.
  */
-__EXPORT dzTF *dzTFConnect(dzTF *tf, dzTF *ctf);
+__DZCO_EXPORT dzTF *dzTFConnect(dzTF *tf, dzTF *ctf);
 
 /*! \brief check if polynomial system is stable.
  *
@@ -110,7 +108,7 @@ __EXPORT dzTF *dzTFConnect(dzTF *tf, dzTF *ctf);
  * \notes
  * dzTFIsStable() is not available in kernel space.
  */
-__EXPORT bool dzTFIsStable(dzTF *tf);
+__DZCO_EXPORT bool dzTFIsStable(dzTF *tf);
 
 /*! \brief abstract zeros and poles of a transfer function.
  *
@@ -121,7 +119,7 @@ __EXPORT bool dzTFIsStable(dzTF *tf);
  * dzTFZeroPole() returns the true value if succeedings. Otherwise,
  * the false value is returned.
  */
-__EXPORT bool dzTFZeroPole(dzTF *tf);
+__DZCO_EXPORT bool dzTFZeroPole(dzTF *tf);
 
 /*! \brief abstract zeros and poles of a transfer function into real and imaginary values.
  *
@@ -134,17 +132,17 @@ __EXPORT bool dzTFZeroPole(dzTF *tf);
  * dzTFZeroPoleReIm() returns the true value if succeedings. Otherwise,
  * the false value is returned.
  */
-__EXPORT bool dzTFZeroPoleReIm(dzTF *tf, zVec *zero1, zCVec *zero2, zVec *pole1, zCVec *pole2);
+__DZCO_EXPORT bool dzTFZeroPoleReIm(dzTF *tf, zVec *zero1, zCVec *zero2, zVec *pole1, zCVec *pole2);
 
-__EXPORT dzTF *dzTFFromZTK(dzTF *tf, ZTK *ztk);
-__EXPORT void dzTFFPrintZTK(FILE *fp, dzTF *tf);
+__DZCO_EXPORT dzTF *dzTFFromZTK(dzTF *tf, ZTK *ztk);
+__DZCO_EXPORT void dzTFFPrintZTK(FILE *fp, dzTF *tf);
 
 /*! \brief read a transfer function from a ZTK file. */
-__EXPORT dzTF *dzTFReadZTK(dzTF *tf, char filename[]);
+__DZCO_EXPORT dzTF *dzTFReadZTK(dzTF *tf, char filename[]);
 /*! \brief write a transfer function to a ZTK file. */
-__EXPORT bool dzTFWriteZTK(dzTF *tf, char filename[]);
+__DZCO_EXPORT bool dzTFWriteZTK(dzTF *tf, char filename[]);
 
-__EXPORT void dzTFFExpr(FILE *fp, dzTF *tf);
+__DZCO_EXPORT void dzTFFExpr(FILE *fp, dzTF *tf);
 #define dzTFExpr(tf) dzTFFExpr( stdout, tf )
 
 __END_DECLS

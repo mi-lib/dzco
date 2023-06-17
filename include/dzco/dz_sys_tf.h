@@ -9,8 +9,6 @@
 
 /* NOTE: never include this header file in user programs. */
 
-#include <dzco/dz_tf.h>
-
 __BEGIN_DECLS
 
 /*! \brief create a transfer function by polynomial rational expression.
@@ -27,9 +25,9 @@ __BEGIN_DECLS
  * allocate internal working memory, or \a dt is too short or
  * negative. Otherwise, a pointer \a sys is returned.
  */
-__EXPORT dzSys *dzSysTFCreate(dzSys *sys, dzTF *tf);
+__DZCO_EXPORT dzSys *dzSysTFCreate(dzSys *sys, dzTF *tf);
 
-extern dzSysCom dz_sys_tf_com;
+__DZCO_EXPORT dzSysCom dz_sys_tf_com;
 
 __END_DECLS
 

@@ -123,7 +123,7 @@ double dzLinStateFeedback(dzLin *c, zVec ref, zVec f)
 }
 
 /* preparation for dzLinCtrlMat and dzLinObsMat. */
-static bool _dzLinCOMatPrep(dzLin *c, zMat m, uint size, zVec *v)
+static bool _dzLinCOMatPrep(dzLin *c, zMat m, int size, zVec *v)
 {
   if( zMatRowSize(m) != zMatRowSize(c->a) ||
       zMatColSize(m) != zMatColSize(c->a) ){
@@ -137,7 +137,7 @@ static bool _dzLinCOMatPrep(dzLin *c, zMat m, uint size, zVec *v)
 zMat dzLinCtrlMat(dzLin *c, zMat m)
 {
   zVec v;
-  uint i = 0;
+  int i = 0;
 
   if( !_dzLinCOMatPrep( c, m, zVecSize(c->b), &v ) )
     return NULL;
@@ -155,7 +155,7 @@ zMat dzLinCtrlMat(dzLin *c, zMat m)
 zMat dzLinObsMat(dzLin *c, zMat m)
 {
   zVec v;
-  uint i = 0;
+  int i = 0;
 
   if( !_dzLinCOMatPrep( c, m, zVecSize(c->c), &v ) )
     return NULL;
@@ -226,7 +226,7 @@ zMat dzLinCtrlCanon(dzLin *c, zMat t)
 {
   zMat uc, uc_inv;
   double *ap, *tp;
-  uint i;
+  int i;
 
   uc = zMatAllocSqr( dzLinDim(c) );
   uc_inv = zMatAllocSqr( dzLinDim(c) );
@@ -260,7 +260,7 @@ zVec dzLinPoleAssign(dzLin *c, zVec pole, zVec f)
   zMat a, tmp, t;
   zPex eig = NULL;
   double *ap;
-  uint i, dim;
+  int i, dim;
 
   a = zMatAllocSqr( dzLinDim(c) );
   tmp = zMatAllocSqr( dzLinDim(c) );
@@ -447,7 +447,7 @@ zVec dzLinLQR(dzLin *c, zVec q, double r, zVec f)
  */
 static dzLin *_dzTF2LinCtrlCanon_tf(dzTF *tf, dzLin *lin)
 {
-  uint i, n;
+  int i, n;
   double a;
 
   n = dzTFDenDim(tf) - 1;
@@ -468,7 +468,7 @@ static dzLin *_dzTF2LinCtrlCanon_tf(dzTF *tf, dzLin *lin)
 
 static dzLin *_dzTF2LinObsCanon_tf(dzTF *tf, dzLin *lin)
 {
-  uint i, n;
+  int i, n;
   double a;
 
   n = dzTFDenDim(tf) - 1;

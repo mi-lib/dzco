@@ -28,12 +28,12 @@ __BEGIN_DECLS
  * too short or negative value, or it fails to allocate the
  * internal work space. Otherwise, the true value is returned.
  */
-__EXPORT dzSys *dzSysFOLCreate(dzSys *sys, double tc, double gain);
+__DZCO_EXPORT dzSys *dzSysFOLCreate(dzSys *sys, double tc, double gain);
 
-__EXPORT void dzSysFOLSetTC(dzSys *sys, double tc);
-__EXPORT void dzSysFOLSetGain(dzSys *sys, double gain);
+__DZCO_EXPORT void dzSysFOLSetTC(dzSys *sys, double tc);
+__DZCO_EXPORT void dzSysFOLSetGain(dzSys *sys, double gain);
 
-extern dzSysCom dz_sys_fol_com;
+__DZCO_EXPORT dzSysCom dz_sys_fol_com;
 
 /* ********************************************************** */
 /* second-order-lag system
@@ -72,10 +72,10 @@ extern dzSysCom dz_sys_fol_com;
  * fail to allocate the internal work space. Otherwise, a
  * pointer \a sys is returned.
  */
-__EXPORT dzSys *dzSysSOLCreate(dzSys *sys, double t1, double t2, double damp, double gain);
-__EXPORT dzSys *dzSysSOLCreateGeneric(dzSys *sys, double a, double b, double c, double d, double e);
+__DZCO_EXPORT dzSys *dzSysSOLCreate(dzSys *sys, double t1, double t2, double damp, double gain);
+__DZCO_EXPORT dzSys *dzSysSOLCreateGeneric(dzSys *sys, double a, double b, double c, double d, double e);
 
-extern dzSysCom dz_sys_sol_com;
+__DZCO_EXPORT dzSysCom dz_sys_sol_com;
 
 /* ********************************************************** */
 /* phase compensator system
@@ -98,9 +98,9 @@ extern dzSysCom dz_sys_sol_com;
  * short or a negative value, or it fails to allocate the
  * internal work space. Otherwise, a pointer \a sys is returned.
  */
-__EXPORT dzSys *dzSysPCCreate(dzSys *sys, double t1, double t2, double gain);
+__DZCO_EXPORT dzSys *dzSysPCCreate(dzSys *sys, double t1, double t2, double gain);
 
-extern dzSysCom dz_sys_pc_com;
+__DZCO_EXPORT dzSysCom dz_sys_pc_com;
 
 /* ********************************************************** */
 /* adaptive system
@@ -108,7 +108,7 @@ extern dzSysCom dz_sys_pc_com;
 
 /* value map: [tc][base][offset] */
 
-__EXPORT void dzSysAdaptSetBase(dzSys *sys, double base);
+__DZCO_EXPORT void dzSysAdaptSetBase(dzSys *sys, double base);
 
 /*!\brief create adaptive system.
  *
@@ -120,9 +120,9 @@ __EXPORT void dzSysAdaptSetBase(dzSys *sys, double base);
  * or negative, or if it fails to allocate the internal work space.
  * Otherwise, a pointer \a sys is returned.
  */
-__EXPORT dzSys *dzSysAdaptCreate(dzSys *sys, double tc, double base);
+__DZCO_EXPORT dzSys *dzSysAdaptCreate(dzSys *sys, double tc, double base);
 
-extern dzSysCom dz_sys_adapt_com;
+__DZCO_EXPORT dzSysCom dz_sys_adapt_com;
 
 __END_DECLS
 

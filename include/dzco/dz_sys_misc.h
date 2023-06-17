@@ -25,13 +25,13 @@ __BEGIN_DECLS
  * if they fail to allocate internal memory. Otherwise, a pointer
  * \a sys is returned.
  */
-__EXPORT dzSys *dzSysAdderCreate(dzSys *sys, uint n);
+__DZCO_EXPORT dzSys *dzSysAdderCreate(dzSys *sys, int n);
 
-extern dzSysCom dz_sys_adder_com;
+__DZCO_EXPORT dzSysCom dz_sys_adder_com;
 
-__EXPORT dzSys *dzSysSubtrCreate(dzSys *sys, uint n);
+__DZCO_EXPORT dzSys *dzSysSubtrCreate(dzSys *sys, int n);
 
-extern dzSysCom dz_sys_subtr_com;
+__DZCO_EXPORT dzSysCom dz_sys_subtr_com;
 
 /* ********************************************************** */
 /* saturater
@@ -49,9 +49,9 @@ extern dzSysCom dz_sys_subtr_com;
  * When \a max is less than \a min, the border is automatically
  * corrected by swapping the two values.
  */
-__EXPORT dzSys *dzSysLimitCreate(dzSys *sys, double min, double max);
+__DZCO_EXPORT dzSys *dzSysLimitCreate(dzSys *sys, double min, double max);
 
-extern dzSysCom dz_sys_limit_com;
+__DZCO_EXPORT dzSysCom dz_sys_limit_com;
 
 __END_DECLS
 

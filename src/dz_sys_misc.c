@@ -30,7 +30,7 @@ static void _dzSysMIFPrintZTK(FILE *fp, dzSys *sys)
 
 static zVec _dzSysAdderUpdate(dzSys *sys, double dt)
 {
-  uint i;
+  int i;
 
   dzSysOutputVal(sys,0) = dzSysInputVal(sys,0);
   for( i=1; i<dzSysInputNum(sys); i++ )
@@ -55,7 +55,7 @@ dzSysCom dz_sys_adder_com = {
 };
 
 /* create an adder. */
-dzSys *dzSysAdderCreate(dzSys *sys, uint n)
+dzSys *dzSysAdderCreate(dzSys *sys, int n)
 {
   dzSysInit( sys );
   sys->com = &dz_sys_adder_com;
@@ -69,7 +69,7 @@ dzSys *dzSysAdderCreate(dzSys *sys, uint n)
 
 static zVec _dzSysSubtrUpdate(dzSys *sys, double dt)
 {
-  uint i;
+  int i;
 
   dzSysOutputVal(sys,0) = dzSysInputVal(sys,0);
   for( i=1; i<dzSysInputNum(sys); i++ )
@@ -94,7 +94,7 @@ dzSysCom dz_sys_subtr_com = {
 };
 
 /* create a subtractor. */
-dzSys *dzSysSubtrCreate(dzSys *sys, uint n)
+dzSys *dzSysSubtrCreate(dzSys *sys, int n)
 {
   dzSysInit( sys );
   sys->com = &dz_sys_subtr_com;

@@ -2,3 +2,4 @@ INCLUDE+=`zm-config -I`
 LIB+=`zm-config -L`
 DEF+=`zm-config -D`
 LINK+=`zm-config -l`
+LINKCPP+=`zm-config -lcpp`

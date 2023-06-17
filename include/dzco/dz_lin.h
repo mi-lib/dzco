@@ -16,7 +16,7 @@ __BEGIN_DECLS
  * general linear system
  * ********************************************************** */
 
-typedef struct{
+ZDEF_STRUCT( __DZCO_CLASS_EXPORT, dzLin ){
   zMat a;    /*!< A matrix */
   zVec b;    /*!< B matrix */
   zVec c;    /*!< C matrix */
@@ -27,13 +27,13 @@ typedef struct{
   zVec _bu;  /* inner working memory space */
   zODE _ode; /* integrator */
   /*! \endcond */
-} dzLin;
+};
 
 #define dzLinDim(c) zVecSizeNC((c)->x)
 
 /*! \brief initialize a linear system.
  */
-__EXPORT dzLin *dzLinInit(dzLin *lin);
+__DZCO_EXPORT dzLin *dzLinInit(dzLin *lin);
 
 /*! \brief allocate and destroy work space for general linear system.
  *
@@ -50,8 +50,8 @@ __EXPORT dzLin *dzLinInit(dzLin *lin);
  *
  * dzLinDestroy() returns no value.
  */
-__EXPORT bool dzLinAlloc(dzLin *c, int dim);
-__EXPORT void dzLinDestroy(dzLin *c);
+__DZCO_EXPORT bool dzLinAlloc(dzLin *c, int dim);
+__DZCO_EXPORT void dzLinDestroy(dzLin *c);
 
 /*! \brief output and update the inner state of linear system.
  *
@@ -77,9 +77,9 @@ __EXPORT void dzLinDestroy(dzLin *c);
  * \sa
  * dzLinCreateObs, dzLinStateFeedback
  */
-__EXPORT void dzLinStateUpdate(dzLin *c, double input, double dt);
-__EXPORT void dzLinObsUpdate(dzLin *c, zVec k, double input, double error, double dt);
-__EXPORT double dzLinOutput(dzLin *c, double input);
+__DZCO_EXPORT void dzLinStateUpdate(dzLin *c, double input, double dt);
+__DZCO_EXPORT void dzLinObsUpdate(dzLin *c, zVec k, double input, double error, double dt);
+__DZCO_EXPORT double dzLinOutput(dzLin *c, double input);
 
 /*! \brief state feedback for linear system.
  *
@@ -93,7 +93,7 @@ __EXPORT double dzLinOutput(dzLin *c, double input);
  * \sa
  * dzLinPoleAssign, dzLinCreateObs, dzLinLQR
  */
-__EXPORT double dzLinStateFeedback(dzLin *c, zVec ref, zVec f);
+__DZCO_EXPORT double dzLinStateFeedback(dzLin *c, zVec ref, zVec f);
 
 /*! \brief create controllability / observability matrix.
  *
@@ -103,13 +103,13 @@ __EXPORT double dzLinStateFeedback(dzLin *c, zVec ref, zVec f);
  * \return
  * dzLinCtrlMat() and dzLinObsMat() return a pointer \a m.
  */
-__EXPORT zMat dzLinCtrlMat(dzLin *c, zMat m);
-__EXPORT zMat dzLinObsMat(dzLin *c, zMat m);
+__DZCO_EXPORT zMat dzLinCtrlMat(dzLin *c, zMat m);
+__DZCO_EXPORT zMat dzLinObsMat(dzLin *c, zMat m);
 
 /*! \brief values to check if the linear system is controllable / observable.
  */
-__EXPORT double dzLinCtrlDet(dzLin *c);
-__EXPORT double dzLinObsDet(dzLin *c);
+__DZCO_EXPORT double dzLinCtrlDet(dzLin *c);
+__DZCO_EXPORT double dzLinObsDet(dzLin *c);
 
 /*! \brief check if the linear system is controllable / observable.
  *
@@ -121,8 +121,8 @@ __EXPORT double dzLinObsDet(dzLin *c);
  *
  * dzLinIsObs() returns the true value if \a c is observable.
  */
-__EXPORT bool dzLinIsCtrl(dzLin *c);
-__EXPORT bool dzLinIsObs(dzLin *c);
+__DZCO_EXPORT bool dzLinIsCtrl(dzLin *c);
+__DZCO_EXPORT bool dzLinIsObs(dzLin *c);
 
 /*! \brief pole assignment of linear system control.
  *
@@ -161,9 +161,9 @@ __EXPORT bool dzLinIsObs(dzLin *c);
  * \sa
  * dzLinStateFeedback, dzLinObsUpdate
  */
-__EXPORT zMat dzLinCtrlCanon(dzLin *c, zMat t);
-__EXPORT zVec dzLinPoleAssign(dzLin *c, zVec pole, zVec f);
-__EXPORT zVec dzLinCreateObs(dzLin *c, zVec pole, zVec k);
+__DZCO_EXPORT zMat dzLinCtrlCanon(dzLin *c, zMat t);
+__DZCO_EXPORT zVec dzLinPoleAssign(dzLin *c, zVec pole, zVec f);
+__DZCO_EXPORT zVec dzLinCreateObs(dzLin *c, zVec pole, zVec k);
 
 /*! \brief algebraic matrix Riccati equation solver.
  *
@@ -207,10 +207,10 @@ __EXPORT zVec dzLinCreateObs(dzLin *c, zVec pole, zVec k);
  * \sa
  * dzLinLQR
  */
-__EXPORT double dzLinRiccatiErrorDRC(zMat p, dzLin *c, zMat q, double r, zMat res, zMat tmp, zVec pb);
-__EXPORT double dzLinRiccatiError(zMat p, dzLin *c, zMat q, double r, zMat e);
-__EXPORT zMat dzLinRiccatiSolveEuler(zMat p, dzLin *c, zMat q, double r, double tol, int iter);
-__EXPORT zMat dzLinRiccatiSolveKleinman(zMat p, zVec f, dzLin *c, zMat q, double r, double tol, int iter);
+__DZCO_EXPORT double dzLinRiccatiErrorDRC(zMat p, dzLin *c, zMat q, double r, zMat res, zMat tmp, zVec pb);
+__DZCO_EXPORT double dzLinRiccatiError(zMat p, dzLin *c, zMat q, double r, zMat e);
+__DZCO_EXPORT zMat dzLinRiccatiSolveEuler(zMat p, dzLin *c, zMat q, double r, double tol, int iter);
+__DZCO_EXPORT zMat dzLinRiccatiSolveKleinman(zMat p, zVec f, dzLin *c, zMat q, double r, double tol, int iter);
 
 /*! \brief linear optimal regulator of linear system control.
  *
@@ -225,7 +225,7 @@ __EXPORT zMat dzLinRiccatiSolveKleinman(zMat p, zVec f, dzLin *c, zMat q, double
  * \sa
  * dzLinStateFeedback
  */
-__EXPORT zVec dzLinLQR(dzLin *c, zVec q, double r, zVec f);
+__DZCO_EXPORT zVec dzLinLQR(dzLin *c, zVec q, double r, zVec f);
 
 /*! \brief conversion from polynomial transfer function to linear system.
  *
@@ -244,11 +244,11 @@ __EXPORT zVec dzLinLQR(dzLin *c, zVec q, double r, zVec f);
  * If the equivalent expression does not exist, they return
  * the null pointer.
  */
-__EXPORT dzLin *dzTF2LinCtrlCanon(dzTF *tf, dzLin *lin);
-__EXPORT dzLin *dzTF2LinObsCanon(dzTF *tf, dzLin *lin);
+__DZCO_EXPORT dzLin *dzTF2LinCtrlCanon(dzTF *tf, dzLin *lin);
+__DZCO_EXPORT dzLin *dzTF2LinObsCanon(dzTF *tf, dzLin *lin);
 
-__EXPORT dzLin *dzLinFromZTK(dzLin *lin, ZTK *ztk);
-__EXPORT void dzLinFPrintZTK(FILE *fp, dzLin *lin);
+__DZCO_EXPORT dzLin *dzLinFromZTK(dzLin *lin, ZTK *ztk);
+__DZCO_EXPORT void dzLinFPrintZTK(FILE *fp, dzLin *lin);
 
 __END_DECLS
 

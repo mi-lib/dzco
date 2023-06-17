@@ -16,17 +16,17 @@ __BEGIN_DECLS
  * frequency response
  * ********************************************************** */
 
-typedef struct{
+ZDEF_STRUCT( __DZCO_CLASS_EXPORT, dzFreqRes ){
   double f; /*!< frequency */
   double g; /*!< gain */
   double p; /*!< phase lag */
-} dzFreqRes;
+};
 
-__EXPORT zComplex *dzFreqResToComplex(dzFreqRes *fr, zComplex *c, double *af);
-__EXPORT dzFreqRes *dzFreqResFromComplex(dzFreqRes *fr, zComplex *c, double af);
+__DZCO_EXPORT zComplex *dzFreqResToComplex(dzFreqRes *fr, zComplex *c, double *af);
+__DZCO_EXPORT dzFreqRes *dzFreqResFromComplex(dzFreqRes *fr, zComplex *c, double af);
 
-__EXPORT dzFreqRes *dzFreqRes2Closed(dzFreqRes *frin, dzFreqRes *frout);
-__EXPORT dzFreqRes *dzFreqRes2Open(dzFreqRes *frin, dzFreqRes *frout);
+__DZCO_EXPORT dzFreqRes *dzFreqRes2Closed(dzFreqRes *frin, dzFreqRes *frout);
+__DZCO_EXPORT dzFreqRes *dzFreqRes2Open(dzFreqRes *frin, dzFreqRes *frout);
 
 /*! \brief frequency response of transfer function.
  *
@@ -42,8 +42,8 @@ __EXPORT dzFreqRes *dzFreqRes2Open(dzFreqRes *frin, dzFreqRes *frout);
  * dzFreqResFromTF() returns a pointer \a fr.
  * dzTFToComplex() returns a pointer \a c.
  */
-__EXPORT dzFreqRes *dzFreqResFromTF(dzFreqRes *fr, dzTF *tf, double af);
-__EXPORT zComplex *dzTFToComplex(dzTF *tf, double af, zComplex *c);
+__DZCO_EXPORT dzFreqRes *dzFreqResFromTF(dzFreqRes *fr, dzTF *tf, double af);
+__DZCO_EXPORT zComplex *dzTFToComplex(dzTF *tf, double af, zComplex *c);
 
 /* ********************************************************** */
 /*! \class dzFreqResList
@@ -54,21 +54,21 @@ zListClass( dzFreqResList, dzFreqResListCell, dzFreqRes );
 
 #define dzFreqResListDestroy(list) zListDestroy( dzFreqResListCell, list )
 
-__EXPORT int dzFreqResList2Closed(dzFreqResList *inlist, dzFreqResList *outlist);
-__EXPORT int dzFreqResList2Open(dzFreqResList *inlist, dzFreqResList *outlist);
-__EXPORT int dzFreqResListConnectTF(dzFreqResList *inlist, dzTF *tf, dzFreqResList *outlist);
+__DZCO_EXPORT int dzFreqResList2Closed(dzFreqResList *inlist, dzFreqResList *outlist);
+__DZCO_EXPORT int dzFreqResList2Open(dzFreqResList *inlist, dzFreqResList *outlist);
+__DZCO_EXPORT int dzFreqResListConnectTF(dzFreqResList *inlist, dzTF *tf, dzFreqResList *outlist);
 
-__EXPORT int dzFreqResListFScan(FILE *fp, dzFreqResList *list, double fmin, double fmax);
-__EXPORT int dzFreqResListFPrint(FILE *fp, dzFreqResList *list, double fmin, double fmax);
+__DZCO_EXPORT int dzFreqResListFScan(FILE *fp, dzFreqResList *list, double fmin, double fmax);
+__DZCO_EXPORT int dzFreqResListFPrint(FILE *fp, dzFreqResList *list, double fmin, double fmax);
 
-__EXPORT int dzFreqResListScanFile(dzFreqResList *list, char filename[], double fmin, double fmax);
-__EXPORT int dzFreqResListPrintFile(dzFreqResList *list, char filename[], double fmin, double fmax);
+__DZCO_EXPORT int dzFreqResListScanFile(dzFreqResList *list, char filename[], double fmin, double fmax);
+__DZCO_EXPORT int dzFreqResListPrintFile(dzFreqResList *list, char filename[], double fmin, double fmax);
 
 /* ********************************************************** */
 /* identification of a transfer function from frequency response
  * ********************************************************** */
 
-__EXPORT dzTF *dzTFIdentFromFreqRes(dzTF *tf, dzFreqResList *list, uint nn, uint nd, int iter);
+__DZCO_EXPORT dzTF *dzTFIdentFromFreqRes(dzTF *tf, dzFreqResList *list, int nn, int nd, int iter);
 
 __END_DECLS
 

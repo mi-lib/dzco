@@ -27,11 +27,11 @@ __BEGIN_DECLS
  * the internal working memory. Otherwise, a pointer \a sys is
  * returned.
  */
-__EXPORT dzSys *dzSysPCreate(dzSys *sys, double gain);
+__DZCO_EXPORT dzSys *dzSysPCreate(dzSys *sys, double gain);
 
-__EXPORT void dzSysPSetGain(dzSys *sys, double gain);
+__DZCO_EXPORT void dzSysPSetGain(dzSys *sys, double gain);
 
-extern dzSysCom dz_sys_p_com;
+__DZCO_EXPORT dzSysCom dz_sys_p_com;
 
 /* ********************************************************** */
 /* integrator
@@ -49,12 +49,12 @@ extern dzSysCom dz_sys_p_com;
  * value - too short or negative, or if it fails to allocate the
  * internal working memory. Otherwise, a pointer \a sys is returned.
  */
-__EXPORT dzSys *dzSysICreate(dzSys *sys, double gain, double fgt);
+__DZCO_EXPORT dzSys *dzSysICreate(dzSys *sys, double gain, double fgt);
 
-__EXPORT void dzSysISetGain(dzSys *sys, double gain);
-__EXPORT void dzSysISetFgt(dzSys *sys, double fgt);
+__DZCO_EXPORT void dzSysISetGain(dzSys *sys, double gain);
+__DZCO_EXPORT void dzSysISetFgt(dzSys *sys, double fgt);
 
-extern dzSysCom dz_sys_i_com;
+__DZCO_EXPORT dzSysCom dz_sys_i_com;
 
 /* ********************************************************** */
 /* differentiator
@@ -78,12 +78,12 @@ extern dzSysCom dz_sys_i_com;
  * the internal working memory. Otherwise, a pointer \a sys is
  * returned.
  */
-__EXPORT dzSys *dzSysDCreate(dzSys *sys, double gain, double tc);
+__DZCO_EXPORT dzSys *dzSysDCreate(dzSys *sys, double gain, double tc);
 
-__EXPORT void dzSysDSetGain(dzSys *sys, double gain);
-__EXPORT void dzSysDSetTC(dzSys *sys, double t);
+__DZCO_EXPORT void dzSysDSetGain(dzSys *sys, double gain);
+__DZCO_EXPORT void dzSysDSetTC(dzSys *sys, double t);
 
-extern dzSysCom dz_sys_d_com;
+__DZCO_EXPORT dzSysCom dz_sys_d_com;
 
 /* ********************************************************** */
 /* PID (Proportional, Integral and Differential) controller
@@ -103,15 +103,15 @@ extern dzSysCom dz_sys_d_com;
  * short or negative value, or if it fails to allocate the
  * internal work space. Otherwise, a pointer \a sys is returned.
  */
-__EXPORT dzSys *dzSysPIDCreate(dzSys *sys, double kp, double ki, double kd, double tc, double fgt);
+__DZCO_EXPORT dzSys *dzSysPIDCreate(dzSys *sys, double kp, double ki, double kd, double tc, double fgt);
 
-__EXPORT void dzSysPIDSetPGain(dzSys *sys, double kp);
-__EXPORT void dzSysPIDSetIGain(dzSys *sys, double ki);
-__EXPORT void dzSysPIDSetDGain(dzSys *sys, double kd);
-__EXPORT void dzSysPIDSetTC(dzSys *sys, double tc);
-__EXPORT void dzSysPIDSetFgt(dzSys *sys, double fgt);
+__DZCO_EXPORT void dzSysPIDSetPGain(dzSys *sys, double kp);
+__DZCO_EXPORT void dzSysPIDSetIGain(dzSys *sys, double ki);
+__DZCO_EXPORT void dzSysPIDSetDGain(dzSys *sys, double kd);
+__DZCO_EXPORT void dzSysPIDSetTC(dzSys *sys, double tc);
+__DZCO_EXPORT void dzSysPIDSetFgt(dzSys *sys, double fgt);
 
-extern dzSysCom dz_sys_pid_com;
+__DZCO_EXPORT dzSysCom dz_sys_pid_com;
 
 /* ********************************************************** */
 /* QPD (Quadratic Proportional and Differential) controller
@@ -130,11 +130,11 @@ extern dzSysCom dz_sys_pid_com;
  * short or negative value, or if it fails to allocate the internal
  * work space. Otherwise, a pointer \a sys is returned.
  */
-__EXPORT dzSys *dzSysQPDCreate(dzSys *sys, double kp, double kd, double eps);
+__DZCO_EXPORT dzSys *dzSysQPDCreate(dzSys *sys, double kp, double kd, double eps);
 
-__EXPORT void dzSysQPDSetGoal(dzSys *sys, double goal);
+__DZCO_EXPORT void dzSysQPDSetGoal(dzSys *sys, double goal);
 
-extern dzSysCom dz_sys_qpd_com;
+__DZCO_EXPORT dzSysCom dz_sys_qpd_com;
 
 __END_DECLS
 

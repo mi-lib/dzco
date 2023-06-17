@@ -7,9 +7,7 @@
 #ifndef __DZ_IDENT_LAG_H__
 #define __DZ_IDENT_LAG_H__
 
-#include <zm/zm_opt.h>
-
-#include <dzco/dz_errmsg.h>
+#include <dzco/dz_misc.h>
 
 __BEGIN_DECLS
 
@@ -24,7 +22,7 @@ __BEGIN_DECLS
  * \return
  * dzIdentTrig() returns the identifier of the trigger data.
  */
-__EXPORT int dzIdentTrig(double r[], int n);
+__DZCO_EXPORT int dzIdentTrig(double r[], int n);
 
 /* ********************************************************** */
 /* first-order-lag system identification
@@ -57,8 +55,8 @@ __EXPORT int dzIdentTrig(double r[], int n);
  * system. Or, the false value is returned if it fails to allocate
  * internal workspace.
  */
-__EXPORT void dzIdentFOL1(double t[], double r[], double y[], int n, int trig, double *tc, double *gain);
-__EXPORT bool dzIdentFOL(double t[], double r[], double y[], int n, int trig, double *tc, double *gain);
+__DZCO_EXPORT void dzIdentFOL1(double t[], double r[], double y[], int n, int trig, double *tc, double *gain);
+__DZCO_EXPORT bool dzIdentFOL(double t[], double r[], double y[], int n, int trig, double *tc, double *gain);
 
 /* ********************************************************** */
 /* second-order-lag system identification
@@ -91,8 +89,8 @@ __EXPORT bool dzIdentFOL(double t[], double r[], double y[], int n, int trig, do
  * the system. Or, the false value is returned if it fails to
  * allocate internal workspace.
  */
-__EXPORT void dzIdentSOL1(double t[], double r[], double y[], int n, int trig, double *tc, double *z, double *gain);
-__EXPORT bool dzIdentSOL(double t[], double r[], double y[], int n, int trig, double *tc, double *z, double *gain);
+__DZCO_EXPORT void dzIdentSOL1(double t[], double r[], double y[], int n, int trig, double *tc, double *z, double *gain);
+__DZCO_EXPORT bool dzIdentSOL(double t[], double r[], double y[], int n, int trig, double *tc, double *z, double *gain);
 
 __END_DECLS
 

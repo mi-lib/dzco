@@ -31,9 +31,9 @@ __BEGIN_DECLS
  * dzSysLinCreate() returns the null pointer if \a dt is too
  * short or negative. Otherwise, a pointer \a sys is returned.
  */
-__EXPORT dzSys *dzSysLinCreate(dzSys *sys, dzLin *lin);
+__DZCO_EXPORT dzSys *dzSysLinCreate(dzSys *sys, dzLin *lin);
 
-extern dzSysCom dz_sys_lin_com;
+__DZCO_EXPORT dzSysCom dz_sys_lin_com;
 
 __END_DECLS
 
