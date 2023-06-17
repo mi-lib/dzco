@@ -35,8 +35,8 @@ int main(void)
   printf( ">>Uo<<\n" );
   zMatPrint( dzLinObsMat( &lin, u ) );
   zMatFree( u );
-  eprintf( "controllable -> %s\n", zBoolExpr(dzLinIsCtrl(&lin)) );
-  eprintf( "observable -> %s\n", zBoolExpr(dzLinIsObs(&lin)) );
+  eprintf( "controllable -> %s\n", zBoolStr(dzLinIsCtrl(&lin)) );
+  eprintf( "observable -> %s\n", zBoolStr(dzLinIsObs(&lin)) );
   dzLinDestroy( &lin );
   return 0;
 }
