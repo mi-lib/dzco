@@ -1,5 +1,3 @@
-include ../../config
-
 INCLUDE=`dzco-config -I`
 LIB=`dzco-config -L`
 LINK=`dzco-config -l`
