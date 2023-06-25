@@ -167,7 +167,7 @@ void output(int i)
   FILE *fp;
   static char buf[BUFSIZ], nbuf[5];
 
-  sprintf( buf, "log/dat%s", itoa_zerofill(i,4,nbuf) );
+  sprintf( buf, "log/dat%s", zI2AZeroFill(i,4,nbuf) );
   fp = fopen( buf, "w" );
   printf( "%f %f %f %f\n", xt, x, dzSysOutputVal(&nms,0), zVecElem(((dzLin *)nms.prp)->x,0) );
   fprintf( fp, "0 0\n" );
