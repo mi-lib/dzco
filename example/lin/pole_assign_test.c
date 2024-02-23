@@ -1,53 +1,50 @@
 #include <dzco/dz_lin.h>
 
+#define DIM 5
+#define TOL 1.0e-8
+
 void check(dzLin *c, zVec f, zVec pole)
 {
   zMat tmp1, tmp2;
   register int i, j;
   double det;
-
-  printf( ">> desired poles\n" );
-  zVecPrint( pole );
-  printf( ">> obtained feedback gains\n" );
-  zVecPrint( f );
+  int count;
 
   tmp1 = zMatAllocSqr( dzLinDim(c) );
   tmp2 = zMatAllocSqr( dzLinDim(c) );
   zVecDyad( c->b, f, tmp1 );
   zMatSubDRC( tmp1, c->a );
-  for( i=0; i<zVecSizeNC(pole); i++ ){
+  for( count=0, i=0; i<zVecSizeNC(pole); i++ ){
     zMatCopy( tmp1, tmp2 );
     for( j=0; j<zMatRowSizeNC(tmp2); j++ )
-      zMatElemNC( tmp2, j, j ) += zVecElemNC( pole, i );
-    det = zMatDet( tmp2 );
-    printf( "%g : %g %s one of the eigen values.\n", det, zVecElem(pole,i), zIsTiny(det) ? "is" : "is not" );
+      zMatElemNC(tmp2,j,j) += zVecElemNC(pole,i);
+    if( zIsTol( ( det = zMatDet( tmp2 ) ), TOL ) ){
+      count++;
+    } else{
+      printf( "found non-zero determinant %g.\n", det );
+    }
   }
+  printf( "%d/%d eigen values confirmed.\n", count, zVecSizeNC(pole) );
   zMatFree( tmp1 );
   zMatFree( tmp2 );
 }
 
 int main(void)
 {
-#define DIM 3
-  double a[] = { 0, 1, 2,-5,-4, 1, 0, 0, 3 };
-  double b[] = { 0,-1, 1 };
-  double c[] = { 2, 1, 1 };
-#if 1
-  double p[] = { -1, -2, -3 };
-#else
-  double p[] = { 10, 20, 30 };
-#endif
   dzLin sl;
   zVec f, pole;
+  int dim = DIM;
 
-  dzLinAlloc( &sl, DIM );
-  zMatCopyArray( a, DIM, DIM, sl.a );
-  zVecCopyArray( b, DIM, sl.b );
-  zVecCopyArray( c, DIM, sl.c );
+  zRandInit();
+  dzLinAlloc( &sl, dim );
+  pole = zVecAlloc( dim );
+  zMatRandUniform( sl.a, -10.0, 10.0 );
+  zVecRandUniform( sl.b, -10.0, 10.0 );
+  zVecRandUniform( sl.c, -10.0, 10.0 );
   sl.d = 0;
+  zVecRandUniform( pole, -10.0, 10.0 );
 
-  pole = zVecCloneArray( p, DIM );
-  f = zVecAlloc( DIM );
+  f = zVecAlloc( dim );
 
   dzLinPoleAssign( &sl, pole, f );
   check( &sl, f, pole );

@@ -1,3 +1,7 @@
+2024. 2.23. Modified dzFreqResFromTF to cope with cases where numerator and/or denominator of a transfer function is constant. [dz_tf_fr]
+2024. 2.23. Modified dzTFZeroPole to accept cases where numerator and/or denominator of a transfer function is constant. [dz_tf]
+2024. 2.23. Modified makefile for example programs to remove *.dat when cleaned. [example]
+2024. 2.23. Modified some example programs to output scripts for gnuplot. [example]
 2023. 6.21. Separated config and libinfo. [all]
 2023. 6. 1. Reflected modification of zeda-makefile-gen to keep dzco_export.h. [dzco_export]
 2023. 5.21. Reflected new specification of ZDEF_STRUCT and ZDEF_UNION. [dz_tf, dz_tf_fr, dz_sys, dz_lin]

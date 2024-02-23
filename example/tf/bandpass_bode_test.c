@@ -1,49 +1,54 @@
+/* run this program as
+ % ./bandpass_bode_test | gnuplot -p -
+ */
+
 #include <dzco/dz_tf.h>
 
-#define DIM 2
+#define FRQ_MIN 1.0e-3
+#define FRQ_MAX 1.0e4
 
 #define T 1.0
+
+#define OUTPUT_FILE "bode_result.dat"
+
+void output_plotscript(const char *filename)
+{
+  printf( "clear\n" );
+  printf( "set multiplot\n" );
+  printf( "set logscale x\n" );
+  printf( "set grid\n" );
+  printf( "set size 1.0, 0.5\n" );
+  printf( "set origin 0, 0.5\n" );
+  printf( "plot [%g:%g] '%s' u 1:2 w l t \"low-pass filter gain\", '%s' u 1:4 w l t \"high-pass filter gain\"\n", FRQ_MIN, FRQ_MAX, filename, filename );
+  printf( "set origin 0, 0\n" );
+  printf( "plot [%g:%g] '%s' u 1:3 w l t \"low-pass filter phase lag\", '%s' u 1:5 w l t \"high-pass filter phase lag\"\n", FRQ_MIN, FRQ_MAX, filename, filename );
+}
 
 int main(int argc, char *argv[])
 {
   dzTF lp, hp;
   double frq;
-  dzFreqRes fr;
-  FILE *fp[2];
-
-  fp[0] = fopen( "lp_bode", "w" );
-  fp[1] = fopen( "hp_bode", "w" );
+  dzFreqRes fr_l, fr_h;
+  FILE *fp;
 
   /* low-pass filter */
-#if DIM == 2
   dzTFAlloc( &lp, 0, 2 );
   dzTFSetNumList( &lp, 1.0 );
   dzTFSetDenList( &lp, 1.0, 2*T, T*T );
-#else /* DIM == 1 */
-  dzTFAlloc( &lp, 0, 1 );
-  dzTFSetNumList( &lp, 1.0 );
-  dzTFSetDenList( &lp, 1.0, T );
-#endif
   /* high-pass filter */
-#if DIM == 2
   dzTFAlloc( &hp, 2, 2 );
   dzTFSetNumList( &hp, 0.0, 2*T, T*T );
   dzTFSetDenList( &hp, 1.0, 2*T, T*T );
-#else /* DIM == 1 */
-  dzTFAlloc( &hp, 1, 1 );
-  dzTFSetNumList( &hp, 0.0, T );
-  dzTFSetDenList( &hp, 1.0, T );
-#endif
 
-  for( frq=0.001; frq<10000; frq*=1.2 ){
-    dzFreqResFromTF( &fr, &lp, frq );
-    fprintf( fp[0], "%f %f %f\n", frq, fr.g, fr.p );
-    dzFreqResFromTF( &fr, &hp, frq );
-    fprintf( fp[1], "%f %f %f\n", frq, fr.g, fr.p );
+  fp = fopen( OUTPUT_FILE, "w" );
+  for( frq=FRQ_MIN; frq<FRQ_MAX; frq*=1.2 ){
+    dzFreqResFromTF( &fr_l, &lp, frq );
+    dzFreqResFromTF( &fr_h, &hp, frq );
+    fprintf( fp, "%f %f %f %f %f\n", frq, fr_l.g, fr_l.p, fr_h.g, fr_h.p );
   }
+  fclose( fp );
   dzTFDestroy( &lp );
   dzTFDestroy( &hp );
-  fclose( fp[0] );
-  fclose( fp[1] );
+  output_plotscript( OUTPUT_FILE );
   return 0;
 }

@@ -1,15 +1,29 @@
+/* run this program as
+ % ./fol_tf_test | gnuplot -p -
+ */
+
 #include <dzco/dz_sys.h>
 
-#define DT 0.001
-#define STEP 5000
+#define DT  0.001
+#define DIV 10000
+#define NW  5
+
+#define OUTPUT_FILE "fol_tf.dat"
+
+void output_plotscript(const char *filename)
+{
+  printf( "set grid\n" );
+  printf( "plot '%s' u 1:2 w l t \"reference\", '%s' u 1:3 w l t \"FOL\", '%s' u 1:4 w l t \"FOL-TF\"\n", filename, filename, filename );
+}
 
 int main(int argc, char *argv[])
 {
-  register int i;
+  int i;
   dzTF *tf;
   dzLin *lin;
   dzSys fol, fol_tf;
   double ref;
+  FILE *fp;
 
   dzSysFOLCreate( &fol, 2.0, 1.0 );
   dzSysInputPtr(&fol,0) = &ref;
@@ -23,13 +37,16 @@ int main(int argc, char *argv[])
   dzSysLinCreate( &fol_tf, lin );
   dzSysInputPtr(&fol_tf,0) = &ref;
 
-  for( i=0; i<STEP; i++ ){
-    ref = sin( 6*zPI*i/STEP );
+  fp = fopen( OUTPUT_FILE, "w" );
+  for( i=0; i<DIV; i++ ){
+    ref = sin( NW*2*zPI*i/DIV );
     dzSysUpdate( &fol, DT );
     dzSysUpdate( &fol_tf, DT );
-    printf( "%f %f %f\n", ref, dzSysOutputVal(&fol,0), dzSysOutputVal(&fol_tf,0) );
+    fprintf( fp, "%g %f %f %f\n", DT*i, ref, dzSysOutputVal(&fol,0), dzSysOutputVal(&fol_tf,0) );
   }
+  fclose( fp );
   dzSysDestroy( &fol );
   dzSysDestroy( &fol_tf );
+  output_plotscript( OUTPUT_FILE );
   return 0;
 }

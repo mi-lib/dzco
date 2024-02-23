@@ -1,3 +1,7 @@
+/* run this program as
+ % ./sol_tf_test | gnuplot -p -
+ */
+
 #include <dzco/dz_sys.h>
 
 #define DT      0.001
@@ -9,12 +13,21 @@
 #define D ( 0.5 )
 #define E ( 2.0 )
 
+#define OUTPUT_FILE "sol_tf.dat"
+
+void output_plotscript(const char *filename)
+{
+  printf( "set grid\n" );
+  printf( "plot '%s' u 1:2 w l t \"reference\", '%s' u 1:3 w l t \"SOL\", '%s' u 1:4 w l t \"SOL-TF\"\n", filename, filename, filename );
+}
+
 int main(int argc, char *argv[])
 {
-  register int i;
+  int i;
   dzSys sol, soltf;
   dzTF *tf;
   double ref;
+  FILE *fp;
 
   /* SOL */
   dzSysSOLCreateGeneric( &sol, A, B, C, D, E );
@@ -32,10 +45,15 @@ int main(int argc, char *argv[])
 
   ref = argc > 1 ? atof( argv[1] ) : 1.0;
 
+  fp = fopen( OUTPUT_FILE, "w" );
   for( i=0; i<=STEP; i++ ){
-    printf( "%f %f %f\n", ref, zVecElem(dzSysUpdate(&sol,DT),0), zVecElem(dzSysUpdate(&soltf,DT),0) );
+    dzSysUpdate( &sol,   DT );
+    dzSysUpdate( &soltf, DT );
+    fprintf( fp, "%f %f %f %f\n", DT*i, ref, dzSysOutputVal(&sol,0), dzSysOutputVal(&soltf,0) );
   }
+  fclose( fp );
   dzSysDestroy( &sol );
   dzSysDestroy( &soltf );
+  output_plotscript( OUTPUT_FILE );
   return 0;
 }

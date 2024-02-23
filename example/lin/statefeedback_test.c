@@ -1,4 +1,4 @@
-/* state feedbakc test (following Nakano and Mita's text) */
+/* state feedback test (following Nakano and Mita's text) */
 #include <dzco/dz_sys.h>
 
 #define DT 0.001

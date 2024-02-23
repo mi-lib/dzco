@@ -78,19 +78,23 @@ dzFreqRes *dzFreqResFromTF(dzFreqRes *fr, dzTF *tf, double af)
   fr->f = af / zPIx2;
   fr->g = log10( dzTFNumElem(tf,dzTFNumDim(tf)) / dzTFDenElem(tf,dzTFDenDim(tf)) );
   fr->p = 0;
-  if( !dzTFZero(tf) || !dzTFPole(tf) )
+  if( !dzTFZero(tf) && !dzTFPole(tf) )
     dzTFZeroPole( tf );
-  for( i=0; i<zCVecSizeNC(dzTFZero(tf)); i++ ){
-    zComplexRev( zCVecElemNC(dzTFZero(tf),i), &c );
-    c.im += af;
-    fr->g += log10( zComplexAbs(&c) );
-    fr->p += zRad2Deg( zComplexArg(&c) );
+  if( dzTFZero(tf) ){
+    for( i=0; i<zCVecSizeNC(dzTFZero(tf)); i++ ){
+      zComplexRev( zCVecElemNC(dzTFZero(tf),i), &c );
+      c.im += af;
+      fr->g += log10( zComplexAbs(&c) );
+      fr->p += zRad2Deg( zComplexArg(&c) );
+    }
   }
-  for( i=0; i<zCVecSizeNC(dzTFPole(tf)); i++ ){
-    zComplexRev( zCVecElemNC(dzTFPole(tf),i), &c );
-    c.im += af;
-    fr->g -= log10( zComplexAbs(&c) );
-    fr->p -= zRad2Deg( zComplexArg(&c) );
+  if( dzTFPole(tf) ){
+    for( i=0; i<zCVecSizeNC(dzTFPole(tf)); i++ ){
+      zComplexRev( zCVecElemNC(dzTFPole(tf),i), &c );
+      c.im += af;
+      fr->g -= log10( zComplexAbs(&c) );
+      fr->p -= zRad2Deg( zComplexArg(&c) );
+    }
   }
   fr->g *= 20;
   return fr;

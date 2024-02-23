@@ -147,15 +147,21 @@ bool dzTFZeroPole(dzTF *tf)
 {
   if( dzTFZero(tf) ) zCVecFree( dzTFZero(tf) );
   if( dzTFPole(tf) ) zCVecFree( dzTFPole(tf) );
-  dzTFZero(tf) = zCVecAlloc( dzTFNumDim(tf) );
-  dzTFPole(tf) = zCVecAlloc( dzTFDenDim(tf) );
-  if( !dzTFZero(tf) || !dzTFPole(tf) ){
-    zCVecFree( dzTFZero(tf) );
-    zCVecFree( dzTFPole(tf) );
-    return false;
+  if( dzTFNumDim(tf) > 0 ){
+    if( !( dzTFZero(tf) = zCVecAlloc( dzTFNumDim(tf) ) ) )
+      return false;
+    if( !zPexDKA( dzTFNum(tf), dzTFZero(tf), ZM_PEX_EQ_TOL, 0 ) )
+      return false;
   }
-  return zPexDKA( dzTFNum(tf), dzTFZero(tf), ZM_PEX_EQ_TOL, 0 ) &&
-         zPexDKA( dzTFDen(tf), dzTFPole(tf), ZM_PEX_EQ_TOL, 0 ) ? true : false;
+  if( dzTFDenDim(tf) > 0 ){
+    if( !( dzTFPole(tf) = zCVecAlloc( dzTFDenDim(tf) ) ) ){
+      zCVecFree( dzTFZero(tf) );
+      return false;
+    }
+    if( !zPexDKA( dzTFDen(tf), dzTFPole(tf), ZM_PEX_EQ_TOL, 0 ) )
+      return false;
+  }
+  return true;
 }
 
 /* abstract zeros and poles of a transfer function into real and imaginary values. */
