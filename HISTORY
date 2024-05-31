@@ -1,3 +1,5 @@
+2024. 5.31. Removed test.sh. [test]
+2024. 5.31. Changed the license from LGPL-3 to MIT license. [all]
 2024. 5.13. Added DEPENDENCY in config.app. [app]
 2024. 5.13. Added STD in config.org. [config]
 2024. 5.13. Put config.app in app. [app]
