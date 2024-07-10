@@ -12,25 +12,25 @@
 
 static void _dzSysLinDestroy(dzSys *sys)
 {
-  dzLinDestroy( (dzLin *)sys->prp );
+  dzLinDestroy( dzSysLin(sys) );
   zFree( sys->prp );
 }
 
 static void _dzSysLinRefresh(dzSys *sys)
 {
-  zVecZero( ((dzLin *)sys->prp)->x );
+  zVecZero( dzSysLin(sys)->x );
 }
 
 static zVec _dzSysLinUpdate(dzSys *sys, double dt)
 {
-  dzLinStateUpdate( (dzLin *)sys->prp, dzSysInputVal(sys,0), dt );
-  dzSysOutputVal(sys,0) = dzLinOutput( (dzLin *)sys->prp, dzSysInputVal(sys,0) );
+  dzLinStateUpdate( dzSysLin(sys), dzSysInputVal(sys,0), dt );
+  dzSysOutputVal(sys,0) = dzLinOutput( dzSysLin(sys), dzSysInputVal(sys,0) );
   return dzSysOutput(sys);
 }
 
 static void _dzSysLinFPrintZTK(FILE *fp, dzSys *sys)
 {
-  dzLinFPrintZTK( fp, (dzLin *)sys->prp );
+  dzLinFPrintZTK( fp, dzSysLin(sys) );
 }
 
 static dzSys *_dzSysLinFromZTK(dzSys *sys, ZTK *ztk)

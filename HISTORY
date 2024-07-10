@@ -1,3 +1,5 @@
+2024. 7.10. Added dzSysLin. [dz_sys_lin, example]
+2024. 7.10. Modified makefile in example to automatically make and remove log directory. [example]
 2024. 5.31. Removed test.sh. [test]
 2024. 5.31. Changed the license from LGPL-3 to MIT license. [all]
 2024. 5.13. Added DEPENDENCY in config.app. [app]

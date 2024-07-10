@@ -33,6 +33,8 @@ __BEGIN_DECLS
  */
 __DZCO_EXPORT dzSys *dzSysLinCreate(dzSys *sys, dzLin *lin);
 
+#define dzSysLin(sys) ((dzLin *)((sys)->prp))
+
 __DZCO_EXPORT dzSysCom dz_sys_lin_com;
 
 __END_DECLS

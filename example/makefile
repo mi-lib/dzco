@@ -6,6 +6,7 @@ CC=gcc
 CFLAGS=-ansi -Wall -O3 $(LIB) $(INCLUDE) -funroll-loops
 
 %: %.c
+	$(shell test -d log || mkdir -p log)
 	$(CC) $(CFLAGS) -o $@ $< $(LINK)
 clean :
-	rm -f *.o *~ core *test *.dat
+	rm -fr *.o *~ core *test log *.dat
