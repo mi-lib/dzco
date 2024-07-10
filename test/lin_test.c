@@ -94,7 +94,7 @@ void assert_lqr(void)
     q2 = zRandF( zTOL, 10 );
     r = zRandF( zTOL, 10 );
     zVecSetElemList( q, 1.0, q2 );
-    if( !dzLinLQR( sys.prp, q, r, opt_gain ) ) exit( 1 );
+    if( !dzLinLQR( (dzLin*)(sys.prp), q, r, opt_gain ) ) exit( 1 );
     /* compare with analytical solution */
     if( !zIsTiny( zVecElemNC(opt_gain,0) - 1.0/sqrt(r) ) ||
         !zIsTiny( zVecElemNC(opt_gain,1) - sqrt(2*sqrt(r)+q2)/sqrt(r) ) ){

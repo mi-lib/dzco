@@ -43,7 +43,7 @@ void reg_create(void)
   q = zVecCreateList( DIM, Q1, Q2 );
   r = R;
   opt_gain = zVecAlloc( DIM );
-  if( !dzLinLQR( sys.prp, q, r, opt_gain ) ) exit( 1 );
+  if( !dzLinLQR( ((dzLin*)sys.prp), q, r, opt_gain ) ) exit( 1 );
   /* answer: [ 1 1 ] */
   zVecFPrint( stderr, opt_gain );
   zVecFree( q );
@@ -61,7 +61,7 @@ int main(int argc, char *argv[])
   if( argc > 1 ) zVecSetElem( ((dzLin *)sys.prp)->x, 0, atof(argv[1]) );
   for( i=0; i<STEP; i++ ){
     printf( "%g %g %g %g\n", input, zVecElem(ref,0), zVecElem(((dzLin*)sys.prp)->x,0), dzSysOutputVal(&sys,0) );
-    input = dzLinStateFeedback( sys.prp, ref, opt_gain );
+    input = dzLinStateFeedback( ((dzLin *)sys.prp), ref, opt_gain );
     dzSysUpdate( &sys, DT );
   }
   zVecFree( opt_gain );

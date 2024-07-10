@@ -90,7 +90,7 @@ void regulator_create(void)
   q = zVecCreateList( DIM, Q1, Q1, Q2, Q2 );
   r = R;
   opt_gain = zVecAlloc( DIM );
-  if( !dzLinLQR( nms.prp, q, r, opt_gain ) ) exit( 1 );
+  if( !dzLinLQR( ((dzLin*)nms.prp), q, r, opt_gain ) ) exit( 1 );
   zVecFree( q );
 }
 
@@ -106,7 +106,7 @@ void observer_create(void)
 
   pole = zVecCreateList( DIM, P1, P2, P3, P4 );
   obs_gain = zVecAlloc( DIM );
-  if( !dzLinCreateObs( nms.prp, pole, obs_gain ) ) exit( 1 );
+  if( !dzLinCreateObs( ((dzLin*)nms.prp), pole, obs_gain ) ) exit( 1 );
   zVecFree( pole );
 }
 
@@ -191,10 +191,10 @@ int main(int argc, char *argv[])
   if( argc > 2 ) zVecSetElem( ref, 0, atof(argv[2]) );
   for( i=0; i<STEP; i++ ){
     output( i );
-    input = dzLinStateFeedback( nms.prp, ref, opt_gain );
-    dzSysOutputVal(&nms,0) = dzLinOutput( nms.prp, dzSysInputVal(&nms,0) );
+    input = dzLinStateFeedback( ((dzLin*)nms.prp), ref, opt_gain );
+    dzSysOutputVal(&nms,0) = dzLinOutput( ((dzLin*)nms.prp), dzSysInputVal(&nms,0) );
     plant_output();
-    dzLinObsUpdate( nms.prp, obs_gain, dzSysInputVal(&nms,0), dzSysOutputVal(&nms,0)-xt, DT );
+    dzLinObsUpdate( ((dzLin*)nms.prp), obs_gain, dzSysInputVal(&nms,0), dzSysOutputVal(&nms,0)-xt, DT );
     plant_update( dzSysInputVal(&nms,0) );
   }
   output( STEP );
