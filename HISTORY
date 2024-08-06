@@ -1,3 +1,5 @@
+2024. 8. 6. Modified makefile in example to enable batch compilation of all examples in the same directory. [example]
+2024. 8. 6. Reflect renaming of zVecFreeAtOnce and zMatFreeAtOnce. [dz_lin, dz_ident_lag]
 2024. 7.10. Added dzSysLin. [dz_sys_lin, example]
 2024. 7.10. Modified makefile in example to automatically make and remove log directory. [example]
 2024. 5.31. Removed test.sh. [test]

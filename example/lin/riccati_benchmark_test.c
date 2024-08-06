@@ -116,7 +116,7 @@ int main(void)
     result_kleinman = zMatIsTiny( res );
     printf( "case #%d: Euler=%s, Kleinman=%s\n", i, zBoolStr(result_euler), zBoolStr(result_kleinman) );
     dzLinDestroy( &lin );
-    zMatFreeAO( 3, q, p, res );
+    zMatFreeAtOnce( 3, q, p, res );
   }
   return 0;
 }

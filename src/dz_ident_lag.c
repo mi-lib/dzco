@@ -94,7 +94,7 @@ bool dzIdentFOL(double t[], double r[], double y[], int n, int trig, double *tc,
   zOptSolveNM( _dzIdentFOLEval, &ws, prm_min, prm_max, 0, zTOL, prm, NULL );
   *tc   = zVecElem( prm, 0 );
   *gain = zVecElem( prm, 1 );
-  zVecFreeAO( 3, prm, prm_min, prm_max );
+  zVecFreeAtOnce( 3, prm, prm_min, prm_max );
   return true;
 }
 
@@ -211,6 +211,6 @@ bool dzIdentSOL(double t[], double r[], double y[], int n, int trig, double *tc,
   *tc   = zVecElem( prm, 0 );
   *z    = zVecElem( prm, 1 );
   *gain = zVecElem( prm, 2 );
-  zVecFreeAO( 3, prm, prm_min, prm_max );
+  zVecFreeAtOnce( 3, prm, prm_min, prm_max );
   return true;
 }

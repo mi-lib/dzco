@@ -288,7 +288,7 @@ zVec dzLinPoleAssign(dzLin *c, zVec pole, zVec f)
   zMulMatTVecDRC( t, f );
 
  TERMINATE:
-  zMatFreeAO( 3, a, tmp, t );
+  zMatFreeAtOnce( 3, a, tmp, t );
   zPexFree( eig );
   return f;
 }
