@@ -37,11 +37,13 @@ static void *_dzSysFOLGainFromZTK(void *val, int i, void *arg, ZTK *ztk){
   return val;
 }
 
-static void _dzSysFOLTcFPrintZTK(FILE *fp, int i, void *prp){
+static bool _dzSysFOLTcFPrintZTK(FILE *fp, int i, void *prp){
   fprintf( fp, "%.10g\n", __dz_sys_fol_tc((dzSys*)prp) );
+  return true;
 }
-static void _dzSysFOLGainFPrintZTK(FILE *fp, int i, void *prp){
+static bool _dzSysFOLGainFPrintZTK(FILE *fp, int i, void *prp){
   fprintf( fp, "%.10g\n", __dz_sys_fol_gain((dzSys*)prp) );
+  return true;
 }
 
 static ZTKPrp __ztk_prp_dzsys_fol[] = {
@@ -146,17 +148,21 @@ static void *_dzSysSOLGainFromZTK(void *val, int i, void *arg, ZTK *ztk){
   return val;
 }
 
-static void _dzSysSOLT1FPrintZTK(FILE *fp, int i, void *prp){
+static bool _dzSysSOLT1FPrintZTK(FILE *fp, int i, void *prp){
   fprintf( fp, "%.10g\n", __dz_sys_sol_t1((dzSys*)prp) );
+  return true;
 }
-static void _dzSysSOLT2FPrintZTK(FILE *fp, int i, void *prp){
+static bool _dzSysSOLT2FPrintZTK(FILE *fp, int i, void *prp){
   fprintf( fp, "%.10g\n", __dz_sys_sol_t2((dzSys*)prp) );
+  return true;
 }
-static void _dzSysSOLDampFPrintZTK(FILE *fp, int i, void *prp){
+static bool _dzSysSOLDampFPrintZTK(FILE *fp, int i, void *prp){
   fprintf( fp, "%.10g\n", __dz_sys_sol_damp((dzSys*)prp) );
+  return true;
 }
-static void _dzSysSOLGainFPrintZTK(FILE *fp, int i, void *prp){
+static bool _dzSysSOLGainFPrintZTK(FILE *fp, int i, void *prp){
   fprintf( fp, "%.10g\n", __dz_sys_sol_gain((dzSys*)prp) );
+  return true;
 }
 
 static ZTKPrp __ztk_prp_dzsys_sol[] = {
@@ -250,14 +256,17 @@ static void *_dzSysPCGainFromZTK(void *val, int i, void *arg, ZTK *ztk){
   return val;
 }
 
-static void _dzSysPCT1FPrintZTK(FILE *fp, int i, void *prp){
+static bool _dzSysPCT1FPrintZTK(FILE *fp, int i, void *prp){
   fprintf( fp, "%.10g\n", __dz_sys_pc_t1((dzSys*)prp) );
+  return true;
 }
-static void _dzSysPCT2FPrintZTK(FILE *fp, int i, void *prp){
+static bool _dzSysPCT2FPrintZTK(FILE *fp, int i, void *prp){
   fprintf( fp, "%.10g\n", __dz_sys_pc_t2((dzSys*)prp) );
+  return true;
 }
-static void _dzSysPCGainFPrintZTK(FILE *fp, int i, void *prp){
+static bool _dzSysPCGainFPrintZTK(FILE *fp, int i, void *prp){
   fprintf( fp, "%.10g\n", __dz_sys_pc_gain((dzSys*)prp) );
+  return true;
 }
 
 static ZTKPrp __ztk_prp_dzsys_pc[] = {
@@ -343,11 +352,13 @@ static void *_dzSysAdaptBaseFromZTK(void *val, int i, void *arg, ZTK *ztk){
   return val;
 }
 
-static void _dzSysAdaptTcFPrintZTK(FILE *fp, int i, void *prp){
+static bool _dzSysAdaptTcFPrintZTK(FILE *fp, int i, void *prp){
   fprintf( fp, "%.10g\n", __dz_sys_adapt_tc((dzSys*)prp) );
+  return true;
 }
-static void _dzSysAdaptBaseFPrintZTK(FILE *fp, int i, void *prp){
+static bool _dzSysAdaptBaseFPrintZTK(FILE *fp, int i, void *prp){
   fprintf( fp, "%.10g\n", __dz_sys_adapt_base((dzSys*)prp) );
+  return true;
 }
 
 static ZTKPrp __ztk_prp_dzsys_adapt[] = {

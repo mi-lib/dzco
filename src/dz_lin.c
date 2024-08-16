@@ -547,17 +547,21 @@ static void *_dzLinDFromZTK(void *obj, int i, void *arg, ZTK *ztk){
   return obj;
 }
 
-static void _dzLinAFPrintZTK(FILE *fp, int i, void *prp){
+static bool _dzLinAFPrintZTK(FILE *fp, int i, void *prp){
   zMatFPrint( fp, ((dzLin*)prp)->a );
+  return true;
 }
-static void _dzLinBFPrintZTK(FILE *fp, int i, void *prp){
+static bool _dzLinBFPrintZTK(FILE *fp, int i, void *prp){
   zVecFPrint( fp, ((dzLin*)prp)->b );
+  return true;
 }
-static void _dzLinCFPrintZTK(FILE *fp, int i, void *prp){
+static bool _dzLinCFPrintZTK(FILE *fp, int i, void *prp){
   zVecFPrint( fp, ((dzLin*)prp)->c );
+  return true;
 }
-static void _dzLinDFPrintZTK(FILE *fp, int i, void *prp){
+static bool _dzLinDFPrintZTK(FILE *fp, int i, void *prp){
   fprintf( fp, "%.10g\n", ((dzLin*)prp)->d );
+  return true;
 }
 
 static ZTKPrp __ztk_prp_dzlin[] = {

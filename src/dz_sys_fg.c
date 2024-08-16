@@ -35,14 +35,17 @@ static void *_dzSysFGPeriodFromZTK(void *val, int i, void *arg, ZTK *ztk){
   ((double*)val)[2] = ZTKDouble(ztk);
   return val;
 }
-static void _dzSysFGAmpFPrintZTK(FILE *fp, int i, void *prp){
+static bool _dzSysFGAmpFPrintZTK(FILE *fp, int i, void *prp){
   fprintf( fp, "%.10g\n", __dz_sys_fg_amp((dzSys*)prp) );
+  return true;
 }
-static void _dzSysFGDelayFPrintZTK(FILE *fp, int i, void *prp){
+static bool _dzSysFGDelayFPrintZTK(FILE *fp, int i, void *prp){
   fprintf( fp, "%.10g\n", __dz_sys_fg_delay((dzSys*)prp) );
+  return true;
 }
-static void _dzSysFGPeriodFPrintZTK(FILE *fp, int i, void *prp){
+static bool _dzSysFGPeriodFPrintZTK(FILE *fp, int i, void *prp){
   fprintf( fp, "%.10g\n", __dz_sys_fg_period((dzSys*)prp) );
+  return true;
 }
 static ZTKPrp __ztk_prp_dzsys_fg[] = {
   { "amp", 1, _dzSysFGAmpFromZTK, _dzSysFGAmpFPrintZTK },
