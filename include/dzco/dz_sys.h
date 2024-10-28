@@ -120,8 +120,8 @@ __DZCO_EXPORT void dzSysDefaultDestroy(dzSys *sys);
 /* default refreshing method */
 __DZCO_EXPORT void dzSysDefaultRefresh(dzSys *sys);
 
-#define ZTK_TAG_DZSYS "sys"
-#define ZTK_TAG_DZSYS_CONNECT "connect"
+#define ZTK_TAG_DZSYS "dzco::sys"
+#define ZTK_TAG_DZSYS_CONNECT "dzco::sys::connect"
 
 __DZCO_EXPORT void *dzSysFromZTK(dzSys *sys, ZTK *ztk);
 

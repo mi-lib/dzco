@@ -1,15 +1,15 @@
-[sys]
+[dzco::sys]
 name: ref
 type: step
 amp: 1.0
 delay: 0
 
-[sys]
+[dzco::sys]
 name: sub
 type: subtr
 in: 2
 
-[sys]
+[dzco::sys]
 name: PID
 type: PID
 pgain: 10.0
@@ -18,17 +18,17 @@ dgain: 5.0
 tc: 0
 fgt: 0
 
-[sys]
+[dzco::sys]
 name: intg1
 type: integrator
 gain: 1.0
 
-[sys]
+[dzco::sys]
 name: intg2
 type: integrator
 gain: 1.0
 
-[connect]
+[dzco::sys::connect]
 sub 0 PID 0
 PID 0 intg1 0
 intg1 0 intg2 0

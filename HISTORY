@@ -1,3 +1,4 @@
+2024.10.28. Redefined ZTK_TAG_DZSYS and ZTK_TAG_DZSYS_CONNECT as "dzco::sys" and "dzco::sys::connect", respectively. [dz_sys]
 2024. 8.16. Modified *FPrintZTK to respond to the new specification of _ZTKPrpKeyFPrint. [dz_tf, dz_lin, dz_sys, dz_sys_misc, dz_sys_pid, dz_sys_lag, dz_sys_filt_maf, dz_sys_filt_bw, dz_sys_fg]
 2024. 8. 6. Modified makefile in example to enable batch compilation of all examples in the same directory. [example]
 2024. 8. 6. Reflect renaming of zVecFreeAtOnce and zMatFreeAtOnce. [dz_lin, dz_ident_lag]
