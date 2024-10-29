@@ -208,9 +208,9 @@ static bool _dzSysArrayConnectFPrintZTK(FILE *fp, int i, void *obj){
   return true;
 }
 
-static ZTKPrp __ztk_prp_tag_dzsys[] = {
-  { ZTK_TAG_DZSYS, -1, _dzSysArraySysFromZTK, NULL },
-  { ZTK_TAG_DZSYS_CONNECT, 1, _dzSysArrayConnectFromZTK, _dzSysArrayConnectFPrintZTK },
+static ZTKPrp __ztk_prp_tag_dzco_sys[] = {
+  { ZTK_TAG_DZCO_SYS, -1, _dzSysArraySysFromZTK, NULL },
+  { ZTK_TAG_DZCO_SYS_CONNECT, 1, _dzSysArrayConnectFromZTK, _dzSysArrayConnectFPrintZTK },
 };
 
 /* read the current position of a ZTK file and create an array of systems. */
@@ -218,12 +218,12 @@ dzSysArray *dzSysArrayFromZTK(dzSysArray *sarray, ZTK *ztk)
 {
   int num_sys;
 
-  if( ( num_sys = ZTKCountTag( ztk, ZTK_TAG_DZSYS ) ) == 0 ){
+  if( ( num_sys = ZTKCountTag( ztk, ZTK_TAG_DZCO_SYS ) ) == 0 ){
     ZRUNWARN( DZ_WARN_SYSARRAY_EMPTY );
     return NULL;
   }
   if( !dzSysArrayAlloc( sarray, num_sys ) ) return NULL;
-  ZTKEvalTag( sarray, NULL, ztk, __ztk_prp_tag_dzsys );
+  ZTKEvalTag( sarray, NULL, ztk, __ztk_prp_tag_dzco_sys );
   return sarray;
 }
 
@@ -233,11 +233,11 @@ void dzSysArrayFPrintZTK(FILE *fp, dzSysArray *arr)
   int i;
 
   for( i=0; i<zArraySize(arr); i++ ){
-    fprintf( fp, "[%s]\n", ZTK_TAG_DZSYS );
+    fprintf( fp, "[%s]\n", ZTK_TAG_DZCO_SYS );
     dzSysFPrintZTK( fp, zArrayElemNC(arr,i) );
     fprintf( fp, "\n" );
   }
-  ZTKPrpTagFPrint( fp, arr, __ztk_prp_tag_dzsys );
+  ZTKPrpTagFPrint( fp, arr, __ztk_prp_tag_dzco_sys );
 }
 
 /* read a ZTK file and create an array of systems. */
