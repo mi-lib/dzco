@@ -6,11 +6,6 @@
 
 #include <dzco/dz_lin.h>
 
-/* ********************************************************** */
-/* CLASS: dzLin
- * general linear system
- * ********************************************************** */
-
 /* compute state velocity. */
 static zVec __dz_lin_state_dif(double t, zVec x, void *sys, zVec dx)
 {
@@ -169,11 +164,8 @@ zMat dzLinObsMat(dzLin *c, zMat m)
   return m;
 }
 
-static double _dzLinCODet(dzLin *c, zMat (*func)(dzLin*,zMat));
-static bool _dzLinIsCO(dzLin *c, zMat (*func)(dzLin*,zMat));
-
 /* internal operation for dzLinIsCtrl and dzLinIsObs. */
-double _dzLinCODet(dzLin *c, zMat (*func)(dzLin*,zMat))
+static double _dzLinCODet(dzLin *c, zMat (*func)(dzLin*,zMat))
 {
   zMat m;
   double amax, val;
@@ -190,7 +182,7 @@ double _dzLinCODet(dzLin *c, zMat (*func)(dzLin*,zMat))
 }
 
 /* internal operation for dzLinIsCtrl and dzLinIsObs. */
-bool _dzLinIsCO(dzLin *c, zMat (*func)(dzLin*,zMat))
+static bool _dzLinIsCO(dzLin *c, zMat (*func)(dzLin*,zMat))
 {
   return !zIsTiny( _dzLinCODet( c, func ) ) ? true : false;
 }
@@ -487,8 +479,7 @@ static dzLin *_dzTF2LinObsCanon_tf(dzTF *tf, dzLin *lin)
   return lin;
 }
 
-static dzLin *_dzTF2LinCanon_non_tf(dzTF *tf, dzLin *lin, dzLin *(*tf2lin_tf)(dzTF*,dzLin*));
-dzLin *_dzTF2LinCanon_non_tf(dzTF *tf, dzLin *lin, dzLin *(*tf2lin_tf)(dzTF*,dzLin*))
+static dzLin *_dzTF2LinCanon_non_tf(dzTF *tf, dzLin *lin, dzLin *(*tf2lin_tf)(dzTF*,dzLin*))
 {
   zPex q, org_num, new_num;
 
@@ -513,8 +504,7 @@ dzLin *_dzTF2LinCanon_non_tf(dzTF *tf, dzLin *lin, dzLin *(*tf2lin_tf)(dzTF*,dzL
   return lin;
 }
 
-static dzLin *_dzTF2LinCanon(dzTF *tf, dzLin *lin, dzLin *(*tf2lin_tf)(dzTF*,dzLin*));
-dzLin *_dzTF2LinCanon(dzTF *tf, dzLin *lin, dzLin *(*tf2lin_tf)(dzTF*,dzLin*))
+static dzLin *_dzTF2LinCanon(dzTF *tf, dzLin *lin, dzLin *(*tf2lin_tf)(dzTF*,dzLin*))
 {
   if( dzTFDenDim(tf) < dzTFNumDim(tf) ){ /* non-proper case */
     ZRUNERROR( DZ_ERR_TF_NONPROPER );
@@ -532,6 +522,8 @@ dzLin *dzTF2LinCtrlCanon(dzTF *tf, dzLin *lin){
 dzLin *dzTF2LinObsCanon(dzTF *tf, dzLin *lin){
   return _dzTF2LinCanon( tf, lin, _dzTF2LinObsCanon_tf );
 }
+
+/* ZTK */
 
 static void *_dzLinAFromZTK(void *obj, int i, void *arg, ZTK *ztk){
   return ( ((dzLin*)obj)->a = zMatFromZTK( ztk ) ) ? obj : NULL;
@@ -565,10 +557,10 @@ static bool _dzLinDFPrintZTK(FILE *fp, int i, void *prp){
 }
 
 static ZTKPrp __ztk_prp_dzlin[] = {
-  { "a", 1, _dzLinAFromZTK, _dzLinAFPrintZTK },
-  { "b", 1, _dzLinBFromZTK, _dzLinBFPrintZTK },
-  { "c", 1, _dzLinCFromZTK, _dzLinCFPrintZTK },
-  { "d", 1, _dzLinDFromZTK, _dzLinDFPrintZTK },
+  { ZTK_KEY_DZCO_LIN_A, 1, _dzLinAFromZTK, _dzLinAFPrintZTK },
+  { ZTK_KEY_DZCO_LIN_B, 1, _dzLinBFromZTK, _dzLinBFPrintZTK },
+  { ZTK_KEY_DZCO_LIN_C, 1, _dzLinCFromZTK, _dzLinCFPrintZTK },
+  { ZTK_KEY_DZCO_LIN_D, 1, _dzLinDFromZTK, _dzLinDFPrintZTK },
 };
 
 dzLin *dzLinFromZTK(dzLin *lin, ZTK *ztk)

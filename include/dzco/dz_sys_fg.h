@@ -51,6 +51,12 @@ dzSysFGPrototype( Ramp, ramp ); /* ramp */
 dzSysFGPrototype( Sine, sine ); /* sinusoid */
 dzSysFGPrototype( Whitenoise, whitenoise ); /* whitenoise */
 
+/* ZTK */
+
+#define ZTK_KEY_DZCO_SYS_FG_AMP    "amp"
+#define ZTK_KEY_DZCO_SYS_FG_DELAY  "delay"
+#define ZTK_KEY_DZCO_SYS_FG_PERIOD "period"
+
 __END_DECLS
 
 #endif /* __DZ_SYS_FG_H__ */

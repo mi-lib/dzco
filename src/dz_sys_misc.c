@@ -17,7 +17,7 @@ static bool _dzSysMIInFPrintZTK(FILE *fp, int i, void *prp){
 }
 
 static ZTKPrp __ztk_prp_dzsys_mi[] = {
-  { "in", 1, _dzSysMIInFromZTK, _dzSysMIInFPrintZTK },
+  { ZTK_KEY_DZCO_SYS_INPUTNUM, 1, _dzSysMIInFromZTK, _dzSysMIInFPrintZTK },
 };
 
 static void _dzSysMIFPrintZTK(FILE *fp, dzSys *sys)
@@ -136,8 +136,8 @@ static bool _dzSysLimitMaxFPrintZTK(FILE *fp, int i, void *prp){
 }
 
 static ZTKPrp __ztk_prp_dzsys_limit[] = {
-  { "min", 1, _dzSysLimitMinFromZTK, _dzSysLimitMinFPrintZTK },
-  { "max", 1, _dzSysLimitMaxFromZTK, _dzSysLimitMaxFPrintZTK },
+  { ZTK_KEY_DZCO_SYS_LIMIT_MIN, 1, _dzSysLimitMinFromZTK, _dzSysLimitMinFPrintZTK },
+  { ZTK_KEY_DZCO_SYS_LIMIT_MAX, 1, _dzSysLimitMaxFromZTK, _dzSysLimitMaxFPrintZTK },
 };
 
 static dzSys *_dzSysLimitFromZTK(dzSys *sys, ZTK *ztk)

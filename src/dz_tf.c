@@ -222,11 +222,11 @@ static bool _dzTFDenFPrintZTK(FILE *fp, int i, void *prp){
 }
 
 static ZTKPrp __ztk_prp_dztf[] = {
-  { "num", 1, _dzTFNumFromZTK, _dzTFNumFPrintZTK },
-  { "den", 1, _dzTFDenFromZTK, _dzTFDenFPrintZTK },
-  { "zero", 1, _dzTFZeroFromZTK, NULL },
-  { "pole", 1, _dzTFPoleFromZTK, NULL },
-  { "gain", 1, _dzTFGainFromZTK, NULL },
+  { ZTK_KEY_DZCO_TF_NUMERATOR, 1, _dzTFNumFromZTK, _dzTFNumFPrintZTK },
+  { ZTK_KEY_DZCO_TF_DENOMINATOR, 1, _dzTFDenFromZTK, _dzTFDenFPrintZTK },
+  { ZTK_KEY_DZCO_TF_ZERO, 1, _dzTFZeroFromZTK, NULL },
+  { ZTK_KEY_DZCO_TF_POLE, 1, _dzTFPoleFromZTK, NULL },
+  { ZTK_KEY_DZCO_TF_GAIN, 1, _dzTFGainFromZTK, NULL },
 };
 
 dzTF *dzTFFromZTK(dzTF *tf, ZTK *ztk)

@@ -48,9 +48,9 @@ static bool _dzSysFGPeriodFPrintZTK(FILE *fp, int i, void *prp){
   return true;
 }
 static ZTKPrp __ztk_prp_dzsys_fg[] = {
-  { "amp", 1, _dzSysFGAmpFromZTK, _dzSysFGAmpFPrintZTK },
-  { "delay", 1, _dzSysFGDelayFromZTK, _dzSysFGDelayFPrintZTK },
-  { "period", 1, _dzSysFGPeriodFromZTK, _dzSysFGPeriodFPrintZTK },
+  { ZTK_KEY_DZCO_SYS_FG_AMP, 1, _dzSysFGAmpFromZTK, _dzSysFGAmpFPrintZTK },
+  { ZTK_KEY_DZCO_SYS_FG_DELAY, 1, _dzSysFGDelayFromZTK, _dzSysFGDelayFPrintZTK },
+  { ZTK_KEY_DZCO_SYS_FG_PERIOD, 1, _dzSysFGPeriodFromZTK, _dzSysFGPeriodFPrintZTK },
 };
 
 static void _dzSysFGFPrintZTK(FILE *fp, dzSys *sys)

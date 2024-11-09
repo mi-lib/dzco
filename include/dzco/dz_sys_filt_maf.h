@@ -11,7 +11,7 @@
 
 __BEGIN_DECLS
 
-/* value map: [ff][inverse of variance] */
+/* value map: [forgetting-factor][inverse of variance] */
 
 __DZCO_EXPORT dzSys *dzSysMAFCreate(dzSys *sys, double ff);
 

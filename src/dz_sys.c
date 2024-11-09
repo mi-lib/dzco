@@ -69,6 +69,8 @@ static dzSys *_dzSysQueryAssign(dzSys *sys, const char *str)
   return NULL;
 }
 
+/* ZTK */
+
 static void *_dzSysNameFromZTK(void *obj, int i, void *arg, ZTK *ztk){
   return zNameSet( (dzSys*)obj, ZTKVal(ztk) ) ? obj : NULL;
 }
@@ -86,8 +88,8 @@ static bool _dzSysTypeFPrintZTK(FILE *fp, int i, void *obj){
 }
 
 static ZTKPrp __ztk_prp_dzsys[] = {
-  { "name", 1, _dzSysNameFromZTK, _dzSysNameFPrintZTK },
-  { "type", 1, _dzSysTypeFromZTK, _dzSysTypeFPrintZTK },
+  { ZTK_KEY_DZCO_SYS_NAME, 1, _dzSysNameFromZTK, _dzSysNameFPrintZTK },
+  { ZTK_KEY_DZCO_SYS_TYPE, 1, _dzSysTypeFromZTK, _dzSysTypeFPrintZTK },
 };
 
 void *dzSysFromZTK(dzSys *sys, ZTK *ztk)

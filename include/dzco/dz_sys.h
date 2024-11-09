@@ -120,8 +120,29 @@ __DZCO_EXPORT void dzSysDefaultDestroy(dzSys *sys);
 /* default refreshing method */
 __DZCO_EXPORT void dzSysDefaultRefresh(dzSys *sys);
 
-#define ZTK_TAG_DZCO_SYS "dzco::sys"
-#define ZTK_TAG_DZCO_SYS_CONNECT "dzco::sys::connect"
+/* ZTK */
+
+#define ZTK_TAG_DZCO_SYS                  "dzco::sys"
+#define ZTK_TAG_DZCO_SYS_CONNECT          "dzco::sys::connect"
+
+#define ZTK_KEY_DZCO_SYS_NAME             "name"
+#define ZTK_KEY_DZCO_SYS_TYPE             "type"
+#define ZTK_KEY_DZCO_SYS_INPUTNUM         "in"
+#define ZTK_KEY_DZCO_SYS_TIMECONSTANT     "timeconstant"
+#define ZTK_KEY_DZCO_SYS_T1               "t1"
+#define ZTK_KEY_DZCO_SYS_T2               "t2"
+#define ZTK_KEY_DZCO_SYS_GAIN             "gain"
+#define ZTK_KEY_DZCO_SYS_PGAIN            "pgain"
+#define ZTK_KEY_DZCO_SYS_IGAIN            "igain"
+#define ZTK_KEY_DZCO_SYS_DGAIN            "dgain"
+#define ZTK_KEY_DZCO_SYS_DAMPING          "damping"
+#define ZTK_KEY_DZCO_SYS_BASE             "base"
+#define ZTK_KEY_DZCO_SYS_QPD_EPS          "eps"
+#define ZTK_KEY_DZCO_SYS_LIMIT_MIN        "min"
+#define ZTK_KEY_DZCO_SYS_LIMIT_MAX        "max"
+#define ZTK_KEY_DZCO_SYS_CUTOFFFREQ       "cutofffrequency"
+#define ZTK_KEY_DZCO_SYS_FORGETTINGFACTOR "forgettingfactor"
+#define ZTK_KEY_DZCO_SYS_DIM              "dim"
 
 __DZCO_EXPORT void *dzSysFromZTK(dzSys *sys, ZTK *ztk);
 

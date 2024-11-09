@@ -134,6 +134,14 @@ __DZCO_EXPORT bool dzTFZeroPole(dzTF *tf);
  */
 __DZCO_EXPORT bool dzTFZeroPoleReIm(dzTF *tf, zVec *zero1, zCVec *zero2, zVec *pole1, zCVec *pole2);
 
+/* ZTK */
+
+#define ZTK_KEY_DZCO_TF_NUMERATOR   "num"
+#define ZTK_KEY_DZCO_TF_DENOMINATOR "den"
+#define ZTK_KEY_DZCO_TF_ZERO        "zero"
+#define ZTK_KEY_DZCO_TF_POLE        "pole"
+#define ZTK_KEY_DZCO_TF_GAIN        "gain"
+
 __DZCO_EXPORT dzTF *dzTFFromZTK(dzTF *tf, ZTK *ztk);
 __DZCO_EXPORT void dzTFFPrintZTK(FILE *fp, dzTF *tf);
 

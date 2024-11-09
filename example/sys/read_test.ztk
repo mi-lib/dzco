@@ -1,8 +1,8 @@
 [dzco::sys]
 name: limiter
 type: limiter
-max: 100
-min -100
+max:  100
+min: -100
 
 [dzco::sys]
 name: P
@@ -13,13 +13,13 @@ gain: 2.0
 name: I
 type: integrator
 gain: 3.0
-fgt: 1.0
+forgettingfactor: 1.0
 
 [dzco::sys]
 name: D
 type: differentiator
 gain: 4.0
-tc: 0.5
+timeconstant: 0.5
 
 [dzco::sys]
 name: PID
@@ -27,8 +27,8 @@ type: PID
 pgain: 1.0
 igain: 2.0
 dgain: 3.0
-tc: 4.0
-fgt: 0.1
+timeconstant: 4.0
+forgettingfactor: 0.1
 
 [dzco::sys]
 name: QPD
@@ -40,7 +40,7 @@ eps: 1.0e-5
 [dzco::sys]
 name: FOL
 type: FOL
-tc: 2.0
+timeconstant: 2.0
 gain: -1.0
 
 [dzco::sys]
@@ -48,7 +48,7 @@ name: SOL
 type: SOL
 t1: 1.0
 t2: 2.0
-damp: 3.0
+damping: 3.0
 gain: 4.0
 
 [dzco::sys]
@@ -61,7 +61,7 @@ gain: -2.0
 [dzco::sys]
 name: adapt
 type: adapt
-tc: 2.0
+timeconstant: 2.0
 base: 100
 
 [dzco::sys]
@@ -84,12 +84,12 @@ den: 2 { 1 3 2 }
 [dzco::sys]
 name: moving_average
 type: maf
-ff: 0.01
+forgettingfactor: 0.01
 
 [dzco::sys]
 name: filter
 type: butterworth
-cf: 10.0
+cutofffrequency: 10.0
 dim: 5
 
 [dzco::sys]

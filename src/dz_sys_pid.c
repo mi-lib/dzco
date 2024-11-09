@@ -29,7 +29,7 @@ static bool _dzSysPGainFPrintZTK(FILE *fp, int i, void *prp){
 }
 
 static ZTKPrp __ztk_prp_dzsys_p[] = {
-  { "gain", 1, _dzSysPGainFromZTK, _dzSysPGainFPrintZTK },
+  { ZTK_KEY_DZCO_SYS_GAIN, 1, _dzSysPGainFromZTK, _dzSysPGainFPrintZTK },
 };
 
 static dzSys *_dzSysPFromZTK(dzSys *sys, ZTK *ztk)
@@ -111,8 +111,8 @@ static bool _dzSysIFgtFPrintZTK(FILE *fp, int i, void *prp){
 }
 
 static ZTKPrp __ztk_prp_dzsys_i[] = {
-  { "gain", 1, _dzSysIGainFromZTK, _dzSysIGainFPrintZTK },
-  { "fgt", 1, _dzSysIFgtFromZTK, _dzSysIFgtFPrintZTK },
+  { ZTK_KEY_DZCO_SYS_GAIN,             1, _dzSysIGainFromZTK, _dzSysIGainFPrintZTK },
+  { ZTK_KEY_DZCO_SYS_FORGETTINGFACTOR, 1, _dzSysIFgtFromZTK, _dzSysIFgtFPrintZTK },
 };
 
 static dzSys *_dzSysIFromZTK(dzSys *sys, ZTK *ztk)
@@ -211,8 +211,8 @@ static bool _dzSysDTcFPrintZTK(FILE *fp, int i, void *prp){
 }
 
 static ZTKPrp __ztk_prp_dzsys_d[] = {
-  { "gain", 1, _dzSysDGainFromZTK, _dzSysDGainFPrintZTK },
-  { "tc", 1, _dzSysDTcFromZTK, _dzSysDTcFPrintZTK },
+  { ZTK_KEY_DZCO_SYS_GAIN,         1, _dzSysDGainFromZTK, _dzSysDGainFPrintZTK },
+  { ZTK_KEY_DZCO_SYS_TIMECONSTANT, 1, _dzSysDTcFromZTK, _dzSysDTcFPrintZTK },
 };
 
 static dzSys *_dzSysDFromZTK(dzSys *sys, ZTK *ztk)
@@ -335,11 +335,11 @@ static bool _dzSysPIDFgtFPrintZTK(FILE *fp, int i, void *prp){
 }
 
 static ZTKPrp __ztk_prp_dzsys_pid[] = {
-  { "pgain", 1, _dzSysPIDPGainFromZTK, _dzSysPIDPGainFPrintZTK },
-  { "igain", 1, _dzSysPIDIGainFromZTK, _dzSysPIDIGainFPrintZTK },
-  { "dgain", 1, _dzSysPIDDGainFromZTK, _dzSysPIDDGainFPrintZTK },
-  { "tc", 1, _dzSysPIDTcFromZTK, _dzSysPIDTcFPrintZTK },
-  { "fgt", 1, _dzSysPIDFgtFromZTK, _dzSysPIDFgtFPrintZTK },
+  { ZTK_KEY_DZCO_SYS_PGAIN,            1, _dzSysPIDPGainFromZTK, _dzSysPIDPGainFPrintZTK },
+  { ZTK_KEY_DZCO_SYS_IGAIN,            1, _dzSysPIDIGainFromZTK, _dzSysPIDIGainFPrintZTK },
+  { ZTK_KEY_DZCO_SYS_DGAIN,            1, _dzSysPIDDGainFromZTK, _dzSysPIDDGainFPrintZTK },
+  { ZTK_KEY_DZCO_SYS_TIMECONSTANT,     1, _dzSysPIDTcFromZTK, _dzSysPIDTcFPrintZTK },
+  { ZTK_KEY_DZCO_SYS_FORGETTINGFACTOR, 1, _dzSysPIDFgtFromZTK, _dzSysPIDFgtFPrintZTK },
 };
 
 static dzSys *_dzSysPIDFromZTK(dzSys *sys, ZTK *ztk)
@@ -477,9 +477,9 @@ static bool _dzSysQPDEpsFPrintZTK(FILE *fp, int i, void *prp){
 }
 
 static ZTKPrp __ztk_prp_dzsys_qpd[] = {
-  { "pgain", 1, _dzSysQPDPGainFromZTK, _dzSysQPDPGainFPrintZTK },
-  { "dgain", 1, _dzSysQPDDGainFromZTK, _dzSysQPDDGainFPrintZTK },
-  { "eps", 1, _dzSysQPDEpsFromZTK, _dzSysQPDEpsFPrintZTK },
+  { ZTK_KEY_DZCO_SYS_PGAIN,   1, _dzSysQPDPGainFromZTK, _dzSysQPDPGainFPrintZTK },
+  { ZTK_KEY_DZCO_SYS_DGAIN,   1, _dzSysQPDDGainFromZTK, _dzSysQPDDGainFPrintZTK },
+  { ZTK_KEY_DZCO_SYS_QPD_EPS, 1, _dzSysQPDEpsFromZTK, _dzSysQPDEpsFPrintZTK },
 };
 
 static dzSys *_dzSysQPDFromZTK(dzSys *sys, ZTK *ztk)

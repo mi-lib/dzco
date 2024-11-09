@@ -247,6 +247,13 @@ __DZCO_EXPORT zVec dzLinLQR(dzLin *c, zVec q, double r, zVec f);
 __DZCO_EXPORT dzLin *dzTF2LinCtrlCanon(dzTF *tf, dzLin *lin);
 __DZCO_EXPORT dzLin *dzTF2LinObsCanon(dzTF *tf, dzLin *lin);
 
+/* ZTK */
+
+#define ZTK_KEY_DZCO_LIN_A "a"
+#define ZTK_KEY_DZCO_LIN_B "b"
+#define ZTK_KEY_DZCO_LIN_C "c"
+#define ZTK_KEY_DZCO_LIN_D "d"
+
 __DZCO_EXPORT dzLin *dzLinFromZTK(dzLin *lin, ZTK *ztk);
 __DZCO_EXPORT void dzLinFPrintZTK(FILE *fp, dzLin *lin);
 

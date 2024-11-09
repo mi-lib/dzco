@@ -47,8 +47,8 @@ static bool _dzSysFOLGainFPrintZTK(FILE *fp, int i, void *prp){
 }
 
 static ZTKPrp __ztk_prp_dzsys_fol[] = {
-  { "tc", 1, _dzSysFOLTcFromZTK, _dzSysFOLTcFPrintZTK },
-  { "gain", 1, _dzSysFOLGainFromZTK, _dzSysFOLGainFPrintZTK },
+  { ZTK_KEY_DZCO_SYS_TIMECONSTANT, 1, _dzSysFOLTcFromZTK, _dzSysFOLTcFPrintZTK },
+  { ZTK_KEY_DZCO_SYS_GAIN,         1, _dzSysFOLGainFromZTK, _dzSysFOLGainFPrintZTK },
 };
 
 static dzSys *_dzSysFOLFromZTK(dzSys *sys, ZTK *ztk)
@@ -166,10 +166,10 @@ static bool _dzSysSOLGainFPrintZTK(FILE *fp, int i, void *prp){
 }
 
 static ZTKPrp __ztk_prp_dzsys_sol[] = {
-  { "t1", 1, _dzSysSOLT1FromZTK, _dzSysSOLT1FPrintZTK },
-  { "t2", 1, _dzSysSOLT2FromZTK, _dzSysSOLT2FPrintZTK },
-  { "damp", 1, _dzSysSOLDampFromZTK, _dzSysSOLDampFPrintZTK },
-  { "gain", 1, _dzSysSOLGainFromZTK, _dzSysSOLGainFPrintZTK },
+  { ZTK_KEY_DZCO_SYS_T1,      1, _dzSysSOLT1FromZTK, _dzSysSOLT1FPrintZTK },
+  { ZTK_KEY_DZCO_SYS_T2,      1, _dzSysSOLT2FromZTK, _dzSysSOLT2FPrintZTK },
+  { ZTK_KEY_DZCO_SYS_DAMPING, 1, _dzSysSOLDampFromZTK, _dzSysSOLDampFPrintZTK },
+  { ZTK_KEY_DZCO_SYS_GAIN,    1, _dzSysSOLGainFromZTK, _dzSysSOLGainFPrintZTK },
 };
 
 static dzSys *_dzSysSOLFromZTK(dzSys *sys, ZTK *ztk)
@@ -270,9 +270,9 @@ static bool _dzSysPCGainFPrintZTK(FILE *fp, int i, void *prp){
 }
 
 static ZTKPrp __ztk_prp_dzsys_pc[] = {
-  { "t1", 1, _dzSysPCT1FromZTK, _dzSysPCT1FPrintZTK },
-  { "t2", 1, _dzSysPCT2FromZTK, _dzSysPCT2FPrintZTK },
-  { "gain", 1, _dzSysPCGainFromZTK, _dzSysPCGainFPrintZTK },
+  { ZTK_KEY_DZCO_SYS_T1,   1, _dzSysPCT1FromZTK, _dzSysPCT1FPrintZTK },
+  { ZTK_KEY_DZCO_SYS_T2,   1, _dzSysPCT2FromZTK, _dzSysPCT2FPrintZTK },
+  { ZTK_KEY_DZCO_SYS_GAIN, 1, _dzSysPCGainFromZTK, _dzSysPCGainFPrintZTK },
 };
 
 static dzSys *_dzSysPCFromZTK(dzSys *sys, ZTK *ztk)
@@ -362,8 +362,8 @@ static bool _dzSysAdaptBaseFPrintZTK(FILE *fp, int i, void *prp){
 }
 
 static ZTKPrp __ztk_prp_dzsys_adapt[] = {
-  { "tc", 1, _dzSysAdaptTcFromZTK, _dzSysAdaptTcFPrintZTK },
-  { "base", 1, _dzSysAdaptBaseFromZTK, _dzSysAdaptBaseFPrintZTK },
+  { ZTK_KEY_DZCO_SYS_TIMECONSTANT, 1, _dzSysAdaptTcFromZTK, _dzSysAdaptTcFPrintZTK },
+  { ZTK_KEY_DZCO_SYS_BASE,         1, _dzSysAdaptBaseFromZTK, _dzSysAdaptBaseFPrintZTK },
 };
 
 static dzSys *_dzSysAdaptFromZTK(dzSys *sys, ZTK *ztk)

@@ -172,8 +172,8 @@ static bool _dzSysBWDimFPrintZTK(FILE *fp, int i, void *prp){
 }
 
 static ZTKPrp __ztk_prp_dzsys_bw[] = {
-  { "cf", 1, _dzSysBWCFFromZTK, _dzSysBWCFFPrintZTK },
-  { "dim", 1, _dzSysBWDimFromZTK, _dzSysBWDimFPrintZTK },
+  { ZTK_KEY_DZCO_SYS_CUTOFFFREQ, 1, _dzSysBWCFFromZTK, _dzSysBWCFFPrintZTK },
+  { ZTK_KEY_DZCO_SYS_DIM,        1, _dzSysBWDimFromZTK, _dzSysBWDimFPrintZTK },
 };
 
 static dzSys *_dzSysBWFromZTK(dzSys *sys, ZTK *ztk)
