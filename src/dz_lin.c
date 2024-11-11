@@ -556,7 +556,7 @@ static bool _dzLinDFPrintZTK(FILE *fp, int i, void *prp){
   return true;
 }
 
-static ZTKPrp __ztk_prp_dzlin[] = {
+static const ZTKPrp __ztk_prp_dzlin[] = {
   { ZTK_KEY_DZCO_LIN_A, 1, _dzLinAFromZTK, _dzLinAFPrintZTK },
   { ZTK_KEY_DZCO_LIN_B, 1, _dzLinBFromZTK, _dzLinBFPrintZTK },
   { ZTK_KEY_DZCO_LIN_C, 1, _dzLinCFromZTK, _dzLinCFPrintZTK },

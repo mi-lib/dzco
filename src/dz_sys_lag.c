@@ -46,7 +46,7 @@ static bool _dzSysFOLGainFPrintZTK(FILE *fp, int i, void *prp){
   return true;
 }
 
-static ZTKPrp __ztk_prp_dzsys_fol[] = {
+static const ZTKPrp __ztk_prp_dzsys_fol[] = {
   { ZTK_KEY_DZCO_SYS_TIMECONSTANT, 1, _dzSysFOLTcFromZTK, _dzSysFOLTcFPrintZTK },
   { ZTK_KEY_DZCO_SYS_GAIN,         1, _dzSysFOLGainFromZTK, _dzSysFOLGainFPrintZTK },
 };
@@ -165,7 +165,7 @@ static bool _dzSysSOLGainFPrintZTK(FILE *fp, int i, void *prp){
   return true;
 }
 
-static ZTKPrp __ztk_prp_dzsys_sol[] = {
+static const ZTKPrp __ztk_prp_dzsys_sol[] = {
   { ZTK_KEY_DZCO_SYS_T1,      1, _dzSysSOLT1FromZTK, _dzSysSOLT1FPrintZTK },
   { ZTK_KEY_DZCO_SYS_T2,      1, _dzSysSOLT2FromZTK, _dzSysSOLT2FPrintZTK },
   { ZTK_KEY_DZCO_SYS_DAMPING, 1, _dzSysSOLDampFromZTK, _dzSysSOLDampFPrintZTK },
@@ -269,7 +269,7 @@ static bool _dzSysPCGainFPrintZTK(FILE *fp, int i, void *prp){
   return true;
 }
 
-static ZTKPrp __ztk_prp_dzsys_pc[] = {
+static const ZTKPrp __ztk_prp_dzsys_pc[] = {
   { ZTK_KEY_DZCO_SYS_T1,   1, _dzSysPCT1FromZTK, _dzSysPCT1FPrintZTK },
   { ZTK_KEY_DZCO_SYS_T2,   1, _dzSysPCT2FromZTK, _dzSysPCT2FPrintZTK },
   { ZTK_KEY_DZCO_SYS_GAIN, 1, _dzSysPCGainFromZTK, _dzSysPCGainFPrintZTK },
@@ -361,7 +361,7 @@ static bool _dzSysAdaptBaseFPrintZTK(FILE *fp, int i, void *prp){
   return true;
 }
 
-static ZTKPrp __ztk_prp_dzsys_adapt[] = {
+static const ZTKPrp __ztk_prp_dzsys_adapt[] = {
   { ZTK_KEY_DZCO_SYS_TIMECONSTANT, 1, _dzSysAdaptTcFromZTK, _dzSysAdaptTcFPrintZTK },
   { ZTK_KEY_DZCO_SYS_BASE,         1, _dzSysAdaptBaseFromZTK, _dzSysAdaptBaseFPrintZTK },
 };

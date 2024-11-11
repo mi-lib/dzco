@@ -171,7 +171,7 @@ static bool _dzSysBWDimFPrintZTK(FILE *fp, int i, void *prp){
   return true;
 }
 
-static ZTKPrp __ztk_prp_dzsys_bw[] = {
+static const ZTKPrp __ztk_prp_dzsys_bw[] = {
   { ZTK_KEY_DZCO_SYS_CUTOFFFREQ, 1, _dzSysBWCFFromZTK, _dzSysBWCFFPrintZTK },
   { ZTK_KEY_DZCO_SYS_DIM,        1, _dzSysBWDimFromZTK, _dzSysBWDimFPrintZTK },
 };

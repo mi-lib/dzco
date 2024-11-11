@@ -47,7 +47,7 @@ static bool _dzSysFGPeriodFPrintZTK(FILE *fp, int i, void *prp){
   fprintf( fp, "%.10g\n", __dz_sys_fg_period((dzSys*)prp) );
   return true;
 }
-static ZTKPrp __ztk_prp_dzsys_fg[] = {
+static const ZTKPrp __ztk_prp_dzsys_fg[] = {
   { ZTK_KEY_DZCO_SYS_FG_AMP, 1, _dzSysFGAmpFromZTK, _dzSysFGAmpFPrintZTK },
   { ZTK_KEY_DZCO_SYS_FG_DELAY, 1, _dzSysFGDelayFromZTK, _dzSysFGDelayFPrintZTK },
   { ZTK_KEY_DZCO_SYS_FG_PERIOD, 1, _dzSysFGPeriodFromZTK, _dzSysFGPeriodFPrintZTK },

@@ -87,7 +87,7 @@ static bool _dzSysTypeFPrintZTK(FILE *fp, int i, void *obj){
   return true;
 }
 
-static ZTKPrp __ztk_prp_dzsys[] = {
+static const ZTKPrp __ztk_prp_dzsys[] = {
   { ZTK_KEY_DZCO_SYS_NAME, 1, _dzSysNameFromZTK, _dzSysNameFPrintZTK },
   { ZTK_KEY_DZCO_SYS_TYPE, 1, _dzSysTypeFromZTK, _dzSysTypeFPrintZTK },
 };
@@ -210,7 +210,7 @@ static bool _dzSysArrayConnectFPrintZTK(FILE *fp, int i, void *obj){
   return true;
 }
 
-static ZTKPrp __ztk_prp_tag_dzco_sys[] = {
+static const ZTKPrp __ztk_prp_tag_dzco_sys[] = {
   { ZTK_TAG_DZCO_SYS, -1, _dzSysArraySysFromZTK, NULL },
   { ZTK_TAG_DZCO_SYS_CONNECT, 1, _dzSysArrayConnectFromZTK, _dzSysArrayConnectFPrintZTK },
 };

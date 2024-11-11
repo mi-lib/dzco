@@ -43,7 +43,7 @@ static bool _dzSysMAFFFFPrintZTK(FILE *fp, int i, void *prp){
   return true;
 }
 
-static ZTKPrp __ztk_prp_dzsys_maf[] = {
+static const ZTKPrp __ztk_prp_dzsys_maf[] = {
   { ZTK_KEY_DZCO_SYS_FORGETTINGFACTOR, 1, _dzSysMAFFFFromZTK, _dzSysMAFFFFPrintZTK },
 };
 

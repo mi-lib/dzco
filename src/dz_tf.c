@@ -221,7 +221,7 @@ static bool _dzTFDenFPrintZTK(FILE *fp, int i, void *prp){
   return true;
 }
 
-static ZTKPrp __ztk_prp_dztf[] = {
+static const ZTKPrp __ztk_prp_dztf[] = {
   { ZTK_KEY_DZCO_TF_NUMERATOR, 1, _dzTFNumFromZTK, _dzTFNumFPrintZTK },
   { ZTK_KEY_DZCO_TF_DENOMINATOR, 1, _dzTFDenFromZTK, _dzTFDenFPrintZTK },
   { ZTK_KEY_DZCO_TF_ZERO, 1, _dzTFZeroFromZTK, NULL },
