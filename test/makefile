@@ -1,9 +1,8 @@
-INCLUDE=`dzco-config -I`
-LIB=`dzco-config -L`
+CFLAGS=`dzco-config --cflags`
 LINK=`dzco-config -l`
 
 CC=gcc
-CFLAGS=-ansi -Wall -O3 $(LIB) $(INCLUDE) -funroll-loops
+CFLAGS+=-ansi -Wall -O3 $(LIB) $(INCLUDE) -funroll-loops
 
 %: %.c
 	@$(CC) $(CFLAGS) -o $@ $< $(LINK)

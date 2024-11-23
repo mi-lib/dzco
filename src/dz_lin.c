@@ -122,7 +122,7 @@ static bool _dzLinCOMatPrep(dzLin *c, zMat m, int size, zVec *v)
 {
   if( zMatRowSize(m) != zMatRowSize(c->a) ||
       zMatColSize(m) != zMatColSize(c->a) ){
-    ZRUNERROR( ZM_ERR_SIZMIS_MAT );
+    ZRUNERROR( ZM_ERR_MAT_SIZEMISMATCH );
     return false;
   }
   return ( *v = zVecAlloc( size ) ) ? true : false;
