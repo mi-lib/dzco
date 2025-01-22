@@ -81,8 +81,8 @@ void assert_connect(void)
   dzTFDen(&tf) = zPexMul( dzTFDen(&tf1), dzTFDen(&tf2) );
   dzTFConnect( &tf1, &tf2 );
   zAssert( dzTFConnect,
-    zPexIsEqual(dzTFNum(&tf),dzTFNum(&tf1),zTOL) &&
-    zPexIsEqual(dzTFDen(&tf),dzTFDen(&tf1),zTOL) );
+    zPexEqual(dzTFNum(&tf),dzTFNum(&tf1),zTOL) &&
+    zPexEqual(dzTFDen(&tf),dzTFDen(&tf1),zTOL) );
 }
 
 int main(int argc, char *argv[])

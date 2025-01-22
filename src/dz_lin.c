@@ -86,8 +86,8 @@ bool dzLinAlloc(dzLin *lin, int dim)
 static bool _dzLinCheckSize(dzLin *lin)
 {
   return zMatIsSqr( lin->a ) &&
-         zMatColVecSizeIsEqual( lin->a, lin->b ) &&
-         zMatRowVecSizeIsEqual( lin->a, lin->c ) ? true : false;
+         zMatColVecSizeEqual( lin->a, lin->b ) &&
+         zMatRowVecSizeEqual( lin->a, lin->c ) ? true : false;
 }
 
 /* update the inner state of linear system. */

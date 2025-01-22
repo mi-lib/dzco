@@ -27,7 +27,7 @@ dzFreqRes *dzFreqResFromComplex(dzFreqRes *fr, zComplex *c, double af)
 
 static dzFreqRes *_dzFreqResMul(dzFreqRes *fr1, dzFreqRes *fr2, dzFreqRes *fr)
 {
-  if( !zIsEqual( fr1->f, fr2->f, zTOL ) )
+  if( !zEqual( fr1->f, fr2->f, zTOL ) )
     ZRUNWARN( DZ_WARN_TF_FR_NOTCORRESPOND, fr1->f, fr2->f );
   fr->f = fr1->f;
   fr->g = fr1->g + fr2->g;
@@ -37,7 +37,7 @@ static dzFreqRes *_dzFreqResMul(dzFreqRes *fr1, dzFreqRes *fr2, dzFreqRes *fr)
 
 static dzFreqRes *_dzFreqResDiv(dzFreqRes *fr1, dzFreqRes *fr2, dzFreqRes *fr)
 {
-  if( !zIsEqual( fr1->f, fr2->f, zTOL ) )
+  if( !zEqual( fr1->f, fr2->f, zTOL ) )
     ZRUNWARN( DZ_WARN_TF_FR_NOTCORRESPOND, fr1->f, fr2->f );
   fr->f = fr1->f;
   fr->g = fr1->g - fr2->g;

@@ -1,3 +1,4 @@
+2025. 1.22. Reflected renaming of zEqual and zMat*SizeEqual. [dz_tf_fr, dz_lin]
 2024.11.23. Reflected renaming of error message macros in _dzLinCOMatPrep. [dz_lin]
 2024.11.12. Modified .gitignore. [all]
 2024.11.11. Added const qualifiers to __ztk_prp_dzlin, __ztk_prp_dztf, __ztk_prp_dzsys, __ztk_prp_tag_dzco_sys, __ztk_prp_dzsys_mi, __ztk_prp_dzsys_limit, __ztk_prp_dzsys_p, __ztk_prp_dzsys_i, __ztk_prp_dzsys_d, __ztk_prp_dzsys_pid, __ztk_prp_dzsys_qpd, __ztk_prp_dzsys_fol, __ztk_prp_dzsys_sol, __ztk_prp_dzsys_pc, __ztk_prp_dzsys_adapt, __ztk_prp_dzsys_fg, __ztk_prp_dzsys_bw, and __ztk_prp_dzsys_maf. [dz_lin, dz_tf, dz_sys, dz_sys_misc, dz_sys_pid, dz_sys_lag, dz_sys_fg, dz_sys_filt_bw, dz_sys_filt_maf]
