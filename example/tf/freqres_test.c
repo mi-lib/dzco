@@ -34,7 +34,7 @@ dzFreqRes *naive_freq_res_from_tf(dzFreqRes *fr, dzTF *tf, double af)
   zPexCVal( dzTFDen(tf), &caf, &d );
   dzFreqResFromComplex( &fr_d, &d, af );
 
-  if( !zIsEqual( fr_n.f, fr_d.f, zTOL ) )
+  if( !zEqual( fr_n.f, fr_d.f, zTOL ) )
     ZRUNWARN( DZ_WARN_TF_FR_NOTCORRESPOND, fr_n.f, fr_d.f );
   fr->f = fr_n.f;
   fr->g = fr_n.g - fr_d.g;
