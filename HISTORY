@@ -1,3 +1,5 @@
+2025.04.09. Modified dzLinRiccatiSolveKleinman to reflect renaming of zLELyapnovSolve. [dz_lin]
+2025.04.09. Modified dzTFZeroPoleReIm to reflect renaming of zCVecToReImVec. [dz_tf]
 2025.02.03. Fixed example/tf/freqres_test to conform to the renaming of zEqual (thanks to Daishi Kaneta). [example]
 2025.01.22. Reflected renaming of zEqual and zMat*SizeEqual. [dz_tf_fr, dz_lin]
 2024.11.23. Reflected renaming of error message macros in _dzLinCOMatPrep. [dz_lin]

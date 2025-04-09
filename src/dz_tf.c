@@ -168,8 +168,8 @@ bool dzTFZeroPole(dzTF *tf)
 bool dzTFZeroPoleReIm(dzTF *tf, zVec *zero1, zCVec *zero2, zVec *pole1, zCVec *pole2)
 {
   if( !dzTFZeroPole( tf ) ) return false;
-  return zCVecToReIm( dzTFZero(tf), zero1, zero2, ZM_PEX_EQ_TOL ) &&
-         zCVecToReIm( dzTFPole(tf), pole1, pole2, ZM_PEX_EQ_TOL ) ? true : false;
+  return zCVecToReImVec( dzTFZero(tf), zero1, zero2, ZM_PEX_EQ_TOL ) &&
+         zCVecToReImVec( dzTFPole(tf), pole1, pole2, ZM_PEX_EQ_TOL ) ? true : false;
 }
 
 static bool _dzTFFactorFromZTK(zPex *pex, ZTK *ztk){

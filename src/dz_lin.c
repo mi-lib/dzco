@@ -385,7 +385,7 @@ zMat dzLinRiccatiSolveKleinman(zMat p, zVec f, dzLin *c, zMat q, double r, doubl
     zMatSubDyadNC( ae, c->b, _f );
     zMatRevNC( q, qe );
     zMatCatDyadNC( qe, -r, _f, _f );
-    zLyapnovSolve( ae, qe, p );
+    zLELyapnovSolve( ae, qe, p );
     zMulMatTVec( p, c->b, _f );
     zVecDivDRC( _f, r );
     err = dzLinRiccatiErrorDRC( p, c, q, r, ae, qe, pb );
