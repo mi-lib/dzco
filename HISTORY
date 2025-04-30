@@ -1,3 +1,7 @@
+2025.04.29. Added const qualifiers to the arguments of usage functions, and cast constant strings in options to char pointers of programs in app. [app]
+2025.04.29. Modified dzTFFromZTK, dzTFFPrintZTK, dzLinFromZTK, dzLinFPrintZTK, dzSysFromZTK, dzSysFPrintZTK, dzSysArrayFromZTK, dzSysArrayFPrintZTK, _dzSysMIFPrintZTK, _dzSysAdderFromZTK, _dzSysSubtrFromZTK, _dzSysLimitFromZTK, _dzSysLimitFPrintZTK, _dzSysPFromZTK, _dzSysPFPrintZTK, _dzSysIFromZTK, _dzSysIFPrintZTK, _dzSysDFromZTK, _dzSysDFPrintZTK, _dzSysPIDFromZTK, _dzSysPIDFPrintZTK, _dzSysQPDFromZTK, _dzSysQPDFPrintZTK, _dzSysFOLFromZTK, _dzSysFOLFPrintZTK, _dzSysSOLFromZTK, _dzSysSOLFPrintZTK, _dzSysPCFromZTK, _dzSysPCFPrintZTK, _dzSysAdaptFromZTK, _dzSysAdaptFPrintZTK, _dzSysMAFFromZTK, _dzSysMAFFPrintZTK, _dzSysBWFromZTK, _dzSysBWFPrintZTK, dzSysFGDefine, and _dzSysFGFPrintZTK to apply new specifications of the ZTK processor. [dz_tf, dz_lin, dz_sys, dz_sys_misc, dz_sys_pid, dz_sys_lag, dz_sys_filt_maf, dz_sys_filt_bw, dz_sys_fg]
+2025.04.29. Modified makefile to conform to new specification of zeda-makefile-gen. [all]
+2025.04.29. Modified makefile in example. [example]
 2025.04.09. Modified dzLinRiccatiSolveKleinman to reflect renaming of zLELyapnovSolve. [dz_lin]
 2025.04.09. Modified dzTFZeroPoleReIm to reflect renaming of zCVecToReImVec. [dz_tf]
 2025.02.03. Fixed example/tf/freqres_test to conform to the renaming of zEqual (thanks to Daishi Kaneta). [example]

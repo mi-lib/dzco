@@ -11,9 +11,9 @@ enum{
 };
 zOption opt[] = {
   { "i", "input", "<data file>", "input frequency response file", NULL, false },
-  { "o", "output", "<data file>", "output frequency response file", "fr_out", false },
-  { "r", "range", "<string>", "range for identification in logarism scale", "0:10e16", false },
-  { "x", "operate", "open/close/connect", "convert frequency response to that of closed loop system (default)", "close", true },
+  { "o", "output", "<data file>", "output frequency response file", (char *)"fr_out", false },
+  { "r", "range", "<string>", "range for identification in logarism scale", (char *)"0:10e16", false },
+  { "x", "operate", "open/close/connect", "convert frequency response to that of closed loop system (default)", (char *)"close", true },
   { "t", "tf", "<TF file>", "connect a transfer function", NULL, false },
   { "h", "help", NULL, "show this message", NULL, false },
   { NULL, NULL, NULL, NULL, NULL, false },

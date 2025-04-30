@@ -234,7 +234,7 @@ dzTF *dzTFFromZTK(dzTF *tf, ZTK *ztk)
   dzTFInit( tf );
   dzTFSetNum( tf, NULL );
   dzTFSetDen( tf, NULL );
-  if( !ZTKEvalKey( tf, NULL, ztk, __ztk_prp_dztf ) ) return NULL;
+  if( !_ZTKEvalKey( tf, NULL, ztk, __ztk_prp_dztf ) ) return NULL;
   if( !dzTFNum(tf) || !dzTFDen(tf) ){
     dzTFDestroy( tf );
     return NULL;
@@ -244,7 +244,7 @@ dzTF *dzTFFromZTK(dzTF *tf, ZTK *ztk)
 
 void dzTFFPrintZTK(FILE *fp, dzTF *tf)
 {
-  ZTKPrpKeyFPrint( fp, tf, __ztk_prp_dztf );
+  _ZTKPrpKeyFPrint( fp, tf, __ztk_prp_dztf );
 }
 
 /* read a transfer function from a ZTK file. */

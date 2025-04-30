@@ -55,7 +55,7 @@ static const ZTKPrp __ztk_prp_dzsys_fg[] = {
 
 static void _dzSysFGFPrintZTK(FILE *fp, dzSys *sys)
 {
-  ZTKPrpKeyFPrint( fp, sys, __ztk_prp_dzsys_fg );
+  _ZTKPrpKeyFPrint( fp, sys, __ztk_prp_dzsys_fg );
 }
 
 /* ********************************************************** */

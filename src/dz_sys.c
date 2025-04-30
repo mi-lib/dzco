@@ -95,7 +95,7 @@ static const ZTKPrp __ztk_prp_dzsys[] = {
 void *dzSysFromZTK(dzSys *sys, ZTK *ztk)
 {
   char *name;
-  if( !ZTKEvalKey( sys, NULL, ztk, __ztk_prp_dzsys ) ) return NULL;
+  if( !_ZTKEvalKey( sys, NULL, ztk, __ztk_prp_dzsys ) ) return NULL;
   name = zNamePtr(sys);
   if( !sys->com || !sys->com->_fromZTK( sys, ztk ) ) return NULL;
   zNameSet( sys, name );
@@ -104,7 +104,7 @@ void *dzSysFromZTK(dzSys *sys, ZTK *ztk)
 
 void dzSysFPrintZTK(FILE *fp, dzSys *sys)
 {
-  ZTKPrpKeyFPrint( fp, sys, __ztk_prp_dzsys );
+  _ZTKPrpKeyFPrint( fp, sys, __ztk_prp_dzsys );
   if( sys->com )
     sys->com->_fprintZTK( fp, sys );
 }
@@ -225,7 +225,7 @@ dzSysArray *dzSysArrayFromZTK(dzSysArray *sarray, ZTK *ztk)
     return NULL;
   }
   if( !dzSysArrayAlloc( sarray, num_sys ) ) return NULL;
-  ZTKEvalTag( sarray, NULL, ztk, __ztk_prp_tag_dzco_sys );
+  _ZTKEvalTag( sarray, NULL, ztk, __ztk_prp_tag_dzco_sys );
   return sarray;
 }
 
@@ -239,7 +239,7 @@ void dzSysArrayFPrintZTK(FILE *fp, dzSysArray *arr)
     dzSysFPrintZTK( fp, zArrayElemNC(arr,i) );
     fprintf( fp, "\n" );
   }
-  ZTKPrpTagFPrint( fp, arr, __ztk_prp_tag_dzco_sys );
+  _ZTKPrpTagFPrint( fp, arr, __ztk_prp_tag_dzco_sys );
 }
 
 /* read a ZTK file and create an array of systems. */

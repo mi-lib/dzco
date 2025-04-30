@@ -35,13 +35,13 @@ static const ZTKPrp __ztk_prp_dzsys_p[] = {
 static dzSys *_dzSysPFromZTK(dzSys *sys, ZTK *ztk)
 {
   double gain = 0;
-  if( !ZTKEvalKey( &gain, NULL, ztk, __ztk_prp_dzsys_p ) ) return NULL;
+  if( !_ZTKEvalKey( &gain, NULL, ztk, __ztk_prp_dzsys_p ) ) return NULL;
   return dzSysPCreate( sys, gain );
 }
 
 static void _dzSysPFPrintZTK(FILE *fp, dzSys *sys)
 {
-  ZTKPrpKeyFPrint( fp, sys, __ztk_prp_dzsys_p );
+  _ZTKPrpKeyFPrint( fp, sys, __ztk_prp_dzsys_p );
 }
 
 dzSysCom dz_sys_p_com = {
@@ -118,13 +118,13 @@ static const ZTKPrp __ztk_prp_dzsys_i[] = {
 static dzSys *_dzSysIFromZTK(dzSys *sys, ZTK *ztk)
 {
   double val[] = { 0.0, 0.0 };
-  if( !ZTKEvalKey( val, NULL, ztk, __ztk_prp_dzsys_i ) ) return NULL;
+  if( !_ZTKEvalKey( val, NULL, ztk, __ztk_prp_dzsys_i ) ) return NULL;
   return dzSysICreate( sys, val[0], val[1] );
 }
 
 static void _dzSysIFPrintZTK(FILE *fp, dzSys *sys)
 {
-  ZTKPrpKeyFPrint( fp, sys, __ztk_prp_dzsys_i );
+  _ZTKPrpKeyFPrint( fp, sys, __ztk_prp_dzsys_i );
 }
 
 dzSysCom dz_sys_i_com = {
@@ -218,13 +218,13 @@ static const ZTKPrp __ztk_prp_dzsys_d[] = {
 static dzSys *_dzSysDFromZTK(dzSys *sys, ZTK *ztk)
 {
   double val[] = { 0.0, 0.0 };
-  if( !ZTKEvalKey( val, NULL, ztk, __ztk_prp_dzsys_d ) ) return NULL;
+  if( !_ZTKEvalKey( val, NULL, ztk, __ztk_prp_dzsys_d ) ) return NULL;
   return dzSysDCreate( sys, val[0], val[1] );
 }
 
 static void _dzSysDFPrintZTK(FILE *fp, dzSys *sys)
 {
-  ZTKPrpKeyFPrint( fp, sys, __ztk_prp_dzsys_d );
+  _ZTKPrpKeyFPrint( fp, sys, __ztk_prp_dzsys_d );
 }
 
 dzSysCom dz_sys_d_com = {
@@ -345,13 +345,13 @@ static const ZTKPrp __ztk_prp_dzsys_pid[] = {
 static dzSys *_dzSysPIDFromZTK(dzSys *sys, ZTK *ztk)
 {
   double val[] = { 0.0, 0.0, 0.0, 0.0, 0.0 };
-  if( !ZTKEvalKey( val, NULL, ztk, __ztk_prp_dzsys_pid ) ) return NULL;
+  if( !_ZTKEvalKey( val, NULL, ztk, __ztk_prp_dzsys_pid ) ) return NULL;
   return dzSysPIDCreate( sys, val[0], val[1], val[2], val[3], val[4] );
 }
 
 static void _dzSysPIDFPrintZTK(FILE *fp, dzSys *sys)
 {
-  ZTKPrpKeyFPrint( fp, sys, __ztk_prp_dzsys_pid );
+  _ZTKPrpKeyFPrint( fp, sys, __ztk_prp_dzsys_pid );
 }
 
 dzSysCom dz_sys_pid_com = {
@@ -485,13 +485,13 @@ static const ZTKPrp __ztk_prp_dzsys_qpd[] = {
 static dzSys *_dzSysQPDFromZTK(dzSys *sys, ZTK *ztk)
 {
   double val[] = { 0.0, 0.0, 1.0e-3 };
-  if( !ZTKEvalKey( val, NULL, ztk, __ztk_prp_dzsys_qpd ) ) return NULL;
+  if( !_ZTKEvalKey( val, NULL, ztk, __ztk_prp_dzsys_qpd ) ) return NULL;
   return dzSysQPDCreate( sys, val[0], val[1], val[2] );
 }
 
 static void _dzSysQPDFPrintZTK(FILE *fp, dzSys *sys)
 {
-  ZTKPrpKeyFPrint( fp, sys, __ztk_prp_dzsys_qpd );
+  _ZTKPrpKeyFPrint( fp, sys, __ztk_prp_dzsys_qpd );
 }
 
 dzSysCom dz_sys_qpd_com = {

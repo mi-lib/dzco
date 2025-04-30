@@ -566,7 +566,7 @@ static const ZTKPrp __ztk_prp_dzlin[] = {
 dzLin *dzLinFromZTK(dzLin *lin, ZTK *ztk)
 {
   dzLinInit( lin );
-  if( !ZTKEvalKey( lin, NULL, ztk, __ztk_prp_dzlin ) ) return NULL;
+  if( !_ZTKEvalKey( lin, NULL, ztk, __ztk_prp_dzlin ) ) return NULL;
   if( !lin->a || !lin->b || !lin->c ){
     _dzLinDestroy( lin );
     return NULL;
@@ -585,5 +585,5 @@ dzLin *dzLinFromZTK(dzLin *lin, ZTK *ztk)
 
 void dzLinFPrintZTK(FILE *fp, dzLin *lin)
 {
-  ZTKPrpKeyFPrint( fp, lin, __ztk_prp_dzlin );
+  _ZTKPrpKeyFPrint( fp, lin, __ztk_prp_dzlin );
 }

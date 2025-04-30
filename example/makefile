@@ -1,11 +1,8 @@
-INCLUDE=`dzco-config -I`
-LIB=`dzco-config -L`
+CC=gcc
+CFLAGS=-ansi -Wall -O3 $(LIB) $(INCLUDE) -funroll-loops -g `dzco-config --cflags`
 LINK=`dzco-config -l`
 
 TARGET=$(shell ls *.c | xargs -i basename {} .c | tr -s "\n" " ")
-
-CC=gcc
-CFLAGS=-ansi -Wall -O3 $(LIB) $(INCLUDE) -funroll-loops -g
 
 all: $(TARGET)
 %: %.c

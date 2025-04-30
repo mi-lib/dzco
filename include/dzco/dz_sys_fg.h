@@ -20,7 +20,7 @@ __DZCO_EXPORT dzSysCom dz_sys_##mtype##_com
 #define dzSysFGDefine(Type,mtype) \
 static dzSys *_dzSys##Type##FromZTK(dzSys *sys, ZTK *ztk){\
   double val[] = { 0.0, 0.0, 0.0 };\
-  if( !ZTKEvalKey( val, NULL, ztk, __ztk_prp_dzsys_fg ) ) return NULL;\
+  if( !_ZTKEvalKey( val, NULL, ztk, __ztk_prp_dzsys_fg ) ) return NULL;\
   return dzSys##Type##Create( sys, val[0], val[1], val[2] );\
 }\
 dzSysCom dz_sys_##mtype##_com = {\

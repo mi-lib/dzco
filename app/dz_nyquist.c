@@ -52,14 +52,14 @@ enum{
 };
 zOption opt[] = {
   { "f", "tf", "<.ztk file>", "transfer function definition file", NULL, false },
-  { "o", "out", "<output file>", "result output file", "nyq_out", false },
-  { "s", "script", "<script file>", "script file to plot the result on gnuplot", "nyq.plot", false },
-  { "r", "range", "<string>", "output range in logarism scale", "-3:3:.001", false },
+  { "o", "out", "<output file>", "result output file", (char *)"nyq_out", false },
+  { "s", "script", "<script file>", "script file to plot the result on gnuplot", (char *)"nyq.plot", false },
+  { "r", "range", "<string>", "output range in logarism scale", (char *)"-3:3:.001", false },
   { "h", "help", NULL, "show this message", NULL, false },
   { NULL, NULL, NULL, NULL, NULL, false },
 };
 
-void dz_nyq_usage(char *arg)
+void dz_nyq_usage(const char *arg)
 {
   eprintf( "Usage: %s [-range <string>] <.ztk file> [output file] [script file]\n", arg );
   eprintf( "<options>\n" );

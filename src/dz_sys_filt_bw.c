@@ -179,13 +179,13 @@ static const ZTKPrp __ztk_prp_dzsys_bw[] = {
 static dzSys *_dzSysBWFromZTK(dzSys *sys, ZTK *ztk)
 {
   _dzBWParam prm = { 1.0, 1 };
-  if( !ZTKEvalKey( &prm, NULL, ztk, __ztk_prp_dzsys_bw ) ) return NULL;
+  if( !_ZTKEvalKey( &prm, NULL, ztk, __ztk_prp_dzsys_bw ) ) return NULL;
   return dzSysBWCreate( sys, prm.cf, prm.dim );
 }
 
 static void _dzSysBWFPrintZTK(FILE *fp, dzSys *sys)
 {
-  ZTKPrpKeyFPrint( fp, sys, __ztk_prp_dzsys_bw );
+  _ZTKPrpKeyFPrint( fp, sys, __ztk_prp_dzsys_bw );
 }
 
 dzSysCom dz_sys_bw_com = {

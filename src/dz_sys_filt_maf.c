@@ -50,13 +50,13 @@ static const ZTKPrp __ztk_prp_dzsys_maf[] = {
 static dzSys *_dzSysMAFFromZTK(dzSys *sys, ZTK *ztk)
 {
   double ff = 0;
-  if( !ZTKEvalKey( &ff, NULL, ztk, __ztk_prp_dzsys_maf ) ) return NULL;
+  if( !_ZTKEvalKey( &ff, NULL, ztk, __ztk_prp_dzsys_maf ) ) return NULL;
   return dzSysMAFCreate( sys, ff );
 }
 
 static void _dzSysMAFFPrintZTK(FILE *fp, dzSys *sys)
 {
-  ZTKPrpKeyFPrint( fp, sys, __ztk_prp_dzsys_maf );
+  _ZTKPrpKeyFPrint( fp, sys, __ztk_prp_dzsys_maf );
 }
 
 dzSysCom dz_sys_maf_com = {

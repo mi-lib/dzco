@@ -9,16 +9,16 @@ enum{
 };
 zOption opt[] = {
   { "s", "sys", "<.ztk file>", "system definition file", NULL, false },
-  { "o", "out", "<output file>", "result output file", "sim_out", false },
-  { "s", "script", "<script file>", "script file to plot the result on gnuplot", "sim.plot", false },
-  { "dt", "dt", "<value>", "discretized time step", "0.001", false },
-  { "t",  "t", "<value>", "total simulation time", "1.0", false },
+  { "o", "out", "<output file>", "result output file", (char *)"sim_out", false },
+  { "s", "script", "<script file>", "script file to plot the result on gnuplot", (char *)"sim.plot", false },
+  { "dt", "dt", "<value>", "discretized time step", (char *)"0.001", false },
+  { "t",  "t", "<value>", "total simulation time", (char *)"1.0", false },
   { "os", "outsys", "<name>", "the name of output system", NULL, false },
   { "h", "help", NULL, "show this message", NULL, false },
   { NULL, NULL, NULL, NULL, NULL, false },
 };
 
-void dz_sim_usage(char *arg)
+void dz_sim_usage(const char *arg)
 {
   eprintf( "Usage: %s [option] <.ztk file> [output file] [script file]\n", arg );
   eprintf( "<options>\n" );
@@ -49,7 +49,7 @@ bool dz_sim_output(FILE *fp, dzSysArray *arr)
 {
   double dt, t, term;
   dzSys *sys_out;
-  register int i;
+  int i;
 
   if( zIsTiny( ( dt = atof( opt[OPT_DT].arg ) ) ) ){
     ZRUNERROR( "too small discrete time step %g", dt );

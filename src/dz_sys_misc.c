@@ -22,7 +22,7 @@ static const ZTKPrp __ztk_prp_dzsys_mi[] = {
 
 static void _dzSysMIFPrintZTK(FILE *fp, dzSys *sys)
 {
-  ZTKPrpKeyFPrint( fp, sys, __ztk_prp_dzsys_mi );
+  _ZTKPrpKeyFPrint( fp, sys, __ztk_prp_dzsys_mi );
 }
 
 /* ********************************************************** */
@@ -42,7 +42,7 @@ static zVec _dzSysAdderUpdate(dzSys *sys, double dt)
 static dzSys *_dzSysAdderFromZTK(dzSys *sys, ZTK *ztk)
 {
   int n;
-  if( !ZTKEvalKey( &n, NULL, ztk, __ztk_prp_dzsys_mi ) ) return NULL;
+  if( !_ZTKEvalKey( &n, NULL, ztk, __ztk_prp_dzsys_mi ) ) return NULL;
   return dzSysAdderCreate( sys, n );
 }
 
@@ -81,7 +81,7 @@ static zVec _dzSysSubtrUpdate(dzSys *sys, double dt)
 static dzSys *_dzSysSubtrFromZTK(dzSys *sys, ZTK *ztk)
 {
   int n;
-  if( !ZTKEvalKey( &n, NULL, ztk, __ztk_prp_dzsys_mi ) ) return NULL;
+  if( !_ZTKEvalKey( &n, NULL, ztk, __ztk_prp_dzsys_mi ) ) return NULL;
   return dzSysSubtrCreate( sys, n );
 }
 
@@ -143,13 +143,13 @@ static const ZTKPrp __ztk_prp_dzsys_limit[] = {
 static dzSys *_dzSysLimitFromZTK(dzSys *sys, ZTK *ztk)
 {
   double val[2];
-  if( !ZTKEvalKey( val, NULL, ztk, __ztk_prp_dzsys_limit ) ) return NULL;
+  if( !_ZTKEvalKey( val, NULL, ztk, __ztk_prp_dzsys_limit ) ) return NULL;
   return dzSysLimitCreate( sys, val[0], val[1] );
 }
 
 static void _dzSysLimitFPrintZTK(FILE *fp, dzSys *sys)
 {
-  ZTKPrpKeyFPrint( fp, sys, __ztk_prp_dzsys_limit );
+  _ZTKPrpKeyFPrint( fp, sys, __ztk_prp_dzsys_limit );
 }
 
 dzSysCom dz_sys_limit_com = {

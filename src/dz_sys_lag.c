@@ -54,13 +54,13 @@ static const ZTKPrp __ztk_prp_dzsys_fol[] = {
 static dzSys *_dzSysFOLFromZTK(dzSys *sys, ZTK *ztk)
 {
   double val[] = { 1.0, 0.0 };
-  if( !ZTKEvalKey( val, NULL, ztk, __ztk_prp_dzsys_fol ) ) return NULL;
+  if( !_ZTKEvalKey( val, NULL, ztk, __ztk_prp_dzsys_fol ) ) return NULL;
   return dzSysFOLCreate( sys, val[0], val[1] );
 }
 
 static void _dzSysFOLFPrintZTK(FILE *fp, dzSys *sys)
 {
-  ZTKPrpKeyFPrint( fp, sys, __ztk_prp_dzsys_fol );
+  _ZTKPrpKeyFPrint( fp, sys, __ztk_prp_dzsys_fol );
 }
 
 dzSysCom dz_sys_fol_com = {
@@ -175,13 +175,13 @@ static const ZTKPrp __ztk_prp_dzsys_sol[] = {
 static dzSys *_dzSysSOLFromZTK(dzSys *sys, ZTK *ztk)
 {
   double val[] = { 1.0, 0.0, 1.0, 0.0 };
-  if( !ZTKEvalKey( val, NULL, ztk, __ztk_prp_dzsys_sol ) ) return NULL;
+  if( !_ZTKEvalKey( val, NULL, ztk, __ztk_prp_dzsys_sol ) ) return NULL;
   return dzSysSOLCreate( sys, val[0], val[1], val[2], val[3] );
 }
 
 static void _dzSysSOLFPrintZTK(FILE *fp, dzSys *sys)
 {
-  ZTKPrpKeyFPrint( fp, sys, __ztk_prp_dzsys_sol );
+  _ZTKPrpKeyFPrint( fp, sys, __ztk_prp_dzsys_sol );
 }
 
 dzSysCom dz_sys_sol_com = {
@@ -278,13 +278,13 @@ static const ZTKPrp __ztk_prp_dzsys_pc[] = {
 static dzSys *_dzSysPCFromZTK(dzSys *sys, ZTK *ztk)
 {
   double val[] = { 1.0, 0.0, 0.0 };
-  if( !ZTKEvalKey( val, NULL, ztk, __ztk_prp_dzsys_pc ) ) return NULL;
+  if( !_ZTKEvalKey( val, NULL, ztk, __ztk_prp_dzsys_pc ) ) return NULL;
   return dzSysPCCreate( sys, val[0], val[1], val[2] );
 }
 
 static void _dzSysPCFPrintZTK(FILE *fp, dzSys *sys)
 {
-  ZTKPrpKeyFPrint( fp, sys, __ztk_prp_dzsys_pc );
+  _ZTKPrpKeyFPrint( fp, sys, __ztk_prp_dzsys_pc );
 }
 
 dzSysCom dz_sys_pc_com = {
@@ -369,13 +369,13 @@ static const ZTKPrp __ztk_prp_dzsys_adapt[] = {
 static dzSys *_dzSysAdaptFromZTK(dzSys *sys, ZTK *ztk)
 {
   double val[] = { 1.0, 0.0 };
-  if( !ZTKEvalKey( val, NULL, ztk, __ztk_prp_dzsys_adapt ) ) return NULL;
+  if( !_ZTKEvalKey( val, NULL, ztk, __ztk_prp_dzsys_adapt ) ) return NULL;
   return dzSysAdaptCreate( sys, val[0], val[1] );
 }
 
 static void _dzSysAdaptFPrintZTK(FILE *fp, dzSys *sys)
 {
-  ZTKPrpKeyFPrint( fp, sys, __ztk_prp_dzsys_adapt );
+  _ZTKPrpKeyFPrint( fp, sys, __ztk_prp_dzsys_adapt );
 }
 
 dzSysCom dz_sys_adapt_com = {

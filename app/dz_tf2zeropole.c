@@ -9,8 +9,8 @@ enum{
 };
 zOption opt[] = {
   { "i", "input", "<TF file>", "input transfer function file", NULL, false },
-  { "z", "zero file", "<data file>", "output file to store zeros", "zero.dat", false },
-  { "p", "pole file", "<data file>", "output file to store poles", "pole.dat", false },
+  { "z", "zero file", "<data file>", "output file to store zeros", (char *)"zero.dat", false },
+  { "p", "pole file", "<data file>", "output file to store poles", (char *)"pole.dat", false },
   { "h", "help", NULL, "show this message", NULL, false },
   { NULL, NULL, NULL, NULL, NULL, false },
 };
@@ -43,7 +43,7 @@ bool dz_tf2zeropole_command_arg(int argc, char *argv[])
 
 void dz_tf2zeropole_output_one(FILE *fp, zCVec v)
 {
-  register int i;
+  int i;
 
   for( i=0; i<zCVecSizeNC(v); i++ )
     fprintf( fp, "%.10g %.10g\n", zCVecElemNC(v,i)->re, zCVecElemNC(v,i)->im );
