@@ -15,7 +15,7 @@ bool complex_is_equal(zComplex *c1, zComplex *c2)
 
 bool cval_set_is_included(zCVec v, zComplex *val)
 {
-  register int i;
+  int i;
   bool ret = false;
 
   for( i=0; i<zCVecSizeNC(v); i++ ){
@@ -26,7 +26,7 @@ bool cval_set_is_included(zCVec v, zComplex *val)
 
 bool cval_set_equal(zCVec v1, zCVec v2)
 {
-  register int i;
+  int i;
   bool ret = true;
 
   for( i=0; i<zCVecSizeNC(v2); i++ )

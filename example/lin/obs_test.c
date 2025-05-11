@@ -41,7 +41,7 @@ int main(int argc, char *argv[])
   dzLin *sl1, *sl2;
   dzSys sys;
   double input = 1.0;
-  register int i;
+  int i;
   zVec k; /* observer gain */
 
   sl1 = create_sl();

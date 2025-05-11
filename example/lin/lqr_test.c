@@ -52,7 +52,7 @@ void reg_create(void)
 /* main loop */
 int main(int argc, char *argv[])
 {
-  register int i;
+  int i;
   zVec ref;
 
   sys_create();

@@ -7,7 +7,7 @@ int main(int argc, char *argv[])
 {
   dzSysArray arr;
   dzSys *sys_out;
-  register int i;
+  int i;
 
   dzSysArrayReadZTK( &arr, "connect_test.ztk" );
   dzSysArrayFPrintZTK( stderr, &arr );

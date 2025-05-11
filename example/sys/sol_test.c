@@ -5,7 +5,7 @@
 
 int main(int argc, char *argv[])
 {
-  register int i;
+  int i;
   dzSys sol, solgen;
   double ref;
 

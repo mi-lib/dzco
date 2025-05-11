@@ -5,7 +5,7 @@
 
 void output_step(dzSys *fol, double x0)
 {
-  register int i;
+  int i;
 
   dzSysOutputVal(fol,0) = x0;
   for( i=0; i<=STEP; i++ )

@@ -9,7 +9,7 @@
 
 int main(void)
 {
-  register int i, j;
+  int i, j;
   dzSys bwf[N], maf[N];
   double val;
 

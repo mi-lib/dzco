@@ -28,7 +28,7 @@ int main(void)
   double input1, input2;
   zVec f, pole;
   double p[] = {-6,-7 };
-  register int i;
+  int i;
 
   sl1 = create_sl();
   sl2 = create_sl();

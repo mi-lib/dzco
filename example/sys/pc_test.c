@@ -55,7 +55,7 @@ void destroy(dzSys sys[])
 
 int main(void)
 {
-  register int i;
+  int i;
 
   create( sys1, &ref );
   create( sys2, &ref );

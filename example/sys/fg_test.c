@@ -6,7 +6,7 @@
 int main(void)
 {
   dzSys step, ramp, sine, wn, adder;
-  register int i;
+  int i;
 
   dzSysStepCreate( &step, 1.0, 0.6, 2.0 );
   dzSysRampCreate( &ramp, 1.0, 0.6, 2.0 );

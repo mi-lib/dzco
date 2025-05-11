@@ -19,7 +19,7 @@ void assert_co(void)
   zMat a, t;
   zVec b, c;
   double tmp;
-  register int i;
+  int i;
   bool result_ctl, result_obs;
 
   dzLinAlloc( &lin, dim );

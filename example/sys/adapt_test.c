@@ -4,7 +4,7 @@
 
 int main(int argc, char *argv[])
 {
-  register int i;
+  int i;
   dzSys adapt1, adapt2;
   double ref;
 

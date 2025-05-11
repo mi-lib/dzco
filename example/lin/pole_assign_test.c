@@ -6,7 +6,7 @@
 void check(dzLin *c, zVec f, zVec pole)
 {
   zMat tmp1, tmp2;
-  register int i, j;
+  int i, j;
   double det;
   int count;
 

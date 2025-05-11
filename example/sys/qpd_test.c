@@ -5,7 +5,7 @@
 
 void output_step(dzSys *qpd, dzSys *intg1, dzSys *intg2, double goal)
 {
-  register int i;
+  int i;
 
   dzSysQPDSetGoal( qpd, goal );
   for( i=0; i<STEP; i++ ){

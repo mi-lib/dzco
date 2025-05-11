@@ -25,7 +25,7 @@ int main(int argc, char *argv[])
 {
   double t, val, val_n, ddt;
   dzSys maf;
-  register int i;
+  int i;
 
   zRandInitMT( NULL );
   dzSysMAFCreate( &maf, FF );

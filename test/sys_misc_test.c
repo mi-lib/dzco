@@ -4,7 +4,7 @@
 
 bool assert_adder(dzSys *adder, double *v1, double *v2, double *v3)
 {
-  register int i;
+  int i;
 
   for( i=0; i<N; i++ ){
     *v1 = zRandF(-10,10);
@@ -18,7 +18,7 @@ bool assert_adder(dzSys *adder, double *v1, double *v2, double *v3)
 
 bool assert_subtr(dzSys *subtr, double *v1, double *v2, double *v3)
 {
-  register int i;
+  int i;
 
   for( i=0; i<N; i++ ){
     *v1 = zRandF(-10,10);
@@ -32,7 +32,7 @@ bool assert_subtr(dzSys *subtr, double *v1, double *v2, double *v3)
 
 bool assert_limiter(dzSys *limiter, double *v)
 {
-  register int i;
+  int i;
 
   for( i=0; i<N; i++ ){
     *v = zRandF(-2,2);
