@@ -23,6 +23,7 @@ dzLin *dzLinInit(dzLin *lin)
   lin->b = lin->c = lin->x = NULL;
   lin->d = 0;
   lin->_ax = lin->_bu = NULL;
+  zODEInit( &lin->_ode );
   return lin;
 }
 
@@ -60,7 +61,7 @@ static bool _dzLinAllocODE(dzLin *lin)
   lin->_bu = zVecAlloc( dim );
   zODEAssign( &lin->_ode, RKG, NULL, NULL ); /* Runge-Kutta-Gill's method */
   if( !lin->_ax || !lin->_bu ||
-      !zODEInit( &lin->_ode, dim, 0, __dz_lin_state_dif ) ){
+      !zODECreate( &lin->_ode, dim, 0, __dz_lin_state_dif ) ){
     _dzLinDestroyODE( lin );
     return false;
   }
@@ -88,6 +89,15 @@ static bool _dzLinCheckSize(dzLin *lin)
   return zMatIsSqr( lin->a ) &&
          zMatColVecSizeEqual( lin->a, lin->b ) &&
          zMatRowVecSizeEqual( lin->a, lin->c ) ? true : false;
+}
+
+/* check if two linear systems are equal. */
+bool dzLinEqual(const dzLin *lin1, const dzLin *lin2)
+{
+  return zMatEqual( lin1->a, lin2->a, zTOL ) &&
+         zVecEqual( lin1->b, lin2->b, zTOL ) &&
+         zVecEqual( lin1->c, lin2->c, zTOL ) &&
+         zEqual( lin1->d, lin2->d, zTOL );
 }
 
 /* update the inner state of linear system. */
@@ -226,19 +236,17 @@ zMat dzLinCtrlCanon(dzLin *c, zMat t)
     t = NULL;
     goto TERMINATE;
   }
-
   dzLinCtrlMat( c, uc );
   if( !zMatInv( uc, uc_inv ) ){
     ZRUNERROR( DZ_ERR_LIN_UNCTRL );
     t = NULL;
     goto TERMINATE;
   }
-  ap = zMatBuf( c->a );
-  tp = zMatBuf( t );
-  zRawMatGetRow( zMatBuf(uc_inv), zMatRowSizeNC(t), zMatColSizeNC(t),
-    zMatRowSizeNC(t)-1, tp );
-  for( i=1; i<zMatRowSizeNC(t); i++, tp+=zMatColSizeNC(t) )
-    zRawMulMatTVec( ap, tp, zMatRowSizeNC(t), zMatColSizeNC(t), tp+zMatColSizeNC(t) );
+  ap = zMatBufNC( c->a );
+  tp = zMatBufNC( t );
+  zRawMatGetRow( zMatBufNC(uc_inv), zMatColCapacity(uc_inv), zMatRowSizeNC(t), zMatColSizeNC(t), zMatRowSizeNC(t)-1, tp );
+  for( i=1; i<zMatRowSizeNC(t); i++, tp+=zMatColCapacity(t) )
+    zRawMulMatTVec( ap, zMatColCapacity(c->a), tp, zMatRowSizeNC(t), zMatColSizeNC(t), tp+zMatColCapacity(t) );
 
  TERMINATE:
   zMatFree( uc );

@@ -39,7 +39,7 @@ bool cval_set_equal(zCVec v1, zCVec v2)
 #define NUM_ZEROS 2
 #define NUM_POLES 5
 
-void assert_zeropole(void)
+void assert_tf_zeropole(void)
 {
   zCVec zero_src, pole_src;
   dzTF tf;
@@ -67,7 +67,7 @@ void assert_zeropole(void)
   zCVecFree( pole_src );
 }
 
-void assert_connect(void)
+void assert_tf_connect(void)
 {
   dzTF tf1, tf2, tf;
 
@@ -88,7 +88,7 @@ void assert_connect(void)
 int main(int argc, char *argv[])
 {
   zRandInit();
-  assert_zeropole();
-  assert_connect();
+  assert_tf_zeropole();
+  assert_tf_connect();
   return 0;
 }

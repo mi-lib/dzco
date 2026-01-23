@@ -53,6 +53,9 @@ __DZCO_EXPORT dzLin *dzLinInit(dzLin *lin);
 __DZCO_EXPORT bool dzLinAlloc(dzLin *c, int dim);
 __DZCO_EXPORT void dzLinDestroy(dzLin *c);
 
+/*! \brief check if two linear systems are equal. */
+__DZCO_EXPORT bool dzLinEqual(const dzLin *lin1, const dzLin *lin2);
+
 /*! \brief output and update the inner state of linear system.
  *
  * dzLinStateUpdate() updates the inner state of linear system

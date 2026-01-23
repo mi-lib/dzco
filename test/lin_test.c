@@ -12,7 +12,7 @@ void linsys_xfer(dzLin *lin, zMat a, zVec b, zVec c, zMat t)
   zMatFree( at );
 }
 
-void assert_co(void)
+void assert_lin_co(void)
 {
   const int dim = 5;
   dzLin lin;
@@ -35,7 +35,6 @@ void assert_co(void)
    if( zIsTiny(zVecElemNC(c,i)) ) zVecElemNC(c,i) += 1.0;
   }
   lin.d = 0;
-  zMatIdent( t );
   zMatRandUniform( t, -1, 1 );
 
   result_ctl = result_obs = true;
@@ -63,6 +62,70 @@ void assert_co(void)
   zVecFree( b );
   zVecFree( c );
   zMatFree( t );
+}
+
+void assert_tf_lin_canon(void)
+{
+  dzTF tf;
+  dzLin lin, lin_ans;
+  bool result;
+
+  /* case 1 */
+  dzTFAlloc( &tf, 0, 2 );
+  dzTFSetNumList( &tf, 2.0 );
+  dzTFSetDenList( &tf, 5.0, 6.0, 1.0 );
+
+  dzTF2LinCtrlCanon( &tf, &lin );
+  dzLinInit( &lin_ans );
+  lin_ans.a = zMatCreateList( 2, 2, 0.0, 1.0, -5.0,-6.0 );
+  lin_ans.b = zVecCreateList( 2, 0.0, 1.0 );
+  lin_ans.c = zVecCreateList( 2, 2.0, 0.0 );
+  lin_ans.d = 0;
+  result = dzLinEqual( &lin, &lin_ans );
+  dzLinDestroy( &lin );
+  dzLinDestroy( &lin_ans );
+  zAssert( dzTF2LinCtrlCanon (case1), result );
+
+  dzTF2LinObsCanon( &tf, &lin );
+  dzLinInit( &lin_ans );
+  lin_ans.a = zMatCreateList( 2, 2, 0.0,-5.0, 1.0,-6.0 );
+  lin_ans.b = zVecCreateList( 2, 2.0, 0.0 );
+  lin_ans.c = zVecCreateList( 2, 0.0, 1.0 );
+  lin_ans.d = 0;
+  result = dzLinEqual( &lin, &lin_ans );
+  dzLinDestroy( &lin );
+  dzLinDestroy( &lin_ans );
+  zAssert( dzTF2LinObsCanon (case1), result );
+
+  dzTFDestroy( &tf );
+
+  /* case 2 */
+  dzTFAlloc( &tf, 2, 2 );
+  dzTFSetNumList( &tf, 9.0, 7.0, 1.0 );
+  dzTFSetDenList( &tf, 5.0, 6.0, 1.0 );
+
+  dzTF2LinCtrlCanon( &tf, &lin );
+  dzLinInit( &lin_ans );
+  lin_ans.a = zMatCreateList( 2, 2, 0.0, 1.0, -5.0,-6.0 );
+  lin_ans.b = zVecCreateList( 2, 0.0, 1.0 );
+  lin_ans.c = zVecCreateList( 2, 4.0, 1.0 );
+  lin_ans.d = 1;
+  result = dzLinEqual( &lin, &lin_ans );
+  dzLinDestroy( &lin );
+  dzLinDestroy( &lin_ans );
+  zAssert( dzTF2LinCtrlCanon (case2), result );
+
+  dzTF2LinObsCanon( &tf, &lin );
+  dzLinInit( &lin_ans );
+  lin_ans.a = zMatCreateList( 2, 2, 0.0,-5.0, 1.0,-6.0 );
+  lin_ans.b = zVecCreateList( 2, 4.0, 1.0 );
+  lin_ans.c = zVecCreateList( 2, 0.0, 1.0 );
+  lin_ans.d = 1.0;
+  result = dzLinEqual( &lin, &lin_ans );
+  dzLinDestroy( &lin );
+  dzLinDestroy( &lin_ans );
+  zAssert( dzTF2LinObsCanon (case2), result );
+  dzTFDestroy( &tf );
 }
 
 #define N 100
@@ -112,7 +175,8 @@ void assert_lqr(void)
 int main(void)
 {
   zRandInit();
-  assert_co();
+  assert_lin_co();
+  assert_tf_lin_canon();
   assert_lqr();
   return EXIT_SUCCESS;
 }

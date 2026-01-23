@@ -1,3 +1,7 @@
+2026. 1.23. Added dzLinEqual. [dz_lin]
+2026. 1.23. Modified dzLinInit to apply zODEInit. [dz_lin]
+2026. 1.23. Modified _dzLinAllocODE to reflect renaming of zODEInit to zODECreate. [dz_lin]
+2026. 1.22. Modified dzLinCtrlCanon to reflect new specification of zMat. [dz_lin]
 2025.12.26. Replaced -i option of xargs in example/makefile to -I (thanks to Naoki Wakisaka). [example]
 2025.05.11. Removed register qualifiers from test and example codes. [test, example]
 2025.04.29. Added const qualifiers to the arguments of usage functions, and cast constant strings in options to char pointers of programs in app. [app]
