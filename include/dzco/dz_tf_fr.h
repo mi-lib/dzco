@@ -11,11 +11,9 @@
 
 __BEGIN_DECLS
 
-/* ********************************************************** */
-/*! \class dzFreqRes
- * frequency response
- * ********************************************************** */
-
+/*! \struct dzFreqRes
+ * \brief frequency response.
+ */
 ZDEF_STRUCT( __DZCO_CLASS_EXPORT, dzFreqRes ){
   double f; /*!< frequency */
   double g; /*!< gain */
@@ -45,12 +43,10 @@ __DZCO_EXPORT dzFreqRes *dzFreqRes2Open(dzFreqRes *frin, dzFreqRes *frout);
 __DZCO_EXPORT dzFreqRes *dzFreqResFromTF(dzFreqRes *fr, dzTF *tf, double af);
 __DZCO_EXPORT zComplex *dzTFToComplex(dzTF *tf, double af, zComplex *c);
 
-/* ********************************************************** */
-/*! \class dzFreqResList
- * list of sampled frequency responses
- * ********************************************************** */
-
-zListClass( dzFreqResList, dzFreqResListCell, dzFreqRes );
+/*! \struct dzFreqResList
+ * \brief list of sampled frequency responses.
+ */
+ZEDA_DEF_LIST_CLASS( dzFreqResList, dzFreqResListCell, dzFreqRes );
 
 #define dzFreqResListDestroy(list) zListDestroy( dzFreqResListCell, list )
 
