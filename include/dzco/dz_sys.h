@@ -1,7 +1,7 @@
 /* DZco - digital control library
  * Copyright (C) 2000 Tomomichi Sugihara (Zhidao)
  *
- * dz_sys - system class
+ * dz_sys - system class.
  */
 
 #ifndef __DZ_SYS_H__
@@ -11,10 +11,8 @@
 
 __BEGIN_DECLS
 
-/* ********************************************************** */
-/* \class dzSysPort and dzSysPortArray
- * ********************************************************** */
-
+/*! \struct dzSysPort
+ */
 struct _dzSys;
 
 ZDEF_STRUCT( __DZCO_CLASS_EXPORT, dzSysPort ){
@@ -23,12 +21,12 @@ ZDEF_STRUCT( __DZCO_CLASS_EXPORT, dzSysPort ){
   double *vp;
 };
 
-zArrayClass( dzSysPortArray, dzSysPort );
+/*! \struct dzSysPortArray
+ */
+ZEDA_DEF_ARRAY_CLASS( dzSysPortArray, dzSysPort );
 
-/* ********************************************************** */
-/* \class dzSys
- * ********************************************************** */
-
+/*! \struct dzSysCom
+ */
 ZDEF_STRUCT( __DZCO_CLASS_EXPORT, dzSysCom ){
   const char *typestr;
   void (* _destroy)(struct _dzSys*);
@@ -38,6 +36,8 @@ ZDEF_STRUCT( __DZCO_CLASS_EXPORT, dzSysCom ){
   void (* _fprintZTK)(FILE *fp, struct _dzSys*);
 };
 
+/*! \struct dzSys
+ */
 typedef struct _dzSys{
   Z_NAMED_CLASS;
   dzSysPortArray input;
@@ -148,11 +148,9 @@ __DZCO_EXPORT void *dzSysFromZTK(dzSys *sys, ZTK *ztk);
 
 __DZCO_EXPORT void dzSysFPrintZTK(FILE *fp, dzSys *sys);
 
-/* ********************************************************** */
-/* \class dzSysArray
- * ********************************************************** */
-
-zArrayClass( dzSysArray, dzSys );
+/*! \struct dzSysArray
+ */
+ZEDA_DEF_ARRAY_CLASS( dzSysArray, dzSys );
 
 /*! \brief allocate an array of systems. */
 __DZCO_EXPORT dzSysArray *dzSysArrayAlloc(dzSysArray *arr, int size);
