@@ -9,13 +9,9 @@
 
 #include <dzco/dz_misc.h>
 
-__BEGIN_DECLS
-
-/* ********************************************************** */
-/*! \class dzTF
- * transfer function by polynomial rational expression
- * ********************************************************** */
-
+/*! \struct dzTF
+ * \brief transfer function by polynomial rational expression.
+ */
 ZDEF_STRUCT( __DZCO_CLASS_EXPORT, dzTF ){
   zPex num; /*!< polynomial for numerator */
   zPex den; /*!< polynomial for denominator */
@@ -24,6 +20,8 @@ ZDEF_STRUCT( __DZCO_CLASS_EXPORT, dzTF ){
   zCVec pole; /* poles */
   /*! \endcond */
 };
+
+__BEGIN_DECLS
 
 #define dzTFNum(tf)            (tf)->num
 #define dzTFDen(tf)            (tf)->den
@@ -143,14 +141,14 @@ __DZCO_EXPORT bool dzTFZeroPoleReIm(dzTF *tf, zVec *zero1, zCVec *zero2, zVec *p
 #define ZTK_KEY_DZCO_TF_GAIN        "gain"
 
 __DZCO_EXPORT dzTF *dzTFFromZTK(dzTF *tf, ZTK *ztk);
-__DZCO_EXPORT void dzTFFPrintZTK(FILE *fp, dzTF *tf);
+__DZCO_EXPORT void dzTFFPrintZTK(FILE *fp, const dzTF *tf);
 
 /*! \brief read a transfer function from a ZTK file. */
-__DZCO_EXPORT dzTF *dzTFReadZTK(dzTF *tf, char filename[]);
+__DZCO_EXPORT dzTF *dzTFReadZTK(dzTF *tf, const char filename[]);
 /*! \brief write a transfer function to a ZTK file. */
-__DZCO_EXPORT bool dzTFWriteZTK(dzTF *tf, char filename[]);
+__DZCO_EXPORT bool dzTFWriteZTK(const dzTF *tf, const char filename[]);
 
-__DZCO_EXPORT void dzTFFExpr(FILE *fp, dzTF *tf);
+__DZCO_EXPORT void dzTFFExpr(FILE *fp, const dzTF *tf);
 #define dzTFExpr(tf) dzTFFExpr( stdout, tf )
 
 __END_DECLS

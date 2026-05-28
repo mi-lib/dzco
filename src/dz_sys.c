@@ -78,11 +78,11 @@ static void *_dzSysTypeFromZTK(void *obj, int i, void *arg, ZTK *ztk){
   return _dzSysQueryAssign( (dzSys*)obj, ZTKVal(ztk) ) ? obj : NULL;
 }
 
-static bool _dzSysNameFPrintZTK(FILE *fp, int i, void *obj){
+static bool _dzSysNameFPrintZTK(FILE *fp, int i, const void *obj){
   fprintf( fp, "%s\n", zName((dzSys*)obj) );
   return true;
 }
-static bool _dzSysTypeFPrintZTK(FILE *fp, int i, void *obj){
+static bool _dzSysTypeFPrintZTK(FILE *fp, int i, const void *obj){
   fprintf( fp, "%s\n", ((dzSys*)obj)->com ? ((dzSys*)obj)->com->typestr : "unknown" );
   return true;
 }
@@ -102,7 +102,7 @@ void *dzSysFromZTK(dzSys *sys, ZTK *ztk)
   return sys;
 }
 
-void dzSysFPrintZTK(FILE *fp, dzSys *sys)
+void dzSysFPrintZTK(FILE *fp, const dzSys *sys)
 {
   _ZTKPrpKeyFPrint( fp, sys, __ztk_prp_dzsys );
   if( sys->com )
@@ -110,7 +110,7 @@ void dzSysFPrintZTK(FILE *fp, dzSys *sys)
 }
 
 /* ********************************************************** */
-/* \class dzSysArray
+/* dzSysArray
  * ********************************************************** */
 
 /* allocate an array of systems. */
@@ -195,7 +195,7 @@ static void *_dzSysArrayConnectFromZTK(void *obj, int i, void *arg, ZTK *ztk){
   return obj;
 }
 
-static bool _dzSysArrayConnectFPrintZTK(FILE *fp, int i, void *obj){
+static bool _dzSysArrayConnectFPrintZTK(FILE *fp, int i, const void *obj){
   int j, k;
   dzSys *sys;
   dzSysPort *sp;
@@ -230,7 +230,7 @@ dzSysArray *dzSysArrayFromZTK(dzSysArray *sarray, ZTK *ztk)
 }
 
 /* print an array of systems to the current position of a ZTK file. */
-void dzSysArrayFPrintZTK(FILE *fp, dzSysArray *arr)
+void dzSysArrayFPrintZTK(FILE *fp, const dzSysArray *arr)
 {
   int i;
 
@@ -243,7 +243,7 @@ void dzSysArrayFPrintZTK(FILE *fp, dzSysArray *arr)
 }
 
 /* read a ZTK file and create an array of systems. */
-dzSysArray *dzSysArrayReadZTK(dzSysArray *sarray, char filename[])
+dzSysArray *dzSysArrayReadZTK(dzSysArray *sarray, const char filename[])
 {
   ZTK ztk;
 
@@ -256,7 +256,7 @@ dzSysArray *dzSysArrayReadZTK(dzSysArray *sarray, char filename[])
 }
 
 /* write an array of systems to a file in ZTK format. */
-bool dzSysArrayWriteZTK(dzSysArray *sarray, char filename[])
+bool dzSysArrayWriteZTK(const dzSysArray *sarray, const char filename[])
 {
   FILE *fp;
 

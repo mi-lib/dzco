@@ -1,3 +1,6 @@
+2026.05.27. Applied ZDECL_STRUCT. [dz_sys]
+2026.05.27. Relocated __BEGIN_DECLS and __END_DECLS. [dz_tf, dz_sys]
+2026.05.27. Added const qualifiers to arguments of functions. [dz_tf, dz_sys, dz_sys_misc, dz_sys_pid, dz_sys_lag, dz_sys_fg, dz_sys_filt_bw, dz_sys_filt_maf, dz_sys_tf, dz_sys_lin]
 2026.04.24. Applied renaming of zArrayClass to ZEDA_DEF_ARRAY_CLASS. [dz_sys]
 2026.04.22. Applied renaming of zListClass to ZEDA_DEF_LIST_CLASS. [dzco_tf_fr]
 2026.01.23. Added dzLinEqual. [dz_lin]

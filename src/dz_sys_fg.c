@@ -35,15 +35,15 @@ static void *_dzSysFGPeriodFromZTK(void *val, int i, void *arg, ZTK *ztk){
   ((double*)val)[2] = ZTKDouble(ztk);
   return val;
 }
-static bool _dzSysFGAmpFPrintZTK(FILE *fp, int i, void *prp){
+static bool _dzSysFGAmpFPrintZTK(FILE *fp, int i, const void *prp){
   fprintf( fp, "%.10g\n", __dz_sys_fg_amp((dzSys*)prp) );
   return true;
 }
-static bool _dzSysFGDelayFPrintZTK(FILE *fp, int i, void *prp){
+static bool _dzSysFGDelayFPrintZTK(FILE *fp, int i, const void *prp){
   fprintf( fp, "%.10g\n", __dz_sys_fg_delay((dzSys*)prp) );
   return true;
 }
-static bool _dzSysFGPeriodFPrintZTK(FILE *fp, int i, void *prp){
+static bool _dzSysFGPeriodFPrintZTK(FILE *fp, int i, const void *prp){
   fprintf( fp, "%.10g\n", __dz_sys_fg_period((dzSys*)prp) );
   return true;
 }
@@ -53,7 +53,7 @@ static const ZTKPrp __ztk_prp_dzsys_fg[] = {
   { ZTK_KEY_DZCO_SYS_FG_PERIOD, 1, _dzSysFGPeriodFromZTK, _dzSysFGPeriodFPrintZTK },
 };
 
-static void _dzSysFGFPrintZTK(FILE *fp, dzSys *sys)
+static void _dzSysFGFPrintZTK(FILE *fp, const dzSys *sys)
 {
   _ZTKPrpKeyFPrint( fp, sys, __ztk_prp_dzsys_fg );
 }

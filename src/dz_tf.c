@@ -212,11 +212,11 @@ static void *_dzTFGainFromZTK(void *obj, int i, void *arg, ZTK *ztk){
   return obj;
 }
 
-static bool _dzTFNumFPrintZTK(FILE *fp, int i, void *prp){
+static bool _dzTFNumFPrintZTK(FILE *fp, int i, const void *prp){
   zPexFPrint( fp, ((dzTF*)prp)->num );
   return true;
 }
-static bool _dzTFDenFPrintZTK(FILE *fp, int i, void *prp){
+static bool _dzTFDenFPrintZTK(FILE *fp, int i, const void *prp){
   zPexFPrint( fp, ((dzTF*)prp)->den );
   return true;
 }
@@ -242,13 +242,13 @@ dzTF *dzTFFromZTK(dzTF *tf, ZTK *ztk)
   return tf;
 }
 
-void dzTFFPrintZTK(FILE *fp, dzTF *tf)
+void dzTFFPrintZTK(FILE *fp, const dzTF *tf)
 {
   _ZTKPrpKeyFPrint( fp, tf, __ztk_prp_dztf );
 }
 
 /* read a transfer function from a ZTK file. */
-dzTF *dzTFReadZTK(dzTF *tf, char filename[])
+dzTF *dzTFReadZTK(dzTF *tf, const char filename[])
 {
   ZTK ztk;
 
@@ -260,7 +260,7 @@ dzTF *dzTFReadZTK(dzTF *tf, char filename[])
 }
 
 /* write a transfer function to a ZTK file. */
-bool dzTFWriteZTK(dzTF *tf, char filename[])
+bool dzTFWriteZTK(const dzTF *tf, const char filename[])
 {
   FILE *fp;
 
@@ -271,7 +271,7 @@ bool dzTFWriteZTK(dzTF *tf, char filename[])
 }
 
 /* print a transfer function in a fancy style to a file. */
-void dzTFFExpr(FILE *fp, dzTF *tf)
+void dzTFFExpr(FILE *fp, const dzTF *tf)
 {
   char buf_num[BUFSIZ], buf_den[BUFSIZ];
   int i;

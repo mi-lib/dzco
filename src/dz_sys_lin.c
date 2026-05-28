@@ -28,7 +28,7 @@ static zVec _dzSysLinUpdate(dzSys *sys, double dt)
   return dzSysOutput(sys);
 }
 
-static void _dzSysLinFPrintZTK(FILE *fp, dzSys *sys)
+static void _dzSysLinFPrintZTK(FILE *fp, const dzSys *sys)
 {
   dzLinFPrintZTK( fp, dzSysLin(sys) );
 }

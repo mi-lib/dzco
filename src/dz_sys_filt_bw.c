@@ -162,11 +162,11 @@ static void *_dzSysBWDimFromZTK(void *val, int i, void *arg, ZTK *ztk){
   return val;
 }
 
-static bool _dzSysBWCFFPrintZTK(FILE *fp, int i, void *prp){
+static bool _dzSysBWCFFPrintZTK(FILE *fp, int i, const void *prp){
   fprintf( fp, "%.10g\n", ((_dzBW*)((dzSys*)prp)->prp)->cf );
   return true;
 }
-static bool _dzSysBWDimFPrintZTK(FILE *fp, int i, void *prp){
+static bool _dzSysBWDimFPrintZTK(FILE *fp, int i, const void *prp){
   fprintf( fp, "%d\n", ((_dzBW*)((dzSys*)prp)->prp)->dim );
   return true;
 }
@@ -183,7 +183,7 @@ static dzSys *_dzSysBWFromZTK(dzSys *sys, ZTK *ztk)
   return dzSysBWCreate( sys, prm.cf, prm.dim );
 }
 
-static void _dzSysBWFPrintZTK(FILE *fp, dzSys *sys)
+static void _dzSysBWFPrintZTK(FILE *fp, const dzSys *sys)
 {
   _ZTKPrpKeyFPrint( fp, sys, __ztk_prp_dzsys_bw );
 }

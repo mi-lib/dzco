@@ -9,14 +9,12 @@
 
 #include <dzco/dz_misc.h>
 
-__BEGIN_DECLS
-
 /*! \struct dzSysPort
  */
-struct _dzSys;
+ZDECL_STRUCT( dzSys );
 
 ZDEF_STRUCT( __DZCO_CLASS_EXPORT, dzSysPort ){
-  struct _dzSys *sp;
+  dzSys *sp;
   int port;
   double *vp;
 };
@@ -29,22 +27,24 @@ ZEDA_DEF_ARRAY_CLASS( dzSysPortArray, dzSysPort );
  */
 ZDEF_STRUCT( __DZCO_CLASS_EXPORT, dzSysCom ){
   const char *typestr;
-  void (* _destroy)(struct _dzSys*);
-  void (* _refresh)(struct _dzSys*);
-  zVec (* _update)(struct _dzSys*, double);
-  struct _dzSys *(* _fromZTK)(struct _dzSys*, ZTK*);
-  void (* _fprintZTK)(FILE *fp, struct _dzSys*);
+  void (* _destroy)(dzSys*);
+  void (* _refresh)(dzSys*);
+  zVec (* _update)(dzSys*, double);
+  dzSys *(* _fromZTK)(dzSys*, ZTK*);
+  void (* _fprintZTK)(FILE *fp, const dzSys*);
 };
 
 /*! \struct dzSys
  */
-typedef struct _dzSys{
+ZDEF_STRUCT( __DZCO_CLASS_EXPORT, dzSys ){
   Z_NAMED_CLASS;
   dzSysPortArray input;
   zVec output;
   void *prp; /* utility for inheritance class of dzSys */
   dzSysCom *com; /* methods */
-} dzSys;
+};
+
+__BEGIN_DECLS
 
 #define dzSysInput(s)         ( &(s)->input )
 #define dzSysOutput(s)        ( (s)->output )
@@ -146,11 +146,15 @@ __DZCO_EXPORT void dzSysDefaultRefresh(dzSys *sys);
 
 __DZCO_EXPORT void *dzSysFromZTK(dzSys *sys, ZTK *ztk);
 
-__DZCO_EXPORT void dzSysFPrintZTK(FILE *fp, dzSys *sys);
+__DZCO_EXPORT void dzSysFPrintZTK(FILE *fp, const dzSys *sys);
+
+__END_DECLS
 
 /*! \struct dzSysArray
  */
 ZEDA_DEF_ARRAY_CLASS( dzSysArray, dzSys );
+
+__BEGIN_DECLS
 
 /*! \brief allocate an array of systems. */
 __DZCO_EXPORT dzSysArray *dzSysArrayAlloc(dzSysArray *arr, int size);
@@ -167,12 +171,12 @@ __DZCO_EXPORT void dzSysArrayUpdate(dzSysArray *arr, double dt);
 /*! \brief read the current position of a ZTK file and create an array of systems. */
 __DZCO_EXPORT dzSysArray *dzSysArrayFromZTK(dzSysArray *sarray, ZTK *ztk);
 /*! \brief print an array of systems to the current position of a ZTK file. */
-__DZCO_EXPORT void dzSysArrayFPrintZTK(FILE *fp, dzSysArray *sys);
+__DZCO_EXPORT void dzSysArrayFPrintZTK(FILE *fp, const dzSysArray *sys);
 
 /*! \brief read a ZTK file and create an array of systems. */
-__DZCO_EXPORT dzSysArray *dzSysArrayReadZTK(dzSysArray *sarray, char filename[]);
+__DZCO_EXPORT dzSysArray *dzSysArrayReadZTK(dzSysArray *sarray, const char filename[]);
 /*! \brief write an array of systems to a file in ZTK format. */
-__DZCO_EXPORT bool dzSysArrayWriteZTK(dzSysArray *sarray, char filename[]);
+__DZCO_EXPORT bool dzSysArrayWriteZTK(const dzSysArray *sarray, const char filename[]);
 
 __END_DECLS
 

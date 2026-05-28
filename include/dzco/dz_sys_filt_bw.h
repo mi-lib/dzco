@@ -11,11 +11,6 @@
 
 __BEGIN_DECLS
 
-/* ********************************************************** */
-/* CLASS: dzBW
- * Butterworth filter
- * ********************************************************** */
-
 /*! \brief create a Butterworth filter.
  *
  * dzSysBWCreate() creates a Butterworth filter \a sys

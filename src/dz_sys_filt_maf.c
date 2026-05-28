@@ -38,7 +38,7 @@ static void *_dzSysMAFFFFromZTK(void *val, int i, void *arg, ZTK *ztk){
   return val;
 }
 
-static bool _dzSysMAFFFFPrintZTK(FILE *fp, int i, void *prp){
+static bool _dzSysMAFFFFPrintZTK(FILE *fp, int i, const void *prp){
   fprintf( fp, "%.10g\n", __dz_sys_maf_ff((dzSys*)prp) );
   return true;
 }
@@ -54,7 +54,7 @@ static dzSys *_dzSysMAFFromZTK(dzSys *sys, ZTK *ztk)
   return dzSysMAFCreate( sys, ff );
 }
 
-static void _dzSysMAFFPrintZTK(FILE *fp, dzSys *sys)
+static void _dzSysMAFFPrintZTK(FILE *fp, const dzSys *sys)
 {
   _ZTKPrpKeyFPrint( fp, sys, __ztk_prp_dzsys_maf );
 }

@@ -71,11 +71,6 @@ static zVec _dzSysTFUpdate(dzSys *sys, double dt)
   return dzSysOutput(sys);
 }
 
-static void dzSysTFFPrintZTK(FILE *fp, dzSys *sys)
-{
-  dzTFFPrintZTK( fp, ((dzSysTFPrm*)sys->prp)->tf );
-}
-
 static dzSys *_dzSysTFFromZTK(dzSys *sys, ZTK *ztk)
 {
   dzTF *tf;
@@ -83,6 +78,11 @@ static dzSys *_dzSysTFFromZTK(dzSys *sys, ZTK *ztk)
   if( !( tf = zAlloc( dzTF, 1 ) ) ) return NULL;
   if( !dzTFFromZTK( tf, ztk ) ) return NULL;
   return dzSysTFCreate( sys, tf );
+}
+
+static void dzSysTFFPrintZTK(FILE *fp, const dzSys *sys)
+{
+  dzTFFPrintZTK( fp, ((dzSysTFPrm*)sys->prp)->tf );
 }
 
 dzSysCom dz_sys_tf_com = {

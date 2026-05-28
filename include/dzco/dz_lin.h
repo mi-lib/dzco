@@ -9,13 +9,9 @@
 
 #include <dzco/dz_tf.h>
 
-__BEGIN_DECLS
-
-/* ********************************************************** */
-/* CLASS: dzLin
- * general linear system
- * ********************************************************** */
-
+/*! \struct dzLin
+ * \brief general linear system.
+ */
 ZDEF_STRUCT( __DZCO_CLASS_EXPORT, dzLin ){
   zMat a;    /*!< A matrix */
   zVec b;    /*!< B matrix */
@@ -28,6 +24,8 @@ ZDEF_STRUCT( __DZCO_CLASS_EXPORT, dzLin ){
   zODE _ode; /* integrator */
   /*! \endcond */
 };
+
+__BEGIN_DECLS
 
 #define dzLinDim(c) zVecSizeNC((c)->x)
 
@@ -258,7 +256,7 @@ __DZCO_EXPORT dzLin *dzTF2LinObsCanon(dzTF *tf, dzLin *lin);
 #define ZTK_KEY_DZCO_LIN_D "d"
 
 __DZCO_EXPORT dzLin *dzLinFromZTK(dzLin *lin, ZTK *ztk);
-__DZCO_EXPORT void dzLinFPrintZTK(FILE *fp, dzLin *lin);
+__DZCO_EXPORT void dzLinFPrintZTK(FILE *fp, const dzLin *lin);
 
 __END_DECLS
 
