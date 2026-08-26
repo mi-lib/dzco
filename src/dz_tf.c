@@ -212,11 +212,11 @@ static void *_dzTFGainFromZTK(void *obj, int i, void *arg, ZTK *ztk){
   return obj;
 }
 
-static bool _dzTFNumFPrintZTK(FILE *fp, int i, void *prp){
+static bool _dzTFNumFPrintZTK(FILE *fp, int i, const void *prp){
   zPexFPrint( fp, ((dzTF*)prp)->num );
   return true;
 }
-static bool _dzTFDenFPrintZTK(FILE *fp, int i, void *prp){
+static bool _dzTFDenFPrintZTK(FILE *fp, int i, const void *prp){
   zPexFPrint( fp, ((dzTF*)prp)->den );
   return true;
 }

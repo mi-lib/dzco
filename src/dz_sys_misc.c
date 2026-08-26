@@ -11,7 +11,7 @@ static void *_dzSysMIInFromZTK(void *val, int i, void *arg, ZTK *ztk){
   return val;
 }
 
-static bool _dzSysMIInFPrintZTK(FILE *fp, int i, void *prp){
+static bool _dzSysMIInFPrintZTK(FILE *fp, int i, const void *prp){
   fprintf( fp, "%d\n", dzSysInputNum((dzSys*)prp) );
   return true;
 }
@@ -126,11 +126,11 @@ static void *_dzSysLimitMaxFromZTK(void *val, int i, void *arg, ZTK *ztk){
   return val;
 }
 
-static bool _dzSysLimitMinFPrintZTK(FILE *fp, int i, void *prp){
+static bool _dzSysLimitMinFPrintZTK(FILE *fp, int i, const void *prp){
   fprintf( fp, "%.10g\n", __dz_sys_limit_min((dzSys*)prp) );
   return true;
 }
-static bool _dzSysLimitMaxFPrintZTK(FILE *fp, int i, void *prp){
+static bool _dzSysLimitMaxFPrintZTK(FILE *fp, int i, const void *prp){
   fprintf( fp, "%.10g\n", __dz_sys_limit_max((dzSys*)prp) );
   return true;
 }

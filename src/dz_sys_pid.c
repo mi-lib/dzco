@@ -23,7 +23,7 @@ static void *_dzSysPGainFromZTK(void *val, int i, void *arg, ZTK *ztk){
   return val;
 }
 
-static bool _dzSysPGainFPrintZTK(FILE *fp, int i, void *prp){
+static bool _dzSysPGainFPrintZTK(FILE *fp, int i, const void *prp){
   fprintf( fp, "%.10g\n", __dz_sys_p_gain((dzSys*)prp) );
   return true;
 }
@@ -101,11 +101,11 @@ static void *_dzSysIFgtFromZTK(void *val, int i, void *arg, ZTK *ztk){
   return val;
 }
 
-static bool _dzSysIGainFPrintZTK(FILE *fp, int i, void *prp){
+static bool _dzSysIGainFPrintZTK(FILE *fp, int i, const void *prp){
   fprintf( fp, "%.10g\n", __dz_sys_i_gain((dzSys*)prp) );
   return true;
 }
-static bool _dzSysIFgtFPrintZTK(FILE *fp, int i, void *prp){
+static bool _dzSysIFgtFPrintZTK(FILE *fp, int i, const void *prp){
   fprintf( fp, "%.10g\n", __dz_sys_i_fgt((dzSys*)prp) );
   return true;
 }
@@ -201,11 +201,11 @@ static void *_dzSysDTcFromZTK(void *val, int i, void *arg, ZTK *ztk){
   return val;
 }
 
-static bool _dzSysDGainFPrintZTK(FILE *fp, int i, void *prp){
+static bool _dzSysDGainFPrintZTK(FILE *fp, int i, const void *prp){
   fprintf( fp, "%.10g\n", __dz_sys_d_gain((dzSys*)prp) );
   return true;
 }
-static bool _dzSysDTcFPrintZTK(FILE *fp, int i, void *prp){
+static bool _dzSysDTcFPrintZTK(FILE *fp, int i, const void *prp){
   fprintf( fp, "%.10g\n", __dz_sys_d_tc((dzSys*)prp) );
   return true;
 }
@@ -313,23 +313,23 @@ static void *_dzSysPIDFgtFromZTK(void *val, int i, void *arg, ZTK *ztk){
   return val;
 }
 
-static bool _dzSysPIDPGainFPrintZTK(FILE *fp, int i, void *prp){
+static bool _dzSysPIDPGainFPrintZTK(FILE *fp, int i, const void *prp){
   fprintf( fp, "%.10g\n", __dz_sys_pid_pgain((dzSys*)prp) );
   return true;
 }
-static bool _dzSysPIDIGainFPrintZTK(FILE *fp, int i, void *prp){
+static bool _dzSysPIDIGainFPrintZTK(FILE *fp, int i, const void *prp){
   fprintf( fp, "%.10g\n", __dz_sys_pid_igain((dzSys*)prp) );
   return true;
 }
-static bool _dzSysPIDDGainFPrintZTK(FILE *fp, int i, void *prp){
+static bool _dzSysPIDDGainFPrintZTK(FILE *fp, int i, const void *prp){
   fprintf( fp, "%.10g\n", __dz_sys_pid_dgain((dzSys*)prp) );
   return true;
 }
-static bool _dzSysPIDTcFPrintZTK(FILE *fp, int i, void *prp){
+static bool _dzSysPIDTcFPrintZTK(FILE *fp, int i, const void *prp){
   fprintf( fp, "%.10g\n", __dz_sys_pid_tc((dzSys*)prp) );
   return true;
 }
-static bool _dzSysPIDFgtFPrintZTK(FILE *fp, int i, void *prp){
+static bool _dzSysPIDFgtFPrintZTK(FILE *fp, int i, const void *prp){
   fprintf( fp, "%.10g\n", __dz_sys_pid_fgt((dzSys*)prp) );
   return true;
 }
@@ -463,15 +463,15 @@ static void *_dzSysQPDEpsFromZTK(void *val, int i, void *arg, ZTK *ztk){
   return val;
 }
 
-static bool _dzSysQPDPGainFPrintZTK(FILE *fp, int i, void *prp){
+static bool _dzSysQPDPGainFPrintZTK(FILE *fp, int i, const void *prp){
   fprintf( fp, "%.10g\n", __dz_sys_qpd_pgain((dzSys*)prp) );
   return true;
 }
-static bool _dzSysQPDDGainFPrintZTK(FILE *fp, int i, void *prp){
+static bool _dzSysQPDDGainFPrintZTK(FILE *fp, int i, const void *prp){
   fprintf( fp, "%.10g\n", __dz_sys_qpd_dgain((dzSys*)prp) );
   return true;
 }
-static bool _dzSysQPDEpsFPrintZTK(FILE *fp, int i, void *prp){
+static bool _dzSysQPDEpsFPrintZTK(FILE *fp, int i, const void *prp){
   fprintf( fp, "%.10g\n", __dz_sys_qpd_eps((dzSys*)prp) );
   return true;
 }
