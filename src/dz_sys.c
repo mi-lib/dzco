@@ -92,6 +92,7 @@ static const ZTKPrp __ztk_prp_dzsys[] = {
   { ZTK_KEY_DZCO_SYS_TYPE, 1, _dzSysTypeFromZTK, _dzSysTypeFPrintZTK },
 };
 
+
 void *dzSysFromZTK(dzSys *sys, ZTK *ztk)
 {
   char *name;
