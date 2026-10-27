@@ -1,3 +1,4 @@
+2026.10.27. Added const qualifiers to _dz*FPrintZTK (thanks to Daishi Kaneta). [dz_tf, dz_lin, dz_sys, dz_sys_misc, dz_sys_lag, dz_sys_pid, dz_sys_fg, dz_sys_filt_bw, dz_sys_filt_maf]
 2026.05.27. Applied ZDECL_STRUCT. [dz_sys]
 2026.05.27. Relocated __BEGIN_DECLS and __END_DECLS. [dz_tf, dz_sys]
 2026.05.27. Added const qualifiers to arguments of functions. [dz_tf, dz_sys, dz_sys_misc, dz_sys_pid, dz_sys_lag, dz_sys_fg, dz_sys_filt_bw, dz_sys_filt_maf, dz_sys_tf, dz_sys_lin]
